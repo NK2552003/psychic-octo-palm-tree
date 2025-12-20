@@ -14,12 +14,13 @@ import LandingPage from "./pages/landingpage";
 
 import { applyJellyText } from "@/lib/jellyText";
 import AboutPage from "./pages/aboutme";
-import ScrollAnimation from "./pages/qualifications";
+import ScrollAnimation from "./pages/skillsSection";
 import SkillsPage from "./pages/skills";
 import ProjectsPage from "./pages/projects";
 import WildlifePage from "./pages/photography";
 import Footer from "./pages/footer";
 import ContactSection from "./pages/contact";
+import QualificationsSection from "./pages/qualifications";
 
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -255,6 +256,7 @@ useEffect(() => {
       <SkillsPage/>
       <ScrollAnimation/>
       <ProjectsPage/>
+      <QualificationsSection/>
       <WildlifePage/>
       <ContactSection/>
       <Footer/>
