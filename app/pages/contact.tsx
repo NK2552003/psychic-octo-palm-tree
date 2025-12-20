@@ -101,7 +101,7 @@ export default function ContactSection() {
       {/* Form */}
       <form
         onSubmit={sendEmail}
-        className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 text-stone-700"
+        className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 text-stone-700 dark:text-teal-200"
       >
         {/* Name */}
         <div className="contact-animate">
