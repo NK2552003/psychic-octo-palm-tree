@@ -120,7 +120,7 @@ export default function SkillsPage() {
       ref={containerRef}
       className="relative overflow-hidden py-12 px-4 sm:px-6 lg:px-8"
     >
-      <div ref={doodlesRef} className="absolute inset-0 pointer-events-none z-[5]" aria-hidden="true">
+      <div ref={doodlesRef} className="skill-doodles absolute inset-0 pointer-events-none z-[5]" aria-hidden="true">
         {/* Code brackets - top left */}
         <svg
           className="absolute left-[3%] top-[8%] w-24 h-28 skill-doodle-float opacity-25 hidden md:block"

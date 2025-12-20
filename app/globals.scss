@@ -396,6 +396,43 @@ body {
     width: 70px;
     height: 70px;
   }
+
+  /* Disable heavy jelly animations on small devices */
+  .hero-jelly,
+  .hero-jelly-fast {
+    visibility: visible !important; /* ensure text is readable without reveal */
+    animation: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+    will-change: auto !important;
+    transition: none !important;
+  }
+
+  /* Remove decorative doodles on small screens to improve performance */
+  .doodles,
+  .qual-doodles,
+  .skill-doodles,
+  .about-doodles,
+  .project-doodles {
+    display: none !important;
+  }
+
+  /* Hide photography doodles on tablet/mobile; show only on large screens */
+  @media (max-width: 1023px) {
+    .photo-doodles { display: none !important; }
+  }
+
+  .qual-doodle-path,
+  .qual-doodle-float,
+  .qual-doodle-wobble,
+  .skill-doodle-path,
+  .skill-doodle-float,
+  .skill-doodle-wobble,
+  .qual-doodle-accent,
+  .qual-doodle-accent-svg {
+    display: none !important;
+    opacity: 0 !important;
+  }
 }
 
 /* ================== Signature SVG Path Drawing ================== */
@@ -8343,4 +8380,50 @@ textarea:focus-visible,
 select:focus-visible {
 	outline: none !important;
 	box-shadow: none !important;
+}
+
+@media (max-width: 640px) {
+  .animated-box {
+    width: 44px !important;
+    height: 34px !important;
+  }
+  :root {
+    --bat-scale: 1.0;
+  }
+
+  /* Mobile: replace heavy pixel-sprite bat with a lightweight dot animation */
+  .bat {
+    width: 12px !important;
+    height: 12px !important;
+    transform: none !important;
+    left: 50% !important;
+    top: 50% !important;
+    border-radius: 9999px !important;
+    background: var(--bat-body) !important;
+    box-shadow: none !important;
+    animation: bat-lite 1.4s ease-in-out infinite !important;
+    pointer-events: none !important;
+  }
+
+  .animated-box .bat {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) !important;
+  }
+
+  @keyframes bat-lite {
+    0% {
+      transform: translate(-50%, -50%) translateY(0);
+      opacity: 1;
+    }
+    50% {
+      transform: translate(-50%, -50%) translateY(-6px);
+      opacity: 0.95;
+    }
+    100% {
+      transform: translate(-50%, -50%) translateY(0);
+      opacity: 1;
+    }
+  }
 }

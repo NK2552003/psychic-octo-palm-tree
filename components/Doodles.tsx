@@ -42,8 +42,24 @@ function overlaps(a: Doodle, b: Doodle, vw: number, vh: number) {
 
 export default function Doodles() {
   const [doodles, setDoodles] = useState<Doodle[]>([])
+  const [isSmall, setIsSmall] = useState<boolean>(false)
+
+  // Track small-screen state and bail early if on mobile-sized devices
+  useEffect(() => {
+    const mq = window.matchMedia && window.matchMedia("(max-width: 640px)")
+    const update = () => setIsSmall(!!(mq && mq.matches))
+    update()
+    mq?.addEventListener?.("change", update)
+    return () => mq?.removeEventListener?.("change", update)
+  }, [])
 
   useEffect(() => {
+    // Remove doodles entirely on small screens
+    if (isSmall) {
+      setDoodles([])
+      return
+    }
+
     const vw = window.innerWidth
     const vh = window.innerHeight
     let target = 22
@@ -176,8 +192,10 @@ export default function Doodles() {
     }
   }
 
+  if (isSmall || doodles.length === 0) return null
+
   return (
-    <div className="pointer-events-none select-none absolute inset-0 z-0 overflow-hidden">
+    <div className="doodles pointer-events-none select-none absolute inset-0 z-0 overflow-hidden">
       {doodles.map((d) => (
         <svg
           key={d.id}

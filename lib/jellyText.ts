@@ -5,6 +5,14 @@ export const applyJellyText = (
   baseDelay = 0,
   letterDelay = 0.035
 ) => {
+  // Disable heavy per-letter animations on small screens to improve performance
+  if (typeof window !== "undefined" && window.matchMedia && window.matchMedia("(max-width: 640px)").matches) {
+    element.dataset.jellyPlayed = "true";
+    element.classList.add("jelly-revealed");
+    element.style.visibility = "visible";
+    return;
+  }
+
   // prevent re-running
   if (element.dataset.jellyPlayed === "true") return;
   element.dataset.jellyPlayed = "true";

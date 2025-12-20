@@ -30,7 +30,7 @@ export default function MenuOverlay({
           "Experience",
           "Contact",
         ].map((item) => (
-          <Link key={item} href="/" className="menu-link">
+          <Link key={item} href="/" className="menu-link" onClick={() => close()}>
             {item}
           </Link>
         ))}

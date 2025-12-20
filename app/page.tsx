@@ -29,6 +29,15 @@ export default function Home() {
      JELLY TEXT — SCROLL REVEAL (VIEWPORT ONLY)
   ====================================================== */
 useEffect(() => {
+  // Disable jelly animations on small screens to improve mobile performance
+  if (typeof window !== "undefined" && window.matchMedia && window.matchMedia("(max-width: 640px)").matches) {
+    // Ensure text is visible even when we skip the reveal animation
+    document.querySelectorAll<HTMLElement>(".hero-jelly").forEach((el) => {
+      el.style.visibility = "visible";
+    });
+    return;
+  }
+
   const elements = document.querySelectorAll<HTMLElement>(".hero-jelly");
 
   const observer = new IntersectionObserver(

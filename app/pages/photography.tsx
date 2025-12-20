@@ -5,6 +5,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
+import PhotographyDoodles from "@/components/PhotographyDoodles";
 
 export default function WildlifePage() {
   const [currentPage, setCurrentPage] = useState<"gallery" | "detail">("gallery");
@@ -324,6 +325,9 @@ export default function WildlifePage() {
 
   return (
     <div ref={pageRef} className="relative">
+      {/* Photography doodles (large screens only) */}
+      <PhotographyDoodles />
+
       <div className="relative z-10">
         <div
           ref={galleryRef}
@@ -336,7 +340,7 @@ export default function WildlifePage() {
             {/* Bottom Section - Wildlife Text */}
             <div className="relative pb-8 md:pb-12">
               <div className="flex justify-between items-end mb-2 md:mb-4">
-                <span className="inline-block rounded-full border-2 px-6 py-2 text-sm font-medium transition-all hover:scale-105 hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black">
+                <span className="inline-block rounded-full border-2 px-6 py-2 text-sm font-medium transition-all hover:scale-105 hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black hero-jelly">
                   Photography
                 </span>
                 <span className="text-xs md:text-sm lg:text-base">
@@ -349,7 +353,7 @@ export default function WildlifePage() {
                     ? currentGalleryIndex + 1
                     : selectedImage + 1
                 } ]`}</p>
-                <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black leading-none tracking-tight">
+                <h1 className="hero-jelly text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black leading-none tracking-tight">
                   QUITE FRAMES
                 </h1>
               </div>
@@ -438,7 +442,7 @@ export default function WildlifePage() {
                     animals[currentGalleryIndex].image || "/placeholder.svg"
                   }
                   alt="Featured wildlife"
-                  className="h-48 w-40 sm:h-64 sm:w-52 md:h-80 md:w-64 lg:h-96 lg:w-80 object-cover grayscale shadow-2xl transition-all duration-500 group-hover:scale-105 group-hover:grayscale-0"
+                  className="hero-jelly h-48 w-40 sm:h-64 sm:w-52 md:h-80 md:w-64 lg:h-96 lg:w-80 object-cover grayscale shadow-2xl transition-all duration-500 group-hover:scale-105 group-hover:grayscale-0"
                 />
                 <div className="pointer-events-none absolute inset-0 hidden dark:block mix-blend-color bg-teal-600/30" />
                 <div className="absolute w-full h-full inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-500 flex items-center justify-center">
@@ -473,7 +477,7 @@ export default function WildlifePage() {
                         <img
                           src={animal.image || "/placeholder.svg"}
                           alt={animal.name}
-                          className="h-32 w-24 sm:h-40 sm:w-32 md:h-48 md:w-40 lg:h-56 lg:w-44 object-cover grayscale transition-all duration-500"
+                          className="hero-jelly h-32 w-24 sm:h-40 sm:w-32 md:h-48 md:w-40 lg:h-56 lg:w-44 object-cover grayscale transition-all duration-500"
                         />
                         <div className="pointer-events-none absolute inset-0 hidden dark:block mix-blend-color bg-teal-600/30" />
                       </div>
@@ -512,7 +516,7 @@ export default function WildlifePage() {
                           animals[selectedImage].detailImage || "/placeholder.svg"
                         }
                         alt={animals[selectedImage].name}
-                        className="w-full h-full object-contain"
+                        className="hero-jelly w-full h-full object-contain"
                       />
                     </div>
 
@@ -552,7 +556,7 @@ export default function WildlifePage() {
                             "/placeholder.svg"
                           }
                           alt={`${animals[selectedImage].name} scene`}
-                          className="w-full h-full object-cover grayscale md:block hidden"
+                          className="hero-jelly w-full h-full object-cover grayscale md:block hidden"
                         />
                       </div>
                     </div>

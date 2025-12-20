@@ -94,44 +94,48 @@ export default function AboutPage() {
         })
       }
 
-      gsap.from(".doodle-path", {
-        strokeDashoffset: 1000,
-        duration: 1.5,
-        ease: "power2.inOut",
-        stagger: 0.08,
-        scrollTrigger: {
-          trigger: doodlesRef.current,
-          start: "top 80%",
-          toggleActions: "play none none none",
-        },
-      })
+      // Skip doodle animations on small screens for performance
+      const _isSmall = typeof window !== "undefined" && window.matchMedia && window.matchMedia("(max-width:640px)").matches
+      if (!_isSmall) {
+        gsap.from(".doodle-path", {
+          strokeDashoffset: 1000,
+          duration: 1.5,
+          ease: "power2.inOut",
+          stagger: 0.08,
+          scrollTrigger: {
+            trigger: doodlesRef.current,
+            start: "top 80%",
+            toggleActions: "play none none none",
+          },
+        })
 
-      // Float animation for doodles
-      gsap.to(".doodle-float", {
-        y: "random(-12, 12)",
-        x: "random(-5, 5)",
-        duration: "random(2, 3.5)",
-        ease: "sine.inOut",
-        repeat: -1,
-        yoyo: true,
-        stagger: {
-          amount: 1,
-          from: "random",
-        },
-      })
+        // Float animation for doodles
+        gsap.to(".doodle-float", {
+          y: "random(-12, 12)",
+          x: "random(-5, 5)",
+          duration: "random(2, 3.5)",
+          ease: "sine.inOut",
+          repeat: -1,
+          yoyo: true,
+          stagger: {
+            amount: 1,
+            from: "random",
+          },
+        })
 
-      // Wobble rotation for doodles
-      gsap.to(".doodle-wobble", {
-        rotation: "random(-8, 8)",
-        duration: "random(2.5, 4)",
-        ease: "sine.inOut",
-        repeat: -1,
-        yoyo: true,
-        stagger: {
-          amount: 1.5,
-          from: "random",
-        },
-      })
+        // Wobble rotation for doodles
+        gsap.to(".doodle-wobble", {
+          rotation: "random(-8, 8)",
+          duration: "random(2.5, 4)",
+          ease: "sine.inOut",
+          repeat: -1,
+          yoyo: true,
+          stagger: {
+            amount: 1.5,
+            from: "random",
+          },
+        })
+      }
     })
 
     return () => ctx.revert()
@@ -139,7 +143,7 @@ export default function AboutPage() {
 
   return (
     <div className="relative overflow-hidden">
-      <div ref={doodlesRef} className="absolute inset-0 pointer-events-none z-[5]" aria-hidden="true">
+      <div ref={doodlesRef} className="about-doodles absolute inset-0 pointer-events-none z-[5]" aria-hidden="true">
         {/* Hobby Doodle 1: Paint palette (Art) - top left */}
         <svg className="absolute left-[2%] top-[6%] w-28 h-10 doodle-float opacity-30 hidden sm:block" viewBox="0 0 140 50" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ strokeDasharray: 1000 }}>
           <ellipse className="doodle-path" cx="55" cy="25" rx="45" ry="18" />

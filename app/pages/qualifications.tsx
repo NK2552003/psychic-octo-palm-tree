@@ -184,6 +184,7 @@ export default function ScrollAnimation() {
   const [passedMarkers, setPassedMarkers] = useState<Set<number>>(new Set())
   const [activeMarker, setActiveMarker] = useState<number | null>(null)
   const [isLargeScreen, setIsLargeScreen] = useState<boolean>(false)
+  const [isSmallScreen, setIsSmallScreen] = useState<boolean>(false)
   const [hoveredSlice, setHoveredSlice] = useState<number | null>(null) 
 
   // Doodles: randomized positions, non-overlapping
@@ -345,45 +346,48 @@ export default function ScrollAnimation() {
           },
         })
 
-        // Qualification doodles animation (draw + subtle float/wobble)
-        gsap.from(".qual-doodle-path", {
-          strokeDashoffset: 1000,
-          duration: 1.5,
-          ease: "power2.inOut",
-          stagger: 0.12,
-          scrollTrigger: {
-            trigger: containerRef.current,
-            start: "top 85%",
-            toggleActions: "play none none none",
-          },
-        })
+        // Qualification doodles animation (draw + subtle float/wobble) — skip on small screens
+        const _isSmall = typeof window !== "undefined" && window.matchMedia && window.matchMedia("(max-width:640px)").matches
+        if (!_isSmall) {
+          gsap.from(".qual-doodle-path", {
+            strokeDashoffset: 1000,
+            duration: 1.5,
+            ease: "power2.inOut",
+            stagger: 0.12,
+            scrollTrigger: {
+              trigger: containerRef.current,
+              start: "top 85%",
+              toggleActions: "play none none none",
+            },
+          })
 
-        gsap.to(".qual-doodle-float", {
-          y: "random(-12, 12)",
-          x: "random(-6, 6)",
-          rotation: "random(-6, 6)",
-          duration: "random(2.5, 4)",
-          ease: "sine.inOut",
-          repeat: -1,
-          yoyo: true,
-          stagger: {
-            amount: 1.2,
-            from: "random",
-          },
-        })
+          gsap.to(".qual-doodle-float", {
+            y: "random(-12, 12)",
+            x: "random(-6, 6)",
+            rotation: "random(-6, 6)",
+            duration: "random(2.5, 4)",
+            ease: "sine.inOut",
+            repeat: -1,
+            yoyo: true,
+            stagger: {
+              amount: 1.2,
+              from: "random",
+            },
+          })
 
-        gsap.to(".qual-doodle-wobble", {
-          rotation: "random(-10, 10)",
-          scale: "random(0.97, 1.03)",
-          duration: "random(3, 4.5)",
-          ease: "sine.inOut",
-          repeat: -1,
-          yoyo: true,
-          stagger: {
-            amount: 2,
-            from: "random",
-          },
-        })
+          gsap.to(".qual-doodle-wobble", {
+            rotation: "random(-10, 10)",
+            scale: "random(0.97, 1.03)",
+            duration: "random(3, 4.5)",
+            ease: "sine.inOut",
+            repeat: -1,
+            yoyo: true,
+            stagger: {
+              amount: 2,
+              from: "random",
+            },
+          })
+        }
 
         tl.to(
           box,
@@ -430,6 +434,7 @@ export default function ScrollAnimation() {
   useEffect(() => {
     const onResizeCheck = () => {
       setIsLargeScreen(window.innerWidth >= 1024)
+      setIsSmallScreen(window.innerWidth < 640)
     }
     onResizeCheck()
     window.addEventListener("resize", onResizeCheck)
@@ -445,6 +450,12 @@ export default function ScrollAnimation() {
     const container = containerRef.current
 
     const generate = () => {
+      // Skip generating doodles on small screens for performance
+      if (typeof window !== "undefined" && window.matchMedia && window.matchMedia("(max-width:640px)").matches) {
+        setDoodles([])
+        return
+      }
+
       const rect = container.getBoundingClientRect()
       const W = rect.width
       const H = rect.height
@@ -526,6 +537,7 @@ export default function ScrollAnimation() {
   // subtle animated accent pulse for added polish
   useEffect(() => {
     if (!doodles || doodles.length === 0) return
+    if (typeof window !== "undefined" && window.matchMedia && window.matchMedia("(max-width:640px)").matches) return
     const tl = gsap.timeline()
     tl.to(".qual-doodle-accent", {
       scale: "random(0.82, 1.18)",
@@ -904,7 +916,7 @@ export default function ScrollAnimation() {
           </div>
         </div>
       <div className="relative" style={{ height: "300vh" }}>
-        <div ref={doodlesRef} className="absolute inset-0 pointer-events-none z-[5]" aria-hidden="true">
+        <div ref={doodlesRef} className="qual-doodles absolute inset-0 pointer-events-none z-[5]" aria-hidden="true">
           {doodles.map((d) => (
             <div
               key={d.id}
