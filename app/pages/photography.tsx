@@ -340,7 +340,7 @@ export default function WildlifePage() {
             {/* Bottom Section - Wildlife Text */}
             <div className="relative pb-8 md:pb-12">
               <div className="flex justify-between items-end mb-2 md:mb-4">
-                <span className="inline-block rounded-full border-2 px-6 py-2 text-sm font-medium transition-all hover:scale-105 hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black hero-jelly">
+                <span id="photography" className="inline-block rounded-full border-2 px-3 sm:px-6 py-1.5 sm:py-2 text-xs sm:text-sm font-medium transition-all hover:scale-105 hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black hero-jelly">
                   Photography
                 </span>
                 <span className="text-xs md:text-sm lg:text-base">

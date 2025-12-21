@@ -325,7 +325,8 @@ export default function AboutPage() {
       <div className="relative max-w-auto mx-auto px-4 sm:px-6 lg:px-8 pb-8">
         <span
           ref={aboutRef}
-          className="inline-block rounded-full border-2 px-6 py-2 text-sm font-medium transition-all opacity-0 hover:scale-105 hover:bg-black hover:text-white"
+          id="about"
+          className="inline-block rounded-full border-2 px-3 sm:px-6 py-1.5 sm:py-2 text-xs sm:text-sm font-medium transition-all opacity-0 hover:scale-105 hover:bg-black hover:text-white"
         >
             About Me
           </span>

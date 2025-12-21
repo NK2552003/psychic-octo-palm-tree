@@ -43,7 +43,7 @@ export default function LandingPage() {
   }
 
   return (
-    <section className="relative md:h-[900px] mb-20 md:mb-0 flex flex-col overflow-hidden">
+    <section id="hero" className="relative md:h-[900px] mb-20 md:mb-0 flex flex-col overflow-hidden">
       {/* HEADER */}
       <Header time={time} />
 

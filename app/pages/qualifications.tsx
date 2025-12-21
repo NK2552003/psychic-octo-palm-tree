@@ -147,18 +147,24 @@ const QualificationCard: React.FC<{ qualification: Qualification; index: number 
     >
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 min-w-0">
-          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-2">
-            <h3 className="text-xl md:text-2xl lg:text-3xl font-bold uppercase tracking-tight">
-              {qualification.title}
-            </h3> 
-          </div> 
-          {qualification.institution && (
-            <p className="text-foreground/90 text-sm sm:text-base md:text-lg mb-1">
+           <div className='flex w-full justify-between '>
+              {qualification.institution && (
+            <p className="text-foreground/90 text-sm sm:text-base mb-1 hero-jelly">
               {qualification.institution}
             </p>
           )} 
+           {qualification.duration && (
+            <p className="text-foreground/60 text-sm md:text-base mb-2 hidden md:block hero-jelly">{qualification.duration}</p>
+          )} 
+           </div>
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-2">
+            <h3 className="text-xl md:text-2xl lg:text-3xl font-bold uppercase tracking-tight hero-jelly">
+              {qualification.title}
+            </h3> 
+          </div> 
+       
           {qualification.duration && (
-            <p className="text-foreground/60 text-sm md:text-base mb-2">{qualification.duration}</p>
+            <p id="qualifications" className="text-foreground/60 text-sm md:text-base mb-2 block md:hidden">{qualification.duration}</p>
           )} 
           {qualification.description && (
             <p className="text-foreground/70 text-sm sm:text-base md:text-lg">
@@ -167,7 +173,7 @@ const QualificationCard: React.FC<{ qualification: Qualification; index: number 
           )} 
         </div>
         {!isNonExpandable && (
-          <div className="flex-shrink-0 mt-1">
+          <div className="flex-shrink-0 mt-12 md:mt-9 fixed right-0 md:right-8">
             <ChevronDown
               className={`w-6 h-6 md:w-7 md:h-7 lg:w-8 lg:h-8 text-foreground/70 transition-transform duration-300 dark:text-primary ${
                 isExpanded ? 'rotate-180' : ''
@@ -290,6 +296,9 @@ export default function QualificationsSection() {
 
   return (
     <div className="p-2 sm:p-12 lg:p-16">
+         <span id="qualifications" className="hero-jelly inline-block rounded-full border-2 px-3 sm:px-6 py-1.5 sm:py-2 text-xs sm:text-sm font-medium transition-all hover:scale-105 hover:bg-black hover:text-white">
+            Qualification & Certifications
+          </span>
       <div className="max-w-7xl mx-auto">
         <div
             className="leading-none tracking-tighter flex items-start justify-center"
@@ -337,7 +346,7 @@ export default function QualificationsSection() {
           </div>
         <div className="">
           <div className="p-6 sm:p-8 lg:p-10">
-            <p className="text-foreground/70 text-center mx-auto max-w-3xl mb-8 text-[15px] sm:text-base md:text-lg leading-relaxed italic">
+            <p className="text-foreground/70 text-center mx-auto max-w-3xl mb-8 text-[15px] sm:text-base md:text-lg leading-relaxed italic hero-jelly">
               Every entry below is a short chapter—click to unfold the challenge, the solution, and the result.
             </p>
             <div className="relative">

@@ -810,7 +810,7 @@ export default function ProjectsPage() {
       </div>
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 py-12 sm:py-16">
         <div className="mb-16">
-          <span className="hero-jelly inline-block rounded-full border-2 px-6 py-2 text-sm font-medium transition-all hover:scale-105 hover:bg-black hover:text-white">
+          <span id="projects" className="hero-jelly inline-block rounded-full border-2 px-3 sm:px-6 py-1.5 sm:py-2 text-xs sm:text-sm font-medium transition-all hover:scale-105 hover:bg-black hover:text-white">
             Projects
           </span>
           <h1 className="hero-jelly mt-6 text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black uppercase leading-tight">

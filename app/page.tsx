@@ -8,7 +8,6 @@ gsap.registerPlugin(ScrollTrigger);
 
 import Background from "@/components/Background";
 import FloatingControls from "@/components/FloatingControls";
-import MenuOverlay from "@/components/MenuOverlay";
 
 import LandingPage from "./pages/landingpage";
 
@@ -21,6 +20,7 @@ import WildlifePage from "./pages/photography";
 import Footer from "./pages/footer";
 import ContactSection from "./pages/contact";
 import QualificationsSection from "./pages/qualifications";
+import { FloatingNav } from "@/components/floatingNav";
 
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -248,9 +248,7 @@ useEffect(() => {
   return (
     <div className="relative min-h-screen overflow-hidden flex flex-col">
       <Background />
-
-      <MenuOverlay open={menuOpen} close={() => setMenuOpen(false)} />
-
+      <FloatingNav/>
       <LandingPage />
       <AboutPage/>
       <SkillsPage/>
@@ -262,9 +260,7 @@ useEffect(() => {
       <Footer/>
       <FloatingControls
         isDark={isDark}
-        menuOpen={menuOpen}
         toggleTheme={toggleTheme}
-        toggleMenu={() => setMenuOpen((p) => !p)}
       />
     </div>
   );

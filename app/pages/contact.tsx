@@ -78,10 +78,11 @@ export default function ContactSection() {
 
   return (
     <section
+      id="contact"
       ref={ref}
       className="w-full px-6 sm:px-10 lg:px-24 py-24"
     >
-              <span className="hero-jelly inline-block rounded-full border-2 px-6 py-2 text-sm font-medium transition-all hover:scale-105 hover:bg-black hover:text-white">
+              <span className="hero-jelly inline-block rounded-full border-2 px-3 sm:px-6 py-1.5 sm:py-2 text-xs sm:text-sm font-medium transition-all hover:scale-105 hover:bg-black hover:text-white">
             Contact
           </span>
       {/* Hero */}

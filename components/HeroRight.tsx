@@ -1,3 +1,4 @@
+"use client";
 import { Patrick_Hand } from "next/font/google";
 import Signature from "./signature";
 
@@ -11,7 +12,7 @@ const sections = [
   { label: "Skills", id: "skills" },
   { label: "Projects", id: "projects" },
   { label: "Photography", id: "photography" },
-  { label: "Experience", id: "experience" },
+  { label: "Experience", id: "qualifications" },
   { label: "Contact", id: "contact" },
 ];
 export default function HeroRight() {
@@ -20,7 +21,7 @@ export default function HeroRight() {
       <div className="flex flex-col sm:flex-row gap-10 ">
       <div className="relative group overflow-hidden mx-auto sm:mx-0">
               <img
-                src="/profile.jpg"
+                src="profile.jpg"
                 alt="Nitish Kumar"
                 className="image-animate w-[220px] sm:w-[280px] md:[300px] lg:w-[320px] object-cover hero-jelly border-16 sm:border-24 border-stone-700/30 dark:border-[#0c3a3a]"
               />
@@ -55,6 +56,30 @@ export default function HeroRight() {
             <li key={id}>
               <a
                 href={`#${id}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  const el = document.getElementById(id);
+                  if (el) {
+                    // compute absolute document Y and use native smooth scroll
+                    const rect = el.getBoundingClientRect();
+                    const targetY = window.scrollY + rect.top - 12; // adjust offset if needed
+                    window.scrollTo({ top: targetY, behavior: "smooth" });
+                    // update the URL hash without causing a jump
+                    history.replaceState(null, "", `#${id}`);
+                  } else {
+                    // fallback: navigate to the page for this section (keeps single-page behavior when not mounted)
+                    const routeMap: Record<string, string> = {
+                      about: "/aboutme",
+                      skills: "/skills",
+                      projects: "/projects",
+                      photography: "/photography",
+                      experience: "/qualifications",
+                      contact: "/contact",
+                    };
+                    const path = routeMap[id] ?? "/";
+                    window.location.href = `${path}#${id}`;
+                  }
+                }}
                 className="
                   group relative inline-flex items-center
                   hero-jelly cursor-pointer
