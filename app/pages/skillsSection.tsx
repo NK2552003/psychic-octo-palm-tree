@@ -295,7 +295,7 @@ export default function ScrollAnimation() {
             start: "top center",
             endTrigger: final,
             end: "top center",
-            scrub: 1.5,
+            scrub: 0.4, // Reduced for smoother animation
             invalidateOnRefresh: true,
             onUpdate: (self) => {
               const progress = self.progress
@@ -360,33 +360,6 @@ export default function ScrollAnimation() {
               toggleActions: "play none none none",
             },
           })
-
-          gsap.to(".qual-doodle-float", {
-            y: "random(-12, 12)",
-            x: "random(-6, 6)",
-            rotation: "random(-6, 6)",
-            duration: "random(2.5, 4)",
-            ease: "sine.inOut",
-            repeat: -1,
-            yoyo: true,
-            stagger: {
-              amount: 1.2,
-              from: "random",
-            },
-          })
-
-          gsap.to(".qual-doodle-wobble", {
-            rotation: "random(-10, 10)",
-            scale: "random(0.97, 1.03)",
-            duration: "random(3, 4.5)",
-            ease: "sine.inOut",
-            repeat: -1,
-            yoyo: true,
-            stagger: {
-              amount: 2,
-              from: "random",
-            },
-          })
         }
 
         tl.to(
@@ -414,17 +387,19 @@ export default function ScrollAnimation() {
       }, containerRef)
     }
 
+    let resizeTimeout: NodeJS.Timeout | null = null;
     const t = setTimeout(createTimeline, 200)
 
     const onResize = () => {
-      clearTimeout(t)
-      setTimeout(createTimeline, 200)
+      if (resizeTimeout) clearTimeout(resizeTimeout)
+      resizeTimeout = setTimeout(createTimeline, 180)
     }
 
     window.addEventListener("resize", onResize)
 
     return () => {
       clearTimeout(t)
+      if (resizeTimeout) clearTimeout(resizeTimeout)
       window.removeEventListener("resize", onResize)
       ScrollTrigger.getAll().forEach((t) => t.kill())
       ctx?.revert()
@@ -900,7 +875,7 @@ export default function ScrollAnimation() {
 
           {/* Right Top Quote */}
           <div className="quote-item absolute right-4 sm:right-8 md:right-16 top-[180px] sm:top-[220px] md:top-[260px] max-w-[200px] sm:max-w-[280px]  hidden md:block ">
-            <p className="text-xs sm:text-sm md:text-base leading-relaxed text-right hero-jelly">
+            <p className="text-xs sm:text-sm md:text-base leading-relaxed text-right hero-jelly hero-jelly-fast">
                Tools sharpened through countless hours of debugging, skills honed in the fires of production deployments,
               and wisdom gained from a thousand Stack Overflow searches.
                
@@ -1046,7 +1021,7 @@ export default function ScrollAnimation() {
                 <h2 className="hero-jelly text-lg sm:text-xl md:text-2xl lg:text-4xl font-bold text-foreground mb-1 leading-tight">
                   {marker.heading}
                 </h2>
-                <p className="hero-jelly text-xs sm:text-sm text-primary font-medium">{marker.subheading}</p>
+                <p className="hero-jelly hero-jelly-fast text-xs sm:text-sm text-primary font-medium">{marker.subheading}</p>
               </div>
 
               <div

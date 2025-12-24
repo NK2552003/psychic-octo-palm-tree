@@ -51,10 +51,13 @@ export default function ProjectsPage() {
   const cardsContainerRef = useRef<(HTMLDivElement | null)[]>([])
 
   useEffect(() => {
-    if (expandedSection === 3 && devtoArticles.length === 0) {
-      fetchDevtoArticles()
+    if (expandedSection === 0 && githubRepos.length === 0) {
+      fetchGithubRepos();
     }
-  }, [expandedSection, devtoArticles.length])
+    if (expandedSection === 3 && devtoArticles.length === 0) {
+      fetchDevtoArticles();
+    }
+  }, [expandedSection, githubRepos.length, devtoArticles.length])
 
   // Register GSAP plugins and run initial entrance animations
   useEffect(() => {
@@ -229,49 +232,20 @@ export default function ProjectsPage() {
   const fetchGithubRepos = async () => {
     setLoading(true)
     try {
-      const res = await fetch("https://api.github.com/users/nk2552003/repos?sort=updated&per_page=20")
-      const data = await res.json()
-      setGithubRepos(data)
+      const res = await fetch("https://api.github.com/users/nk2552003/repos?per_page=100")
+      let data = await res.json()
+      if (Array.isArray(data)) {
+        data = data.sort((a, b) => b.stargazers_count - a.stargazers_count)
+        setGithubRepos(data)
+      } else {
+        setGithubRepos([])
+      }
     } catch (error) {
       console.error("Error fetching GitHub repos:", error)
     } finally {
       setLoading(false)
     }
   }
-
-    // Local GitHub repo seed (used instead of fetching from GitHub API)
-    const githubSeed: GitHubRepo[] = [
-      {
-        id: 1,
-        name: "portfolio",
-        description: "Personal portfolio built with Next.js and Tailwind CSS",
-        html_url: "https://github.com/nk2552003/portfolio",
-        stargazers_count: 42,
-        language: "TypeScript",
-        topics: ["frontpage", "nextjs"],
-        created_at: "2024-06-10T12:00:00Z",
-      },
-      {
-        id: 2,
-        name: "jelly-text",
-        description: "Animated jelly text effects for fun headings",
-        html_url: "https://github.com/nk2552003/jelly-text",
-        stargazers_count: 18,
-        language: "JavaScript",
-        topics: ["featured"],
-        created_at: "2023-11-03T09:30:00Z",
-      },
-      {
-        id: 3,
-        name: "ui-kit",
-        description: "Collection of reusable UI components and patterns",
-        html_url: "https://github.com/nk2552003/ui-kit",
-        stargazers_count: 7,
-        language: "CSS",
-        topics: ["components"],
-        created_at: "2022-08-22T08:15:00Z",
-      },
-    ]
 
   const fetchDevtoArticles = async () => {
     setLoading(true)
@@ -375,14 +349,14 @@ export default function ProjectsPage() {
   ]
 
   // prepare simple stats for charts
-  const languageCounts = githubSeed.reduce((acc: Record<string, number>, r) => {
+  const languageCounts = githubRepos.reduce((acc: Record<string, number>, r) => {
     const lang = r.language || "Unknown"
     acc[lang] = (acc[lang] || 0) + 1
     return acc
   }, {})
 
   const langData = Object.entries(languageCounts).map(([language, count]) => ({ language, count }))
-  const starsData = githubSeed.map((r) => ({ name: r.name, stars: r.stargazers_count }))
+  const starsData = githubRepos.map((r) => ({ name: r.name, stars: r.stargazers_count }))
 
   const getSectionIcon = (url: string, className = "h-4 w-4 md:h-5 md:w-5 xl:h-6 xl:w-6") => {
     if (!url) return <ExternalLink className={className} />
@@ -816,7 +790,7 @@ export default function ProjectsPage() {
           <h1 className="hero-jelly mt-6 text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black uppercase leading-tight">
             Crafting Digital Experiences
           </h1>
-          <p className="hero-jelly mt-6 max-w-2xl text-sm md:text-base lg:text-xl ">
+          <p className="hero-jelly hero-jelly-fast mt-6 max-w-2xl text-sm md:text-base lg:text-xl ">
             A journey through code, creativity, and endless possibilities.
           </p>
         </div>
@@ -853,7 +827,7 @@ export default function ProjectsPage() {
                       <h2 className="hero-jelly section-subtitle text-xl sm:text-2xl font-black uppercase transition-all duration-300 md:text-3xl">
                         {section.subtitle}
                       </h2>
-                      <p className="hero-jelly mt-2 text-sm text-muted-foreground max-w-xl">{section.description}</p>
+                      <p className="hero-jelly hero-jelly-fast mt-2 text-sm text-muted-foreground max-w-xl">{section.description}</p>
                     </div>
                   </div>
                  <div className="flex items-center justify-center border md:border-none border-stone-500 dark:border-teal-500/50 rounded-md mt-4 md:mt-0 w-full md:w-auto hover:bg-muted transition">
@@ -916,7 +890,7 @@ export default function ProjectsPage() {
                     <div className="cards-wrapper overflow-x-auto pb-4 scroll-smooth">
                       <div className="flex gap-4">
                         {index === 0 &&
-                          githubSeed.map((repo) => (
+                          githubRepos.map((repo) => (
                             <Card
                               key={repo.id}
                               className="project-card flex-shrink-0 w-64 sm:w-72 md:w-80 p-4 sm:p-6 hover:shadow-md transition-shadow flex flex-col border border-stone-600/80 dark:border-teal-700/80"
@@ -967,31 +941,85 @@ export default function ProjectsPage() {
                           ))}
 
                         {index === 1 &&
-                          Array.from({ length: 6 }).map((_, i) => (
-                            <Card key={i} className="project-card flex-shrink-0 w-64 sm:w-72 md:w-80 p-4 sm:p-6 border border-stone-600/80 dark:border-teal-700/80">
-                              <div className="aspect-video bg-muted rounded-md mb-4" />
-                              <h3 className="font-semibold text-lg mb-2">CodePen Project {i + 1}</h3>
-                              <p className="text-sm text-muted-foreground mb-4">
-                                Interactive CSS and JavaScript experiment
-                              </p>
-                              <Button variant="outline"  className="w-full bg-transparent">
-                                View on CodePen
-                              </Button>
-                            </Card>
-                          ))}
+                          (() => {
+                            // CodePen projects data
+                            const codepenProjectsData = [
+
+                              { id: "azZovJK", title: "Project 1" },
+                              { id: "KwVjVKv", title: "Project 2" },
+                              { id: "qEbqJJJ", title: "Project 3" },
+                              { id: "MYgpywe", title: "Project 4" },
+                              { id: "NPWEKOP", title: "Project 5" },
+                              { id: "zxxdmxJ", title: "Project 6" },
+                              { id: "azOwmKd", title: "Project 7" },
+                              { id: "WbvOoXN", title: "Project 8" },
+                              { id: "dPyayZq", title: "Project 9" },
+                              { id: "EaYdRVB", title: "Project 10" },
+                              { id: "xbKpwwZ", title: "Project 11" },
+                              { id: "VYwLJNW", title: "Project 12" },
+                              { id: "JoPyyxj", title: "Project 13" },
+                              { id: "gbYyXmM", title: "Project 14" },
+                              { id: "KwKWPoB", title: "Project 15" },
+                              { id: "ogvdGVm", title: "Project 16" },
+                              { id: "VwoLgrj", title: "Project 17" },
+                              { id: "MWdKBpa", title: "Project 18" },
+                              { id: "LEPQZeR", title: "Project 19" },
+                              { id: "ExqvZey", title: "Project 20" },
+                            ];
+                            return codepenProjectsData.map((project, i) => (
+                              <Card key={project.id} className="project-card flex-shrink-0 w-64 sm:w-72 md:w-80 p-4 sm:p-6 border border-stone-600/80 dark:border-teal-700/80">
+                                <div className="w-full h-40 overflow-hidden rounded-md mb-4 bg-[#181818] border border-[#3332328f] relative">
+                                  <div
+                                    className="w-full h-full transform scale-50 origin-top-left"
+                                    style={{ width: "200%", height: "200%" }}
+                                  >
+                                    <iframe
+                                      title={project.title}
+                                      src={`https://codepen.io/username/embed/${project.id}?default-tab=result&editable=true&theme-id=dark`}
+                                      className="w-full h-full"
+                                      style={{ border: "none" }}
+                                      allowFullScreen
+                                    />
+                                  </div>
+                                </div>
+                                <h3 className="font-semibold text-lg mb-2">{project.title}</h3>
+                                <p className="text-sm text-muted-foreground mb-4">
+                                  Interactive CSS and JavaScript experiment
+                                </p>
+                                <Button variant="outline" className="w-full bg-transparent" onClick={() => window.open(`https://codepen.io/username/pen/${project.id}`, "_blank") }>
+                                  View on CodePen
+                                </Button>
+                              </Card>
+                            ));
+                          })()
+                        }
 
                         {index === 2 &&
-                          Array.from({ length: 6 }).map((_, i) => (
-                            <Card key={i} className="project-card flex-shrink-0 w-64 sm:w-72 md:w-80 p-4 sm:p-6 border border-stone-600/80 dark:border-teal-700/80">
-                              <div className="aspect-square bg-muted rounded-md mb-4" />
-                              <h3 className="font-semibold text-lg mb-2">UI Component {i + 1}</h3>
-                              <p className="text-sm text-muted-foreground mb-4">Beautifully crafted UI element</p>
-                              <Button variant="outline" className="w-full bg-transparent">
+                          [
+                            {
+                              id: "silly-moth-73",
+                              title: "Heart Rate",
+                              url: "https://uiverse.io/NK2552003/silly-moth-73",
+                              embed: "https://uiverse.io/embed/silly-moth-73",
+                              description: "Heart Rate stats UI component."
+                            },
+                            {
+                              id: "fat-goose-73",
+                              title: "Track Your Delivery",
+                              url: "https://uiverse.io/NK2552003/fat-goose-73",
+                              embed: "https://uiverse.io/embed/fat-goose-73",
+                              description: "Monitor your shipment status in real-time."
+                            }
+                          ].map((card) => (
+                            <Card key={card.id} className="project-card flex-shrink-0 w-64 sm:w-72 md:w-80 p-4 sm:p-6 border border-stone-600/80 dark:border-teal-700/80">
+                              <h3 className="font-semibold text-lg mb-2">{card.title}</h3>
+                              <p className="text-sm text-muted-foreground mb-4">{card.description}</p>
+                              <Button variant="outline" className="w-full bg-transparent" onClick={() => window.open(card.url, "_blank") }>
                                 View on Uiverse
                               </Button>
                             </Card>
-                          ))}
-
+                          ))
+                        }
                         {index === 3 &&
                           devtoArticles.map((article) => (
                             <Card

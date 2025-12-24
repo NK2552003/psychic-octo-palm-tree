@@ -22,28 +22,31 @@ interface Qualification {
       semesters?: { sem: number; percent: string }[];
     };
   };
+  skills:string[];
 } 
 
 const qualificationsData: Qualification[] = [
   {
     category: 'Education',
     title: 'Secondary Schooling',
-    institution: 'Delhi Public School',
-    duration: '2010 - 2015',
-    description: 'Completed with distinction in Science and Mathematics',
+    institution: 'Honey Modern High School',
+    duration: '2018 - 2019',
+    description: 'Completed with distinction in Science and Mathematics. Scored 87.6% aggregate',
+    skills: ["Mathematics basics", "Science fundamentals", "Analytical thinking", "Time management"]
   },
   {
     category: 'Education',
     title: 'Senior Secondary Schooling',
-    institution: 'Delhi Public School',
-    duration: '2015 - 2017',
-    description: 'Science Stream with 92% aggregate',
+    institution: 'Hindu Sr. Sec. School',
+    duration: '2020 - 2021',
+    description: 'Science Stream with 80.2% aggregate',
+    skills: ["Physics", "Chemistry", "Mathematics", "Basic programming", "Problem-solving"]
   },
   {
     category: 'Education',
     title: 'B.Tech in Computer Science',
-    institution: 'Indian Institute of Technology',
-    duration: '2017 - Present',
+    institution: 'University: Tula\'s Institute, Dehradun aff. VMSBUTU',
+    duration: '2022 - Present',
     description: 'Specialized in Software Engineering and Data Structures',
     details: {
       challenge: 'Balancing rigorous coursework with internships and projects.',
@@ -51,53 +54,70 @@ const qualificationsData: Qualification[] = [
       result: 'Consistent performance and multiple shipped projects.',
       academic: {
         semesters: [
-          { sem: 1, percent: '78%' },
-          { sem: 2, percent: '82%' },
-          { sem: 3, percent: '80%' },
-          { sem: 4, percent: '84%' },
-          { sem: 5, percent: '79%' },
-          { sem: 6, percent: '81%' },
+          { sem: 1, percent: '79.58%' },
+          { sem: 2, percent: '78.63%' },
+          { sem: 3, percent: '83.26%' },
+          { sem: 4, percent: '74.56%' },
+          { sem: 5, percent: '77.16%' },
+          { sem: 6, percent: '77.56%' },
           { sem: 7, percent: 'Ongoing' },
           { sem: 8, percent: 'Pending' },
         ],
       },
     },
+    skills: ["Data Structures", "OOP", "DBMS", "Computer Networks", "Python", "Java", "Software engineering"]
   },
   {
     category: 'Certifications',
-    title: 'Flutter Development',
-    institution: 'Google Developers',
-    duration: '2022',
-    description: 'Advanced mobile app development with Flutter framework',
-    details: {
-      challenge: 'Needed to master cross-platform mobile development for rapid deployment.',
-      solution: 'Completed comprehensive Flutter certification covering UI/UX, state management, and API integration.',
-      result: 'Successfully deployed 5 production apps with 50% reduced development time.',
-    },
-  },
-  {
-    category: 'Certifications',
-    title: 'Web Development',
-    institution: 'Meta Professional Certificate',
-    duration: '2021',
-    description: 'Full-stack web development with modern frameworks',
+    title: 'Web Development Internship',
+    institution: 'Internshala',
+    duration: 'Aug-Oct 2023',
+    description:"Completed a web dev internship via Internshala, working with HTML, CSS, JS, React, and Node.js. Scored 67% for practical project contributions.",
     details: {
       challenge: 'Required expertise in modern web technologies and responsive design principles.',
       solution: 'Mastered React, Node.js, and database management through hands-on projects.',
       result: 'Built 12+ responsive web applications serving 10,000+ users.',
     },
+    skills: ["HTML", "CSS", "JavaScript", "React", "Node.js", "Git", "Team collaboration"]
   },
   {
     category: 'Certifications',
-    title: 'Java Developer',
-    institution: 'Oracle Certified Professional',
-    duration: '2020',
-    description: 'Enterprise Java development and Spring Framework',
-    details: {
-      challenge: 'Enterprise systems demanded robust, scalable backend solutions.',
-      solution: 'Achieved Oracle certification in Java SE and Spring Boot framework.',
-      result: 'Developed microservices architecture reducing system downtime by 40%.',
+    title: 'App Development',
+    institution: 'Flutter & Dart Course - Udemy',
+    duration: 'Apr-Jun 2024',
+    description:"Completed a Flutter & Dart course on Udemy, learning to build cross-platform mobile apps with responsive UI, state management, and API integration.",
+       details: {
+      challenge: 'Needed to master cross-platform mobile development for rapid deployment.',
+      solution: 'Completed comprehensive Flutter certification covering UI/UX, state management, and API integration.',
+      result: 'Successfully deployed 5 production apps with 50% reduced development time.',
     },
+    skills: ["Flutter", "Dart", "Mobile UI design", "State management", "REST APIs"]
+  },
+  {
+    category: 'Certifications',
+    title: "React Course",
+    institution: 'Udemy',
+    duration: 'September 2025',
+ description:"Pursuing an advanced React course covering components, hooks, state, and SPA architecture to build scalable, responsive web apps.",
+    details: {
+      challenge: 'Mastering advanced React concepts and SPA architecture for scalable web apps.',
+      solution: 'Completed an advanced React course focused on hooks, component architecture, and performance optimization.',
+      result: 'Built multiple scalable, responsive SPAs with improved maintainability and speed.',
+    },
+    skills: ["Advanced React", "Hooks", "Component architecture", "SPA development", "Performance optimization"]
+  },
+    {
+    category: 'Certifications',
+    title: "Big Data & Cloud Computing",
+    institution: 'Campus Shutra',
+    duration: 'November 2025',
+        description:"Completed a Big Data & Cloud Computing course at Campus Shutra, learning distributed data processing, cloud infrastructure, and scalable analytics solutions.",
+    details: {
+      challenge: 'Handling massive datasets and deploying scalable analytics in the cloud.',
+      solution: 'Mastered Hadoop, Spark, and AWS cloud services for distributed computing and data engineering.',
+      result: 'Built and deployed scalable big data pipelines and cloud-based analytics platforms.',
+    },
+    skills: ["Big Data", "Cloud Computing", "Hadoop", "Spark", "AWS", "Distributed Systems", "Data Engineering"]
   },
 ];
 

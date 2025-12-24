@@ -15,33 +15,41 @@ export default function HeroLeft() {
           <div className="hero-jelly">WOW.</div>
       </h1>
 
-       <a
-  href="#work"
-  className="group relative inline-block mt-8 cursor-pointer hover:text-teal-400"
->
- <span className="hero-jelly hero-jelly-fast text-lg tracking-wide group inline-flex items-center gap-1">
-  View My Work
-  <span className="inline-block transition-transform duration-300 group-hover:translate-x-2">
-    →
-  </span>
-</span>
+      <a
+        href="#projects"
+        className="group relative inline-block mt-8 cursor-pointer hover:text-teal-400"
+        onClick={e => {
+          e.preventDefault();
+          const el = document.getElementById("projects");
+          if (el) {
+            const yOffset = -60; // Offset in px
+            const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
+            window.scrollTo({ top: y, behavior: "smooth" });
+          }
+        }}
+      >
+        <span className="hero-jelly hero-jelly-fast text-lg tracking-wide group inline-flex items-center gap-1">
+          View My Work
+          <span className="inline-block transition-transform duration-300 group-hover:translate-x-2">
+            →
+          </span>
+        </span>
 
+        {/* Animated underline */}
+        {/* Colored accent (drawn) */}
+        <span
+          className={
+            "pointer-events-none absolute left-0 -bottom-1 h-[2px] w-full origin-left scale-x-0 transition-transform duration-500 ease-out bg-teal-300 dark:bg-teal-400 group-hover:scale-x-100"
+          }
+        />
 
-  {/* Animated underline */}
-  {/* Colored accent (drawn) */}
-  <span
-    className={
-      "pointer-events-none absolute left-0 -bottom-1 h-[2px] w-full origin-left scale-x-0 transition-transform duration-500 ease-out bg-teal-300 dark:bg-teal-400 group-hover:scale-x-100"
-    }
-  />
-
-  {/* Foreground neutral underline that grows on hover */}
-  <span
-    className={
-      "view-work-border absolute left-0 -bottom-1 h-[2px] w-full bg-current origin-left scale-x-0 transition-transform duration-300 ease-out group-hover:scale-x-100"
-    }
-  />
-</a>
+        {/* Foreground neutral underline that grows on hover */}
+        <span
+          className={
+            "view-work-border absolute left-0 -bottom-1 h-[2px] w-full bg-current origin-left scale-x-0 transition-transform duration-300 ease-out group-hover:scale-x-100"
+          }
+        />
+      </a>
 
     </div>
   );

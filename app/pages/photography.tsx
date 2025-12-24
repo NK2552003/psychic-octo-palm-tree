@@ -19,92 +19,65 @@ export default function WildlifePage() {
   const detailBottomImageRef = useRef<HTMLImageElement | null>(null);
   const [savedScroll, setSavedScroll] = useState<number | null>(null);
 
-  const animals = [
-    {
-      id: 1,
-      name: "Panda",
-      image:
-        "https://images.unsplash.com/photo-1564349683136-77e08dba1ef7?w=400&h=500&fit=crop",
-      detailImage:
-        "https://images.unsplash.com/photo-1564349683136-77e08dba1ef7?w=800&h=800&fit=crop",
-      detailBottomImage:
-        "https://images.unsplash.com/photo-1526566661780-1a67ea3c863e?w=1200&h=600&fit=crop",
-      description:
-        "The giant panda is a bear species endemic to China. Known for their distinctive black and white coloring, pandas spend most of their day eating bamboo. This gentle giant represents conservation success stories worldwide.",
-    },
-    {
-      id: 2,
-      name: "Lion",
-      image:
-        "https://images.unsplash.com/photo-1546182990-dffeafbe841d?w=400&h=500&fit=crop",
-      detailImage:
-        "https://images.unsplash.com/photo-1546182990-dffeafbe841d?w=800&h=800&fit=crop",
-      detailBottomImage:
-        "https://images.unsplash.com/photo-1614027164847-1b28cfe1df60?w=1200&h=600&fit=crop",
-      description:
-        "Known as the king of the jungle, lions are apex predators living in prides. Their majestic manes and powerful roar symbolize strength and courage. These social cats are found primarily in African savannas.",
-    },
-    {
-      id: 3,
-      name: "Horses",
-      image:
-        "https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?w=400&h=500&fit=crop",
-      detailImage:
-        "https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?w=800&h=800&fit=crop",
-      detailBottomImage:
-        "https://images.unsplash.com/photo-1594767268692-0821c6fc5dd5?w=1200&h=600&fit=crop",
-      description:
-        "Horses have been companions to humans for thousands of years. These magnificent creatures embody freedom, grace, and power. From wild mustangs to domesticated breeds, they continue to captivate our imagination.",
-    },
-    {
-      id: 4,
-      name: "Deer",
-      image:
-        "https://images.unsplash.com/photo-1551069613-1904dbdcda11?w=400&h=500&fit=crop",
-      detailImage:
-        "https://images.unsplash.com/photo-1551069613-1904dbdcda11?w=800&h=800&fit=crop",
-      detailBottomImage:
-        "https://images.unsplash.com/photo-1520034475321-cbe63696469a?w=1200&h=600&fit=crop",
-      description:
-        "Deer are elegant herbivores found across the globe. Their graceful movements and gentle nature make them symbols of natural beauty. Many species feature impressive antlers that are shed and regrown annually.",
-    },
-    {
-      id: 5,
-      name: "Turtle",
-      image:
-        "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400&h=500&fit=crop",
-      detailImage:
-        "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800&h=800&fit=crop",
-      detailBottomImage:
-        "https://images.unsplash.com/photo-1583574928108-4df9d1e3a0a8?w=1200&h=600&fit=crop",
-      description:
-        "Sea turtles are ancient mariners that have roamed the oceans for over 100 million years. These remarkable creatures navigate thousands of miles to return to their birthplace to nest. Conservation efforts are vital for their survival.",
-    },
-    {
-      id: 6,
-      name: "Owl",
-      image:
-        "https://images.unsplash.com/photo-1579170053380-58064b2dee67?w=400&h=500&fit=crop",
-      detailImage:
-        "https://images.unsplash.com/photo-1579170053380-58064b2dee67?w=800&h=800&fit=crop",
-      detailBottomImage:
-        "https://images.unsplash.com/photo-1516497396994-0a8f9ef58715?w=1200&h=600&fit=crop",
-      description:
-        "Owls are nocturnal birds of prey renowned for their wisdom in folklore. Their silent flight and keen vision make them exceptional hunters. These mysterious creatures have fascinated humans for centuries.",
-    },
-    {
-      id: 7,
-      name: "Eagle",
-      image:
-        "https://images.unsplash.com/photo-1579170053380-58064b2dee67?w=400&h=500&fit=crop",
-      detailImage:
-        "https://images.unsplash.com/photo-1598134493341-e5ef2a61eb46?w=800&h=800&fit=crop",
-      detailBottomImage:
-        "https://images.unsplash.com/photo-1552898431-7a4a6c3c8170?w=1200&h=600&fit=crop",
-      description:
-        "Eagles are powerful raptors symbolizing freedom and strength. With incredible eyesight and hunting prowess, they soar at great heights. These magnificent birds are revered across cultures worldwide.",
-    },
+  // Nature-themed two-word titles
+  const natureTitles = [
+    "Silent Woods", "Golden Dawn", "Misty Lake", "Wild Bloom", "Crystal River", "Frosty Peaks", "Sunny Glade", "Hidden Valley",
+    "Gentle Breeze", "Emerald Forest", "Shady Grove", "Peaceful Stream", "Starry Night", "Autumn Leaves", "Winter Chill", "Spring Dew",
+    "Summer Rain", "Desert Rose", "Ocean Whisper", "Mountain Echo", "Twilight Sky", "Falling Petals", "Dancing Shadows", "Serene Path",
+    "Quiet Meadow", "Lush Canopy", "Silver Mist", "Amber Fields", "Cobalt Wave", "Blossom Trail", "Sunset Haze", "Rainy Silence",
+    "Moonlit Plains", "Verdant Hills", "Cloudy Summit", "Tranquil Bay", "Willow Shade", "Cedar Light"
   ];
+
+  // Quotes for each image
+  const quotes = [
+    "Photography is the story I fail to put into words.",
+    "A picture is a poem without words.",
+    "The best thing about a picture is that it never changes, even when the people in it do.",
+    "Taking pictures is savoring life intensely, every hundredth of a second.",
+    "You don’t take a photograph, you make it.",
+    "A photograph is the pause button of life.",
+    "When words become unclear, I shall focus with photographs.",
+    "Photography helps people to see.",
+    "A good snapshot keeps a moment from running away.",
+    "The camera is an instrument that teaches people how to see without a camera.",
+    "To photograph is to hold one’s breath, when all faculties converge to capture fleeting reality.",
+    "A great photograph is one that fully expresses what one feels, in the deepest sense, about what is being photographed.",
+    "Photography is the beauty of life captured.",
+    "A photograph can be an instant of life captured for eternity that will never cease looking back at you.",
+    "The whole point of taking pictures is so that you don’t have to explain things with words.",
+    "A camera is a SAVE button for the mind’s eye.",
+    "Photography is the only language that can be understood anywhere in the world.",
+    "A photograph is a secret about a secret. The more it tells you the less you know.",
+    "The eye should learn to listen before it looks.",
+    "A thing that you see in my pictures is that I was not afraid to fall in love with these people.",
+    "The picture that you took with your camera is the imagination you want to create with reality.",
+    "A photograph is memory in the raw.",
+    "A photo is not just an image, it’s a memory.",
+    "A photograph is the pause button of life.",
+    "Photography is the art of frozen time… the ability to store emotion and feelings within a frame.",
+    "A photograph is a return ticket to a moment otherwise gone.",
+    "A photograph is the only language that can be understood anywhere in the world.",
+    "A photograph is a moment—when you press the button, it will never come back.",
+    "A photograph is a way of feeling, of touching, of loving.",
+    "A photograph is a memory in the raw.",
+    "A photograph is the pause button of life.",
+    "A photograph is the story I fail to put into words.",
+    "A photograph is the beauty of life captured.",
+    "A photograph is a secret about a secret. The more it tells you the less you know.",
+    "A photograph is a return ticket to a moment otherwise gone.",
+    "A photograph is the only language that can be understood anywhere in the world.",
+    "A photograph is a moment—when you press the button, it will never come back."
+  ];
+
+  // Build images array
+  const images = Array.from({ length: 38 }, (_, i) => ({
+    id: i + 1,
+    name: natureTitles[i % natureTitles.length],
+    image: `/${i + 1}.jpeg`,
+    detailImage: `/${i + 1}.jpeg`,
+    detailBottomImage: `/${((i + 1) % 38) + 1}.jpeg`,
+    quote: quotes[i % quotes.length],
+  }));
 
   // Simple animation helper
   const animate = (
@@ -224,7 +197,7 @@ export default function WildlifePage() {
   };
 
   const handleNext = () => {
-    if (currentGalleryIndex < animals.length - 1) {
+    if (currentGalleryIndex < images.length - 1) {
       animate(
         centerImageRef.current,
         { opacity: 1, x: 0 },
@@ -248,7 +221,7 @@ export default function WildlifePage() {
   };
 
   const handleDetailNext = () => {
-    if (selectedImage < animals.length - 1) {
+    if (selectedImage < images.length - 1) {
       const elements = [detailImageRef.current, detailBottomImageRef.current].filter(Boolean) as HTMLElement[];
       let completed = 0;
 
@@ -439,9 +412,9 @@ export default function WildlifePage() {
                 <img
                   ref={centerImageRef}
                   src={
-                    animals[currentGalleryIndex].image || "/placeholder.svg"
+                    images[currentGalleryIndex].image || "/placeholder.svg"
                   }
-                  alt="Featured wildlife"
+                  alt={images[currentGalleryIndex].name}
                   className="hero-jelly h-48 w-40 sm:h-64 sm:w-52 md:h-80 md:w-64 lg:h-96 lg:w-80 object-cover grayscale shadow-2xl transition-all duration-500 group-hover:scale-105 group-hover:grayscale-0"
                 />
                 <div className="pointer-events-none absolute inset-0 hidden dark:block mix-blend-color bg-teal-600/30" />
@@ -454,7 +427,7 @@ export default function WildlifePage() {
 
               <button
                 onClick={handleNext}
-                disabled={currentGalleryIndex === animals.length - 1}
+                disabled={currentGalleryIndex === images.length - 1}
                 className="text-lg md:text-xl lg:text-2xl font-bold hover:scale-110 transition-transform disabled:opacity-30 disabled:cursor-not-allowed"
               >
                 [ NEXT ]
@@ -465,9 +438,9 @@ export default function WildlifePage() {
             <div className="flex-1 flex items-start pt-4 md:pt-8">
               <div className="w-full overflow-hidden">
                 <div className="flex gap-2 md:gap-4 lg:gap-6">
-                  {animals.map((animal, index) => (
+                  {images.map((img, index) => (
                     <div
-                      key={animal.id}
+                      key={img.id}
                       onClick={() => handleImageClick(index)}
                       className={`flex-shrink-0 cursor-pointer transition-all duration-300 hover:scale-105 ${
                         index < 5 ? "md:block" : "md:hidden"
@@ -475,8 +448,8 @@ export default function WildlifePage() {
                     >
                       <div className="relative">
                         <img
-                          src={animal.image || "/placeholder.svg"}
-                          alt={animal.name}
+                          src={img.image || "/placeholder.svg"}
+                          alt={img.name}
                           className="hero-jelly h-32 w-24 sm:h-40 sm:w-32 md:h-48 md:w-40 lg:h-56 lg:w-44 object-cover grayscale transition-all duration-500"
                         />
                         <div className="pointer-events-none absolute inset-0 hidden dark:block mix-blend-color bg-teal-600/30" />
@@ -513,9 +486,9 @@ export default function WildlifePage() {
                       <img
                         ref={detailImageRef}
                         src={
-                          animals[selectedImage].detailImage || "/placeholder.svg"
+                          images[selectedImage].detailImage
                         }
-                        alt={animals[selectedImage].name}
+                        alt={images[selectedImage].name}
                         className="hero-jelly w-full h-full object-contain"
                       />
                     </div>
@@ -538,10 +511,10 @@ export default function WildlifePage() {
 
                           <div>
                             <p className="text-xs md:text-sm font-bold mb-1 md:mb-2">
-                              [ {animals[selectedImage].name} ]
+                              [ {images[selectedImage].name} ]
                             </p>
                             <p className="text-xs md:text-sm lg:text-base leading-relaxed">
-                              {animals[selectedImage].description}
+                              {images[selectedImage].quote}
                             </p>
                           </div>
                         </div>
@@ -552,10 +525,10 @@ export default function WildlifePage() {
                         <img
                           ref={detailBottomImageRef}
                           src={
-                            animals[selectedImage].detailBottomImage ||
+                            images[selectedImage].detailBottomImage ||
                             "/placeholder.svg"
                           }
-                          alt={`${animals[selectedImage].name} scene`}
+                          alt={`${images[selectedImage].name} scene`}
                           className="hero-jelly w-full h-full object-cover grayscale md:block hidden"
                         />
                       </div>
@@ -568,12 +541,12 @@ export default function WildlifePage() {
                       onClick={handleBackToGallery}
                       className="hover:underline"
                     >
-                      0{selectedImage + 1}/{animals.length}
+                      0{selectedImage + 1}/{images.length}
                     </button>
                     <div className="flex gap-2 md:gap-4">
                       <button
                         onClick={handleDetailNext}
-                        disabled={selectedImage === animals.length - 1}
+                        disabled={selectedImage === images.length - 1}
                         className="hover:underline disabled:opacity-30 disabled:cursor-not-allowed"
                       >
                         NEXT
