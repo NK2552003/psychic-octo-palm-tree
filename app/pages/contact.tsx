@@ -46,9 +46,9 @@ export default function ContactSection() {
     setLoading(true)
 
     try {
-      await emailjs.send(
-        "YOUR_SERVICE_ID",
-        "YOUR_TEMPLATE_ID",
+      const response = await emailjs.send(
+        "service_r42eetw",
+        "template_sslukhm",
         {
           name: e.currentTarget.user_name.value,
           email: e.currentTarget.user_email.value,
@@ -56,12 +56,16 @@ export default function ContactSection() {
           services: selected.join(", "),
           message: e.currentTarget.message.value,
         },
-        "YOUR_PUBLIC_KEY"
+        "2AfiXCyGp4WGbg9uy"
       )
-
-      alert("Message sent successfully ✨")
-      e.currentTarget.reset()
-      setSelected([])
+      // emailjs returns a response object with status and text
+      if (response.status === 200) {
+        alert("Message sent successfully ✨")
+        e.currentTarget.reset()
+        setSelected([])
+      } else {
+        alert("Failed to send message")
+      }
     } catch (err) {
       alert("Failed to send message")
     } finally {

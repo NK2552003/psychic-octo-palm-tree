@@ -1,11 +1,24 @@
-
-
-
 "use client";
 
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
-import PhotographyDoodles from "@/components/PhotographyDoodles";
+
+// Photography Doodles Component
+function PhotographyDoodles() {
+  return (
+    <div className="fixed inset-0 pointer-events-none overflow-hidden opacity-20 dark:opacity-10 hidden lg:block">
+      <svg className="absolute top-10 left-10 w-32 h-32" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" strokeWidth="2" strokeDasharray="5,5" />
+      </svg>
+      <svg className="absolute top-1/4 right-20 w-24 h-24" viewBox="0 0 100 100">
+        <path d="M20,50 Q50,20 80,50 T140,50" fill="none" stroke="currentColor" strokeWidth="2" />
+      </svg>
+      <svg className="absolute bottom-20 left-1/4 w-28 h-28" viewBox="0 0 100 100">
+        <rect x="20" y="20" width="60" height="60" fill="none" stroke="currentColor" strokeWidth="2" strokeDasharray="10,5" />
+      </svg>
+    </div>
+  );
+}
 
 export default function WildlifePage() {
   const [currentPage, setCurrentPage] = useState<"gallery" | "detail">("gallery");
@@ -34,25 +47,25 @@ export default function WildlifePage() {
     "A picture is a poem without words.",
     "The best thing about a picture is that it never changes, even when the people in it do.",
     "Taking pictures is savoring life intensely, every hundredth of a second.",
-    "You don’t take a photograph, you make it.",
+    "You don't take a photograph, you make it.",
     "A photograph is the pause button of life.",
     "When words become unclear, I shall focus with photographs.",
     "Photography helps people to see.",
     "A good snapshot keeps a moment from running away.",
     "The camera is an instrument that teaches people how to see without a camera.",
-    "To photograph is to hold one’s breath, when all faculties converge to capture fleeting reality.",
+    "To photograph is to hold one's breath, when all faculties converge to capture fleeting reality.",
     "A great photograph is one that fully expresses what one feels, in the deepest sense, about what is being photographed.",
     "Photography is the beauty of life captured.",
     "A photograph can be an instant of life captured for eternity that will never cease looking back at you.",
-    "The whole point of taking pictures is so that you don’t have to explain things with words.",
-    "A camera is a SAVE button for the mind’s eye.",
+    "The whole point of taking pictures is so that you don't have to explain things with words.",
+    "A camera is a SAVE button for the mind's eye.",
     "Photography is the only language that can be understood anywhere in the world.",
     "A photograph is a secret about a secret. The more it tells you the less you know.",
     "The eye should learn to listen before it looks.",
     "A thing that you see in my pictures is that I was not afraid to fall in love with these people.",
     "The picture that you took with your camera is the imagination you want to create with reality.",
     "A photograph is memory in the raw.",
-    "A photo is not just an image, it’s a memory.",
+    "A photo is not just an image, it's a memory.",
     "A photograph is the pause button of life.",
     "Photography is the art of frozen time… the ability to store emotion and feelings within a frame.",
     "A photograph is a return ticket to a moment otherwise gone.",
@@ -73,9 +86,9 @@ export default function WildlifePage() {
   const images = Array.from({ length: 38 }, (_, i) => ({
     id: i + 1,
     name: natureTitles[i % natureTitles.length],
-    image: `${i + 1}.jpeg`,
-    detailImage: `${i + 1}.jpeg`,
-    detailBottomImage: `${((i + 1) % 38) + 1}.jpeg`,
+    image: `/${i + 1}.jpeg`,
+    detailImage: `/${i + 1}.jpeg`,
+    detailBottomImage: `/${((i + 1) % 38) + 1}.jpeg`,
     quote: quotes[i % quotes.length],
   }));
 
@@ -281,12 +294,16 @@ export default function WildlifePage() {
   useEffect(() => {
     if (currentPage === "gallery" && galleryRef.current) {
       animate(galleryRef.current, { opacity: 0, y: 50 }, { opacity: 1, y: 0 }, 0.8);
-    } else if (currentPage === "detail" && detailRef.current) {
-      animate(detailRef.current, { opacity: 0, y: 50 }, { opacity: 1, y: 0 }, 0.8);
     }
 
     if (currentPage === "detail") {
       document.body.style.overflow = "hidden";
+      // Small delay to ensure DOM is ready
+      setTimeout(() => {
+        if (detailRef.current) {
+          animate(detailRef.current, { opacity: 0, y: 50 }, { opacity: 1, y: 0 }, 0.8);
+        }
+      }, 50);
     } else {
       document.body.style.overflow = "";
     }
@@ -313,7 +330,7 @@ export default function WildlifePage() {
             {/* Bottom Section - Wildlife Text */}
             <div className="relative pb-8 md:pb-12">
               <div className="flex justify-between items-end mb-2 md:mb-4">
-                <span id="photography" className="inline-block rounded-full border-2 px-3 sm:px-6 py-1.5 sm:py-2 text-xs sm:text-sm font-medium transition-all hover:scale-105 hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black hero-jelly">
+                <span id="photography" className="inline-block rounded-full border-2 px-3 sm:px-6 py-1.5 sm:py-2 text-xs sm:text-sm font-medium transition-all hover:scale-105 hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black">
                   Photography
                 </span>
                 <span className="text-xs md:text-sm lg:text-base">
@@ -326,7 +343,7 @@ export default function WildlifePage() {
                     ? currentGalleryIndex + 1
                     : selectedImage + 1
                 } ]`}</p>
-                <h1 className="hero-jelly text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black leading-none tracking-tight">
+                <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black leading-none tracking-tight">
                   QUITE FRAMES
                 </h1>
               </div>
@@ -349,7 +366,7 @@ export default function WildlifePage() {
                   </svg>
                 </a>
                 <a
-                  href="https://twitter.com"
+                  href="https://x.com/Kr222003"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:scale-125 transition-transform duration-300"
@@ -415,7 +432,7 @@ export default function WildlifePage() {
                     images[currentGalleryIndex].image || "/placeholder.svg"
                   }
                   alt={images[currentGalleryIndex].name}
-                  className="hero-jelly h-48 w-40 sm:h-64 sm:w-52 md:h-80 md:w-64 lg:h-96 lg:w-80 object-cover grayscale shadow-2xl transition-all duration-500 group-hover:scale-105 group-hover:grayscale-0"
+                  className="h-48 w-40 sm:h-64 sm:w-52 md:h-80 md:w-64 lg:h-96 lg:w-80 object-cover grayscale shadow-2xl transition-all duration-500 group-hover:scale-105 group-hover:grayscale-0"
                 />
                 <div className="pointer-events-none absolute inset-0 hidden dark:block mix-blend-color bg-teal-600/30" />
                 <div className="absolute w-full h-full inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-500 flex items-center justify-center">
@@ -450,7 +467,7 @@ export default function WildlifePage() {
                         <img
                           src={img.image || "/placeholder.svg"}
                           alt={img.name}
-                          className="hero-jelly h-32 w-24 sm:h-40 sm:w-32 md:h-48 md:w-40 lg:h-56 lg:w-44 object-cover grayscale transition-all duration-500"
+                          className="h-32 w-24 sm:h-40 sm:w-32 md:h-48 md:w-40 lg:h-56 lg:w-44 object-cover grayscale transition-all duration-500"
                         />
                         <div className="pointer-events-none absolute inset-0 hidden dark:block mix-blend-color bg-teal-600/30" />
                       </div>
@@ -462,11 +479,11 @@ export default function WildlifePage() {
           </div>
         </div>
 
-        {typeof document !== "undefined" && currentPage === "detail"
+        {currentPage === "detail" && typeof window !== "undefined"
           ? createPortal(
               <div
                 ref={detailRef}
-                className="fixed inset-0 z-50 text-black dark:text-white flex flex-col backdrop-blur-xl"
+                className="fixed inset-0 z-50 flex flex-col backdrop-blur-md bg-white/95 dark:bg-black/95"
                 style={{ opacity: 0, transform: 'translateY(50px)' }}
               >
                 <button
@@ -482,14 +499,15 @@ export default function WildlifePage() {
                   {/* Top Section - Images and Info */}
                   <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8 min-h-0">
                     {/* Left - Main Image */}
-                    <div className="relative flex items-center justify-center overflow-hidden">
+                    <div className="relative flex items-center justify-center overflow-hidden min-h-[300px]">
                       <img
                         ref={detailImageRef}
-                        src={
-                          images[selectedImage].detailImage
-                        }
+                        src={images[selectedImage].detailImage}
                         alt={images[selectedImage].name}
-                        className="hero-jelly w-full h-full object-contain"
+                        className="w-full h-full object-contain max-h-[70vh]"
+                        onError={(e) => {
+                          console.error('Image failed to load:', images[selectedImage].detailImage);
+                        }}
                       />
                     </div>
 
@@ -521,15 +539,15 @@ export default function WildlifePage() {
                       </div>
 
                       {/* Bottom Image */}
-                      <div className="flex-1 relative overflow-hidden min-h-0">
+                      <div className="flex-1 relative overflow-hidden min-h-[200px]">
                         <img
                           ref={detailBottomImageRef}
-                          src={
-                            images[selectedImage].detailBottomImage ||
-                            "/placeholder.svg"
-                          }
+                          src={images[selectedImage].detailBottomImage}
                           alt={`${images[selectedImage].name} scene`}
-                          className="hero-jelly w-full h-full object-cover grayscale md:block hidden"
+                          className="w-full h-full object-cover grayscale md:block hidden"
+                          onError={(e) => {
+                            console.error('Bottom image failed to load:', images[selectedImage].detailBottomImage);
+                          }}
                         />
                       </div>
                     </div>
@@ -567,6 +585,6 @@ export default function WildlifePage() {
             )
           : null}
       </div>
-      </div>
-      );
+    </div>
+  );
 }
