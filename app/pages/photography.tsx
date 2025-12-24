@@ -73,9 +73,9 @@ export default function WildlifePage() {
   const images = Array.from({ length: 38 }, (_, i) => ({
     id: i + 1,
     name: natureTitles[i % natureTitles.length],
-    image: `/${i + 1}.jpeg`,
-    detailImage: `/${i + 1}.jpeg`,
-    detailBottomImage: `/${((i + 1) % 38) + 1}.jpeg`,
+    image: `${i + 1}.jpeg`,
+    detailImage: `${i + 1}.jpeg`,
+    detailBottomImage: `${((i + 1) % 38) + 1}.jpeg`,
     quote: quotes[i % quotes.length],
   }));
 
