@@ -10,7 +10,6 @@ const sectionIds = [
   { id: "qualifications", icon: <Award className="w-3 h-3 md:w-5 md:h-5"  /> },
   { id: "photography", icon: <Grid className="w-3 h-3 md:w-5 md:h-5" /> },
   { id: "projects", icon: <Folder className="w-3 h-3 md:w-5 md:h-5"  /> },
-  { id: "codepens", icon: <Code2 className="w-3 h-3 md:w-5 md:h-5" /> },
   { id: "contact", icon: <Mail className="w-3 h-3 md:w-5 md:h-5"  /> },
 ];
 
