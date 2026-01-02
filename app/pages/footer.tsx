@@ -49,7 +49,7 @@ export default function Footer() {
         {/* Left */}
         <div className="space-y-4 text-sm">
           <p className="text-lg md:text-xl">nk2552003@gmail.com</p>
-          <p>© 2025 Nitish's Portfolio</p>
+          <p>© 2026 Nitish's Portfolio</p>
           <p>All rights reserved.</p>
         </div>
 

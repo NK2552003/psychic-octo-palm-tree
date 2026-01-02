@@ -1,0 +1,48 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="1.5" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <style>
+      @media (prefers-color-scheme: dark) {
+        .icon-stroke { stroke: #ffffff; }
+        .icon-bg { fill: #1a1a1a; }
+      }
+      @media (prefers-color-scheme: light) {
+        .icon-stroke { stroke: #000000; }
+        .icon-bg { fill: #ffffff; }
+      }
+    </style>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="100" height="100" rx="20" class="icon-bg"/>
+  
+  <!-- Letter N - scaled and positioned -->
+  <path 
+    d="M2 45C3 39 12 23 20 14C18 37 22 43 25 43C28 43 33 31 43 5" 
+    transform="translate(18, 28) scale(0.85)"
+    class="icon-stroke"
+    stroke-width="3" 
+    stroke-linecap="round" 
+    stroke-linejoin="round"
+    fill="none"
+    filter="url(#glow)"
+  />
+  
+  <!-- Letter K - scaled and positioned -->
+  <path 
+    d="M31 6C21 19 15 29 6 46C23 13 40 12 53 10C65 8 51 20 51 20C81 -7 -1 24 1 38C2 45 37 36 37 36" 
+    transform="translate(48, 30) scale(0.75)"
+    class="icon-stroke"
+    stroke-width="3" 
+    stroke-linecap="round" 
+    stroke-linejoin="round"
+    fill="none"
+    filter="url(#glow)"
+  />
+</svg>

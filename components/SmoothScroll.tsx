@@ -51,11 +51,17 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
       const diff = target - current
       const abs = Math.abs(diff)
 
-      // map abs delta to [0,1] using a sensible range (500px)
-      const t = Math.min(abs / 500, 1)
-      const lerp = minLerp + (maxLerp - minLerp) * t
+      // Snap to target when very close to prevent getting stuck
+      if (abs < 0.5) {
+        current = target
+      } else {
+        // map abs delta to [0,1] using a sensible range (500px)
+        const t = Math.min(abs / 500, 1)
+        const lerp = minLerp + (maxLerp - minLerp) * t
 
-      current += diff * lerp
+        current += diff * lerp
+      }
+      
       // round small values to avoid subpixel jitter
       if (Math.abs(current) < 0.01) current = 0
 
