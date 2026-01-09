@@ -51,6 +51,7 @@ export default function Footer() {
           <p className="text-lg md:text-xl">nk2552003@gmail.com</p>
           <p>© 2026 Nitish's Portfolio</p>
           <p>All rights reserved.</p>
+          <p><a href="/cookies" className="underline">Cookie Policy</a></p>
         </div>
 
         {/* Center Social */}
@@ -70,7 +71,7 @@ export default function Footer() {
               },
               {
                 name: "Uiverse",
-                url: "https://uiverse.io/nk2552003"
+                url: "https://uiverse.io/profile/NK2552003"
               },
             ].map((item, idx) => (
               <a

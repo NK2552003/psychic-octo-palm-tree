@@ -18,6 +18,9 @@
   --muted-foreground: oklch(0.45 0.02 40);
   --accent: oklch(0.85 0.03 35);
   --accent-foreground: oklch(0.25 0.02 40);
+  /* darker button accent for light mode (used for call-to-action buttons) */
+  --btn-accent: oklch(0.35 0.08 35);
+  --btn-accent-foreground: oklch(0.98 0.01 40);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.577 0.245 27.325);
   --border: oklch(0.82 0.02 40);
@@ -53,6 +56,9 @@
   --muted-foreground: oklch(0.65 0.08 180);
   --accent: oklch(0.35 0.1 180);
   --accent-foreground: oklch(0.85 0.06 180);
+  /* keep button accent aligned in dark mode */
+  --btn-accent: var(--accent);
+  --btn-accent-foreground: var(--accent-foreground);
   --destructive: oklch(0.396 0.141 25.723);
   --destructive-foreground: oklch(0.637 0.237 25.331);
   --border: oklch(0.35 0.08 180);
@@ -218,7 +224,24 @@ nav a::after {
   width: 0;
   height: 3px;
   background: linear-gradient(90deg, #fb7185, #14b8a6);
-  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Force stacking behavior for PWA and cookie toasts on narrower screens */
+@media (max-width: 1024px) {
+  .pwa-toast, .cookie-toast {
+    flex-direction: column !important;
+    text-align: center !important;
+  }
+
+  .pwa-toast .actions, .cookie-toast .actions, .actions {
+    flex-direction: column !important;
+    width: 100% !important;
+  }
+
+  .pwa-toast .actions > *, .cookie-toast .actions > *, .actions > * {
+    width: 100% !important;
+  }
 }
 
 nav a:hover::after {
