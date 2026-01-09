@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react"
 import emailjs from "emailjs-com"
 import gsap from "gsap"
+import { toast } from "sonner"
 
 const SERVICES = [
   "Mobile App",
@@ -43,33 +44,48 @@ export default function ContactSection() {
 
   const sendEmail = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    const form = e.currentTarget // Store form reference before async operations
     setLoading(true)
 
+    let success = false
+
     try {
-      const response = await emailjs.send(
+      await emailjs.send(
         "service_r42eetw",
         "template_sslukhm",
         {
-          name: e.currentTarget.user_name.value,
-          email: e.currentTarget.user_email.value,
-          company: e.currentTarget.company.value,
+          name: form.user_name.value,
+          email: form.user_email.value,
+          company: form.company.value,
           services: selected.join(", "),
-          message: e.currentTarget.message.value,
+          message: form.message.value,
         },
         "2AfiXCyGp4WGbg9uy"
       )
-      // emailjs returns a response object with status and text
-      if (response.status === 200) {
-        alert("Message sent successfully ✨")
-        e.currentTarget.reset()
-        setSelected([])
-      } else {
-        alert("Failed to send message")
-      }
-    } catch (err) {
-      alert("Failed to send message")
-    } finally {
+      
+      success = true
+      
+      // Show success toast immediately
+      toast.success("Message sent successfully! ✨", {
+        description: "I'll get back to you soon.",
+        duration: 4000,
+      })
+      
+      // Then reset form and state
+      setSelected([])
       setLoading(false)
+      form.reset()
+    } catch (err) {
+      console.error("Email send error:", err)
+      setLoading(false)
+      
+      // Only show error if success wasn't already set
+      if (!success) {
+        toast.error("Message not sent", {
+          description: "Please try again or contact me directly.",
+          duration: 4000,
+        })
+      }
     }
   }
 
@@ -192,7 +208,7 @@ export default function ContactSection() {
             {loading ? "Sending..." : "Send Me"}
           </button>
 
-          <p className="text-gray-500 dark:text-white/40 text-sm hero-jelly">
+          <p className="text-gray-500 dark:text-white/80 text-sm hero-jelly">
             I’ll get back to you within 24 hours
           </p>
         </div>

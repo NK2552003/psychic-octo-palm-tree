@@ -6,8 +6,8 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-import Background from "@/components/Background";
 import FloatingControls from "@/components/FloatingControls";
+import DoodleOverlay from "@/components/DoodleOverlay";
 
 import LandingPage from "./pages/landingpage";
 
@@ -181,11 +181,22 @@ useEffect(() => {
     }
   }, []);
 
-  const toggleTheme = () => {
+  const toggleTheme = (event?: React.MouseEvent) => {
     setIsDark((prev) => {
       const next = !prev;
-      document.documentElement.classList.toggle("dark", next);
-      localStorage.setItem("theme", next ? "dark" : "light");
+      
+      // Use View Transition API for smooth theme change
+      if (document.startViewTransition) {
+        document.startViewTransition(() => {
+          document.documentElement.classList.toggle("dark", next);
+          localStorage.setItem("theme", next ? "dark" : "light");
+        });
+      } else {
+        // Fallback for browsers without View Transition API
+        document.documentElement.classList.toggle("dark", next);
+        localStorage.setItem("theme", next ? "dark" : "light");
+      }
+      
       return next;
     });
   };
@@ -247,7 +258,7 @@ useEffect(() => {
   
   return (
     <div className="relative min-h-screen overflow-hidden flex flex-col">
-      <Background />
+      <DoodleOverlay />
       <FloatingNav/>
       <LandingPage />
       <AboutPage/>

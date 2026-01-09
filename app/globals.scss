@@ -18,6 +18,9 @@
   --muted-foreground: oklch(0.45 0.02 40);
   --accent: oklch(0.85 0.03 35);
   --accent-foreground: oklch(0.25 0.02 40);
+  /* darker button accent for light mode (used for call-to-action buttons) */
+  --btn-accent: oklch(0.35 0.08 35);
+  --btn-accent-foreground: oklch(0.98 0.01 40);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.577 0.245 27.325);
   --border: oklch(0.82 0.02 40);
@@ -53,6 +56,9 @@
   --muted-foreground: oklch(0.65 0.08 180);
   --accent: oklch(0.35 0.1 180);
   --accent-foreground: oklch(0.85 0.06 180);
+  /* keep button accent aligned in dark mode */
+  --btn-accent: var(--accent);
+  --btn-accent-foreground: var(--accent-foreground);
   --destructive: oklch(0.396 0.141 25.723);
   --destructive-foreground: oklch(0.637 0.237 25.331);
   --border: oklch(0.35 0.08 180);
@@ -133,11 +139,39 @@
 
 }
 
+/* View Transition API for smooth theme transitions */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.3s;
+  animation-timing-function: ease-out;
+}
+
+/* Crossfade between themes */
+::view-transition-old(root) {
+  animation-name: fade-out;
+}
+
+::view-transition-new(root) {
+  animation-name: fade-in;
+}
+
+@keyframes fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
 /* Enhanced smooth transitions and removed jiggling animations */
 button,
 a,
 .cursor-pointer {
-  transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Smooth letter transitions - ensure visibility */
@@ -190,7 +224,24 @@ nav a::after {
   width: 0;
   height: 3px;
   background: linear-gradient(90deg, #fb7185, #14b8a6);
-  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Force stacking behavior for PWA and cookie toasts on narrower screens */
+@media (max-width: 1024px) {
+  .pwa-toast, .cookie-toast {
+    flex-direction: column !important;
+    text-align: center !important;
+  }
+
+  .pwa-toast .actions, .cookie-toast .actions, .actions {
+    flex-direction: column !important;
+    width: 100% !important;
+  }
+
+  .pwa-toast .actions > *, .cookie-toast .actions > *, .actions > * {
+    width: 100% !important;
+  }
 }
 
 nav a:hover::after {
@@ -408,30 +459,23 @@ body {
     transition: none !important;
   }
 
-  /* Remove decorative doodles on small screens to improve performance */
-  .doodles,
-  .qual-doodles,
-  .skill-doodles,
-  .about-doodles,
-  .project-doodles {
-    display: none !important;
-  }
+
 
   /* Hide photography doodles on tablet/mobile; show only on large screens */
   @media (max-width: 1023px) {
     .photo-doodles { display: none !important; }
   }
 
-  .qual-doodle-path,
-  .qual-doodle-float,
-  .qual-doodle-wobble,
-  .skill-doodle-path,
-  .skill-doodle-float,
-  .skill-doodle-wobble,
-  .qual-doodle-accent,
-  .qual-doodle-accent-svg {
-    display: none !important;
-    opacity: 0 !important;
+
+
+  /* Keep SVG path below header and "View My Work" visible on mobile */
+  .view-work-border {
+    transform: scaleX(1) !important;
+  }
+
+  /* Keep background division behind "DEBUG" visible on mobile */
+  .draw-behind {
+    transform: scaleX(1) !important;
   }
 }
 

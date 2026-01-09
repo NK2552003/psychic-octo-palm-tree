@@ -4,13 +4,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Menu, Home, User, Layers, Award, Grid, Folder, Code2, Mail } from "lucide-react";
 
 const sectionIds = [
-  { id: "hero", icon: <Home className="w-3 h-3 md:w-5 md:h-5" /> },
-  { id: "about", icon: <User className="w-3 h-3 md:w-5 md:h-5" /> },
-  { id: "skills", icon: <Layers className="w-3 h-3 md:w-5 md:h-5" /> },
-  { id: "qualifications", icon: <Award className="w-3 h-3 md:w-5 md:h-5"  /> },
-  { id: "photography", icon: <Grid className="w-3 h-3 md:w-5 md:h-5" /> },
-  { id: "projects", icon: <Folder className="w-3 h-3 md:w-5 md:h-5"  /> },
-  { id: "contact", icon: <Mail className="w-3 h-3 md:w-5 md:h-5"  /> },
+  { id: "hero", icon: <Home className="w-4 h-4 md:w-5 md:h-5" /> },
+  { id: "about", icon: <User className="w-4 h-4 md:w-5 md:h-5" /> },
+  { id: "skills", icon: <Layers className="w-4 h-4 md:w-5 md:h-5" /> },
+  { id: "qualifications", icon: <Award className="w-4 h-4 md:w-5 md:h-5"  /> },
+  { id: "photography", icon: <Grid className="w-4 h-4 md:w-5 md:h-5" /> },
+  { id: "projects", icon: <Folder className="w-4 h-4 md:w-5 md:h-5"  /> },
+  { id: "contact", icon: <Mail className="w-4 h-4 md:w-5 md:h-5"  /> },
 ];
 
 export function FloatingNav() {
@@ -120,7 +120,7 @@ export function FloatingNav() {
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: index * 0.05 }}
-                      className={`p-1.5 md:p-2.5 rounded-lg md:rounded-xl transition-all duration-150
+                      className={`w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-lg md:rounded-xl transition-all duration-150
                         hover:bg-stone-100 dark:hover:bg-white/10
                         text-stone-800 dark:text-white
                         bg-white/95 dark:bg-[#031412]
@@ -170,14 +170,14 @@ export function FloatingNav() {
               }}
               onClick={() => setOpen((prev) => !prev)}
               aria-label={open ? "Close navigation" : "Open navigation"}
-              className={`p-1.5 md:p-2.5 rounded-lg md:rounded-xl backdrop-blur-xl transition-all duration-200
+              className={`w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-lg md:rounded-xl backdrop-blur-xl transition-all duration-200
                 text-stone-800 dark:text-white
                 bg-white/90 dark:bg-[#031412]
                 hover:bg-stone-100 dark:hover:bg-white/10
                 border border-stone-200/60 dark:border-white/20
                 shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-300`}
             >
-              <Menu className="w-3 h-3 md:w-5 md:h-5 text-stone-800 dark:text-white" />
+              <Menu className="w-4 h-4 md:w-5 md:h-5 text-stone-800 dark:text-white" />
             </button>
 
             <AnimatePresence>

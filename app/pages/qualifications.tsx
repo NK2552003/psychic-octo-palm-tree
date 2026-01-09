@@ -3,10 +3,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ChevronDown, GraduationCap, Award, BookOpen } from 'lucide-react';
 import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import SchoolDoodles from '@/components/SchoolDoodles';
-
-gsap.registerPlugin(ScrollTrigger);
 
 interface Qualification {
   category: string;
@@ -370,7 +366,6 @@ export default function QualificationsSection() {
               Every entry below is a short chapter—click to unfold the challenge, the solution, and the result.
             </p>
             <div className="relative">
-              <SchoolDoodles />
               {/* vertical timeline line (desktop) */}
               <div className="block absolute left-[23px] md:left-[32px] top-12 bottom-8 w-[2px] bg-border/80 pointer-events-none" aria-hidden />
               <div className="space-y-6">

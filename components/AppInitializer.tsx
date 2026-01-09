@@ -3,8 +3,9 @@
 import React, { useEffect, useState } from "react"
 import SplashScreen from "./SplashScreen"
 import Signature from "./signature"
+import InstallPrompt from "./InstallPrompt"
+import CookieConsent from "./CookieConsent"
 import { ThemeProvider } from "./theme-provider"
-import SmoothScroll from "./SmoothScroll"
 
 export default function AppInitializer({ children }: { children: React.ReactNode }) {
   const [themeDetected, setThemeDetected] = useState(false)
@@ -31,13 +32,39 @@ export default function AppInitializer({ children }: { children: React.ReactNode
     }
   }, [])
 
+  // register a basic service worker to enable offline caching for PWA
+  useEffect(() => {
+    if (!('serviceWorker' in navigator)) return
+    navigator.serviceWorker
+      .register('/sw.js')
+      .catch((e) => {
+        // ignore failures — optional
+        // console.warn('SW registration failed', e)
+      })
+  }, [])
+
+  // keep deferred install prompt available even if `InstallPrompt` mounts later
+  const [deferredPrompt, setDeferredPrompt] = useState<any | null>(null)
+  useEffect(() => {
+    const handler = (e: Event) => {
+      // @ts-ignore
+      e.preventDefault()
+      setDeferredPrompt(e)
+    }
+
+    window.addEventListener('beforeinstallprompt', handler as EventListener)
+    return () => window.removeEventListener('beforeinstallprompt', handler as EventListener)
+  }, [])
+
   // don't mount or initialize anything until we know the system theme
   if (!themeDetected) return null
 
   return (
     <ThemeProvider attribute="class" defaultTheme={systemTheme}>
       {!splashDone && <SplashScreen onLoaded={() => setSplashDone(true)} />}
-      {splashDone && <SmoothScroll>{children}</SmoothScroll>}
+      {splashDone && children}
+      {splashDone && <InstallPrompt deferredPrompt={deferredPrompt} setDeferredPrompt={setDeferredPrompt} />}
+      {splashDone && <CookieConsent />}
     </ThemeProvider>
   )
 }

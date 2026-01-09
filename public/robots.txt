@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Sitemap: https://nitishkr.fun/sitemap.xml
+
+# Block any private paths (if you add them later)
+Disallow: /api/private
