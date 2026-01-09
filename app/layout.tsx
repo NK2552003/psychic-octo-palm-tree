@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import { Playfair_Display, Inter, Space_Grotesk } from "next/font/google"
 import "./globals.scss"
 import AppInitializer from "../components/AppInitializer"
+import DoodleOverlay from "@/components/DoodleOverlay"
 import { Toaster } from "sonner"
 
 const playfair = Playfair_Display({
@@ -121,7 +122,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.variable} ${playfair.variable} ${spaceGrotesk.variable}`}>
-      <body className="font-display antialiased">
+      <body className="font-display antialiased relative">
+        <DoodleOverlay />
         <AppInitializer>{children}</AppInitializer>
         <Toaster 
           position="top-right" 

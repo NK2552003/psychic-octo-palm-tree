@@ -7,6 +7,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 import FloatingControls from "@/components/FloatingControls";
+import DoodleOverlay from "@/components/DoodleOverlay";
 
 import LandingPage from "./pages/landingpage";
 
@@ -257,6 +258,7 @@ useEffect(() => {
   
   return (
     <div className="relative min-h-screen overflow-hidden flex flex-col">
+      <DoodleOverlay />
       <FloatingNav/>
       <LandingPage />
       <AboutPage/>
