@@ -6,7 +6,6 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-import Background from "@/components/Background";
 import FloatingControls from "@/components/FloatingControls";
 
 import LandingPage from "./pages/landingpage";

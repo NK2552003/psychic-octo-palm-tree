@@ -2,6 +2,11 @@
 
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { shouldReduceAnimations } from "../../lib/deviceDetection";
+
+gsap.registerPlugin(ScrollTrigger);
 
 
 export default function WildlifePage() {
@@ -14,6 +19,8 @@ export default function WildlifePage() {
   const centerImageRef = useRef<HTMLImageElement | null>(null);
   const detailImageRef = useRef<HTMLImageElement | null>(null);
   const detailBottomImageRef = useRef<HTMLImageElement | null>(null);
+  const quietRef = useRef<HTMLElement | null>(null);
+  const framesRef = useRef<HTMLElement | null>(null);
   const [savedScroll, setSavedScroll] = useState<number | null>(null);
 
   // Nature-themed two-word titles
@@ -297,6 +304,59 @@ export default function WildlifePage() {
     };
   }, [currentPage]);
 
+  // Title letters animation (match Qualifications "MY JOURNEY" style)
+  useEffect(() => {
+    const reduceAnimations = shouldReduceAnimations();
+
+    const ctx = gsap.context(() => {
+      if (reduceAnimations) {
+        document.querySelectorAll<HTMLElement>(".quiet-letter, .frames-letter").forEach((el) => {
+          el.style.opacity = "1";
+          el.style.transform = "none";
+        });
+        return;
+      }
+
+      gsap.from(".quiet-letter", {
+        opacity: 0,
+        y: 50,
+        rotation: "random(-15, 15)",
+        duration: 1,
+        ease: "elastic.out(1, 0.5)",
+        stagger: 0.08,
+        scrollTrigger: {
+          trigger: quietRef.current,
+          start: "top 80%",
+          toggleActions: "play none none none",
+          once: true,
+        },
+      });
+
+      gsap.fromTo(
+        ".frames-letter",
+        { opacity: 0, y: 80, scale: 0.9, rotation: "random(-8, 8)" },
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          rotation: 0,
+          duration: 1.2,
+          ease: "back.out(1.2)",
+          stagger: 0.06,
+          scrollTrigger: {
+            trigger: framesRef.current,
+            start: "top 80%",
+            toggleActions: "play none none none",
+            once: true,
+          },
+          delay: 0.18,
+        }
+      );
+    }, pageRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
     <div ref={pageRef} className="relative">
 
@@ -326,9 +386,26 @@ export default function WildlifePage() {
                     ? currentGalleryIndex + 1
                     : selectedImage + 1
                 } ]`}</p>
-                <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black leading-none tracking-tight">
-                  QUITE FRAMES
-                </h1>
+                <div className="leading-none tracking-tight flex items-center justify-center" style={{ transform: "scaleX(0.3)", fontFamily: "var(--font-bebas), sans-serif", fontWeight: "700" }}>
+                  <span ref={quietRef} className="quiet-wrap flex">
+                    <span className="quiet-letter inline-block" style={{ fontSize: "clamp(9rem, 30vw, 30rem)" }}>Q</span>
+                    <span className="quiet-letter inline-block" style={{ fontSize: "clamp(9rem, 30vw, 30rem)" }}>U</span>
+                    <span className="quiet-letter inline-block" style={{ fontSize: "clamp(9rem, 30vw, 30rem)" }}>I</span>
+                    <span className="quiet-letter inline-block" style={{ fontSize: "clamp(9rem, 30vw, 30rem)" }}>E</span>
+                    <span className="quiet-letter inline-block" style={{ fontSize: "clamp(9rem, 30vw, 30rem)" }}>T</span>
+                  </span>
+
+                  <span style={{ fontSize: "clamp(5rem, 16vw, 16rem)" }}></span>
+
+                  <span ref={framesRef} className="frames-wrap flex">
+                    <span className="frames-letter inline-block opacity-0" style={{ fontSize: "clamp(10rem, 34vw, 34rem)" }}>F</span>
+                    <span className="frames-letter inline-block opacity-0" style={{ fontSize: "clamp(9rem, 31vw, 31rem)" }}>R</span>
+                    <span className="frames-letter inline-block opacity-0" style={{ fontSize: "clamp(10.5rem, 36vw, 36rem)" }}>A</span>
+                    <span className="frames-letter inline-block opacity-0" style={{ fontSize: "clamp(9rem, 30vw, 30rem)" }}>M</span>
+                    <span className="frames-letter inline-block opacity-0" style={{ fontSize: "clamp(10.5rem, 36vw, 36rem)" }}>E</span>
+                    <span className="frames-letter inline-block opacity-0" style={{ fontSize: "clamp(9rem, 30vw, 30rem)" }}>S</span>
+                  </span>
+                </div>
               </div>
 
               {/* Social Media Icons */}
