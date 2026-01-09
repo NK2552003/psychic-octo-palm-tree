@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react"
 import SplashScreen from "./SplashScreen"
 import Signature from "./signature"
 import { ThemeProvider } from "./theme-provider"
-import SmoothScroll from "./SmoothScroll"
 
 export default function AppInitializer({ children }: { children: React.ReactNode }) {
   const [themeDetected, setThemeDetected] = useState(false)
@@ -37,7 +36,7 @@ export default function AppInitializer({ children }: { children: React.ReactNode
   return (
     <ThemeProvider attribute="class" defaultTheme={systemTheme}>
       {!splashDone && <SplashScreen onLoaded={() => setSplashDone(true)} />}
-      {splashDone && <SmoothScroll>{children}</SmoothScroll>}
+      {splashDone && children}
     </ThemeProvider>
   )
 }

@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import { Playfair_Display, Inter, Space_Grotesk } from "next/font/google"
 import "./globals.scss"
 import AppInitializer from "../components/AppInitializer"
+import { Toaster } from "sonner"
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -122,6 +123,18 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable} ${playfair.variable} ${spaceGrotesk.variable}`}>
       <body className="font-display antialiased">
         <AppInitializer>{children}</AppInitializer>
+        <Toaster 
+          position="top-right" 
+          richColors
+          toastOptions={{
+            style: {
+              background: 'var(--background)',
+              color: 'var(--foreground)',
+              border: '1px solid var(--border)',
+            },
+            className: 'font-display',
+          }}
+        />
       </body>
     </html>
   )

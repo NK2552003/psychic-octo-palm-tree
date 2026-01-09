@@ -3,22 +3,6 @@
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 
-// Photography Doodles Component
-function PhotographyDoodles() {
-  return (
-    <div className="fixed inset-0 pointer-events-none overflow-hidden opacity-20 dark:opacity-10 hidden lg:block">
-      <svg className="absolute top-10 left-10 w-32 h-32" viewBox="0 0 100 100">
-        <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" strokeWidth="2" strokeDasharray="5,5" />
-      </svg>
-      <svg className="absolute top-1/4 right-20 w-24 h-24" viewBox="0 0 100 100">
-        <path d="M20,50 Q50,20 80,50 T140,50" fill="none" stroke="currentColor" strokeWidth="2" />
-      </svg>
-      <svg className="absolute bottom-20 left-1/4 w-28 h-28" viewBox="0 0 100 100">
-        <rect x="20" y="20" width="60" height="60" fill="none" stroke="currentColor" strokeWidth="2" strokeDasharray="10,5" />
-      </svg>
-    </div>
-  );
-}
 
 export default function WildlifePage() {
   const [currentPage, setCurrentPage] = useState<"gallery" | "detail">("gallery");
@@ -315,8 +299,7 @@ export default function WildlifePage() {
 
   return (
     <div ref={pageRef} className="relative">
-      {/* Photography doodles (large screens only) */}
-      <PhotographyDoodles />
+
 
       <div className="relative z-10">
         <div

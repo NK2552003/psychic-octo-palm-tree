@@ -133,11 +133,39 @@
 
 }
 
+/* View Transition API for smooth theme transitions */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.3s;
+  animation-timing-function: ease-out;
+}
+
+/* Crossfade between themes */
+::view-transition-old(root) {
+  animation-name: fade-out;
+}
+
+::view-transition-new(root) {
+  animation-name: fade-in;
+}
+
+@keyframes fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
 /* Enhanced smooth transitions and removed jiggling animations */
 button,
 a,
 .cursor-pointer {
-  transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Smooth letter transitions - ensure visibility */
@@ -408,30 +436,23 @@ body {
     transition: none !important;
   }
 
-  /* Remove decorative doodles on small screens to improve performance */
-  .doodles,
-  .qual-doodles,
-  .skill-doodles,
-  .about-doodles,
-  .project-doodles {
-    display: none !important;
-  }
+
 
   /* Hide photography doodles on tablet/mobile; show only on large screens */
   @media (max-width: 1023px) {
     .photo-doodles { display: none !important; }
   }
 
-  .qual-doodle-path,
-  .qual-doodle-float,
-  .qual-doodle-wobble,
-  .skill-doodle-path,
-  .skill-doodle-float,
-  .skill-doodle-wobble,
-  .qual-doodle-accent,
-  .qual-doodle-accent-svg {
-    display: none !important;
-    opacity: 0 !important;
+
+
+  /* Keep SVG path below header and "View My Work" visible on mobile */
+  .view-work-border {
+    transform: scaleX(1) !important;
+  }
+
+  /* Keep background division behind "DEBUG" visible on mobile */
+  .draw-behind {
+    transform: scaleX(1) !important;
   }
 }
 

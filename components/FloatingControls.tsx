@@ -33,12 +33,12 @@ export default function FloatingControls({
     >
       {/* THEME TOGGLE */}
       <button
-        onClick={toggleTheme}
+        onClick={(e) => toggleTheme(e)}
         className="
           w-8 h-8
           flex items-center justify-center
           rounded-xl
-          transition-all duration-300
+          transition-all duration-200
           hover:scale-110
           hover:bg-black/5 dark:hover:bg-white/10
           active:scale-95

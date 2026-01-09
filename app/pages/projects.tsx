@@ -17,7 +17,6 @@ import {
   ChevronDown,
   ChevronUp,
 } from "lucide-react"
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, Line, CartesianGrid } from "recharts"
 
 interface GitHubRepo {
   id: number
@@ -72,6 +71,15 @@ export default function ProjectsPage() {
         stagger: 0.08,
         duration: 0.6,
         ease: "power2.out",
+      })
+
+      // Initialize all section contents to collapsed state
+      sectionsRef.current.forEach((section) => {
+        if (!section) return
+        const content = section.querySelector(".section-content") as HTMLElement
+        if (content) {
+          gsap.set(content, { height: 0, opacity: 0 })
+        }
       })
 
     }, containerRef)
@@ -189,6 +197,9 @@ export default function ProjectsPage() {
       const content = section.querySelector(".section-content") as HTMLElement
       if (!content) return
 
+      // Kill any ongoing animations to prevent conflicts
+      gsap.killTweensOf(content)
+
       if (expandedSection === index) {
         gsap.set(content, { height: "auto" })
         const autoHeight = content.offsetHeight
@@ -224,6 +235,9 @@ export default function ProjectsPage() {
               ease: "power2.in",
             },
           )
+        } else {
+          // Ensure it stays hidden
+          gsap.set(content, { height: 0, opacity: 0 })
         }
       }
     })
@@ -382,406 +396,6 @@ export default function ProjectsPage() {
 
   return (
     <div ref={containerRef} className="relative overflow-hidden">
-      <div ref={doodlesRef} className="absolute inset-0 pointer-events-none z-[5]" aria-hidden="true">
-        {/* UI Sketch 1: Hand-drawn Button wireframe - top left empty space */}
-        <svg
-          className="absolute left-[2%] top-[6%] w-28 h-10 opacity-30 hidden sm:block"
-          viewBox="0 0 140 50"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <rect x="5" y="8" width="130" height="34" rx="6" />
-          <rect x="7" y="10" width="126" height="30" rx="5" opacity="0.5" />
-          <line x1="50" y1="25" x2="90" y2="25" strokeWidth="3" />
-        </svg>
-
-        {/* Math Graph 1: Sine wave - top right empty space */}
-        <svg
-          className="absolute right-[3%] top-[10%] w-32 h-20 opacity-28 hidden md:block"
-          viewBox="0 0 150 100"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-        >
-          <path d="M10 50 Q25 20, 40 50 T70 50 T100 50 T130 50" />
-          <line x1="10" y1="50" x2="140" y2="50" strokeWidth="1" opacity="0.4" />
-          <line x1="10" y1="20" x2="10" y2="80" strokeWidth="1" opacity="0.4" />
-        </svg>
-
-        {/* UI Sketch 2: Card component wireframe - left side between quotes */}
-        <svg
-          className="absolute left-[2%] top-[47%] w-24 h-28 opacity-35 hidden lg:block"
-          viewBox="0 0 120 140"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <rect x="8" y="8" width="104" height="124" rx="8" />
-          <rect x="18" y="18" width="84" height="40" rx="4" opacity="0.6" />
-          <line x1="18" y1="72" x2="80" y2="72" strokeWidth="2.5" />
-          <line x1="18" y1="85" x2="95" y2="85" strokeWidth="1.5" opacity="0.6" />
-          <line x1="18" y1="95" x2="85" y2="95" strokeWidth="1.5" opacity="0.6" />
-          <circle cx="28" cy="118" r="8" />
-          <circle cx="50" cy="118" r="8" />
-        </svg>
-
-        {/* Math Graph 2: Bar chart sketch - right side middle section */}
-        <svg
-          className="absolute right-[3%] top-[44%] w-26 h-28 opacity-32 hidden lg:block"
-          viewBox="0 0 120 140"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <line x1="15" y1="120" x2="105" y2="120" />
-          <line x1="15" y1="20" x2="15" y2="120" />
-          <rect x="25" y="70" width="15" height="50" />
-          <rect x="45" y="40" width="15" height="80" />
-          <rect x="65" y="85" width="15" height="35" />
-          <rect x="85" y="55" width="15" height="65" />
-        </svg>
-
-        {/* UI Sketch 3: Input field wireframe - left bottom section */}
-        <svg
-          className="absolute left-[2%] bottom-[30%] w-32 h-12 opacity-33 hidden md:block"
-          viewBox="0 0 160 60"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <rect x="8" y="12" width="144" height="36" rx="4" />
-          <rect x="10" y="14" width="140" height="32" rx="3" opacity="0.5" />
-          <line x1="20" y1="30" x2="65" y2="30" strokeWidth="2" />
-          <circle cx="138" cy="30" r="6" />
-        </svg>
-
-        {/* Math Graph 3: Pie chart sketch - right bottom section */}
-        <svg
-          className="absolute right-[2%] bottom-[28%] w-24 h-24 opacity-35 hidden md:block"
-          viewBox="0 0 120 120"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-        >
-          <circle cx="60" cy="60" r="45" />
-          <path d="M60 60 L60 15 A45 45 0 0 1 95 40 Z" opacity="0.6" />
-          <path d="M60 60 L95 40 A45 45 0 0 1 85 95 Z" opacity="0.7" />
-          <line x1="60" y1="60" x2="60" y2="15" />
-          <line x1="60" y1="60" x2="95" y2="40" />
-          <line x1="60" y1="60" x2="85" y2="95" />
-        </svg>
-
-        {/* UI Sketch 4: Toggle switch wireframe - top center-right empty space */}
-        <svg
-          className="absolute left-[58%] top-[4%] w-18 h-10 opacity-30 hidden sm:block"
-          viewBox="0 0 80 50"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-        >
-          <rect x="8" y="12" width="64" height="26" rx="13" />
-          <circle cx="56" cy="25" r="10" />
-          <circle cx="56" cy="25" r="8" opacity="0.5" />
-        </svg>
-
-        {/* Math Graph 4: Coordinate system with parabola - bottom center right */}
-        <svg
-          className="absolute left-[70%] bottom-[20%] w-28 h-28 opacity-32 hidden lg:block"
-          viewBox="0 0 140 140"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-        >
-          <line x1="20" y1="70" x2="120" y2="70" strokeWidth="1.5" />
-          <line x1="70" y1="20" x2="70" y2="120" strokeWidth="1.5" />
-          <path d="M30 115 Q45 90, 55 70 Q65 50, 70 30 Q75 50, 85 70 Q95 90, 110 115" strokeWidth="2.5" />
-        </svg>
-
-        {/* UI Sketch 5: Checkbox list wireframe - bottom left corner */}
-        <svg
-          className="absolute left-[4%] bottom-[10%] w-22 h-26 opacity-33 hidden md:block"
-          viewBox="0 0 100 120"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <rect x="10" y="10" width="12" height="12" rx="2" />
-          <line x1="30" y1="16" x2="80" y2="16" strokeWidth="2" />
-          <rect x="10" y="35" width="12" height="12" rx="2" />
-          <line x1="30" y1="41" x2="80" y2="41" strokeWidth="2" />
-          <rect x="10" y="60" width="12" height="12" rx="2" />
-          <line x1="30" y1="66" x2="80" y2="66" strokeWidth="2" />
-          <polyline points="12,15 15,18 20,13" strokeWidth="2.5" />
-        </svg>
-
-        {/* Math Graph 5: Line graph with data points - middle right section */}
-        <svg
-          className="absolute right-[14%] top-[60%] w-28 h-22 opacity-30 hidden lg:block"
-          viewBox="0 0 140 100"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <line x1="15" y1="85" x2="125" y2="85" strokeWidth="1.5" />
-          <line x1="15" y1="15" x2="15" y2="85" strokeWidth="1.5" />
-          <path d="M20 70 L40 50 L60 45 L80 30 L100 35 L120 25" strokeWidth="2.5" />
-          <circle cx="20" cy="70" r="3" fill="currentColor" />
-          <circle cx="40" cy="50" r="3" fill="currentColor" />
-          <circle cx="60" cy="45" r="3" fill="currentColor" />
-          <circle cx="80" cy="30" r="3" fill="currentColor" />
-          <circle cx="100" cy="35" r="3" fill="currentColor" />
-          <circle cx="120" cy="25" r="3" fill="currentColor" />
-        </svg>
-
-        {/* UI Sketch 6: Slider wireframe - bottom center left */}
-        <svg
-          className="absolute left-[36%] bottom-[6%] w-28 h-10 opacity-32 hidden sm:block"
-          viewBox="0 0 140 50"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <line x1="20" y1="25" x2="120" y2="25" strokeWidth="3" />
-          <circle cx="75" cy="25" r="10" />
-          <circle cx="75" cy="25" r="7" opacity="0.6" />
-        </svg>
-
-        {/* UI Sketch 7: Dropdown menu wireframe - right middle-top section */}
-        <svg
-          className="absolute right-[12%] top-[24%] w-24 h-28 opacity-33 hidden lg:block"
-          viewBox="0 0 120 140"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <rect x="10" y="10" width="100" height="30" rx="4" />
-          <polyline points="85,22 93,22 89,28" />
-          <rect x="10" y="48" width="100" height="82" rx="4" opacity="0.7" />
-          <line x1="20" y1="65" x2="90" y2="65" strokeWidth="1.5" />
-          <line x1="20" y1="83" x2="90" y2="83" strokeWidth="1.5" />
-          <line x1="20" y1="101" x2="90" y2="101" strokeWidth="1.5" />
-        </svg>
-
-        {/* Math Graph 6: Exponential curve - top left-center */}
-        <svg
-          className="absolute left-[18%] top-[3%] w-26 h-26 opacity-28 hidden md:block"
-          viewBox="0 0 120 120"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-        >
-          <line x1="15" y1="100" x2="110" y2="100" strokeWidth="1.5" />
-          <line x1="15" y1="20" x2="15" y2="100" strokeWidth="1.5" />
-          <path d="M20 95 Q30 85, 40 70 Q50 50, 60 35 Q70 20, 85 12 Q95 8, 105 7" strokeWidth="2.5" />
-        </svg>
-
-        {/* Additional UI Sketch 8: Radio buttons - left middle-top section */}
-        <svg
-          className="absolute left-[6%] top-[28%] w-20 h-24 opacity-30 hidden lg:block"
-          viewBox="0 0 90 110"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <circle cx="18" cy="20" r="8" />
-          <circle cx="18" cy="20" r="4" fill="currentColor" />
-          <line x1="35" y1="20" x2="75" y2="20" strokeWidth="1.5" />
-          <circle cx="18" cy="50" r="8" />
-          <line x1="35" y1="50" x2="75" y2="50" strokeWidth="1.5" />
-          <circle cx="18" cy="80" r="8" />
-          <line x1="35" y1="80" x2="75" y2="80" strokeWidth="1.5" />
-        </svg>
-
-        {/* Additional Math Graph 7: Step function - bottom right corner */}
-        <svg
-          className="absolute right-[6%] bottom-[9%] w-26 h-24 opacity-30 hidden md:block"
-          viewBox="0 0 120 100"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <line x1="10" y1="85" x2="110" y2="85" strokeWidth="1.5" />
-          <line x1="10" y1="15" x2="10" y2="85" strokeWidth="1.5" opacity="0.4" />
-          <path d="M15 75 L35 75 L35 55 L55 55 L55 40 L75 40 L75 25 L95 25" />
-        </svg>
-
-        {/* CENTER UI Sketch 1: Mobile screen wireframe - center area - VISIBLE ON MOBILE */}
-        <svg
-          className="absolute left-[25%] top-[15%] w-20 h-32 opacity-28 sm:w-24 sm:h-36 sm:left-[25%]"
-          viewBox="0 0 100 160"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <rect x="10" y="10" width="80" height="140" rx="8" />
-          <circle cx="50" cy="20" r="3" />
-          <rect x="18" y="32" width="64" height="8" rx="2" opacity="0.6" />
-          <rect x="18" y="48" width="64" height="36" rx="4" opacity="0.5" />
-          <rect x="18" y="92" width="30" height="20" rx="3" opacity="0.5" />
-          <rect x="52" y="92" width="30" height="20" rx="3" opacity="0.5" />
-          <rect x="18" y="120" width="64" height="20" rx="4" opacity="0.6" />
-        </svg>
-
-        {/* CENTER Math Graph 1: Bell curve - center top area */}
-        <svg
-          className="absolute left-[65%] top-[12%] w-28 h-20 opacity-30 hidden sm:block md:w-32 md:h-24"
-          viewBox="0 0 140 100"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-        >
-          <line x1="15" y1="80" x2="125" y2="80" strokeWidth="1.5" />
-          <line x1="70" y1="20" x2="70" y2="80" strokeWidth="1.5" opacity="0.4" />
-          <path d="M20 78 Q35 70, 45 55 Q55 35, 70 20 Q85 35, 95 55 Q105 70, 120 78" strokeWidth="2.5" />
-        </svg>
-
-        {/* CENTER UI Sketch 2: Search bar wireframe - center area - VISIBLE ON MOBILE */}
-        <svg
-          className="absolute left-[12%] top-[65%] w-28 h-10 opacity-32 sm:w-32 sm:h-12 sm:left-[40%] sm:top-[35%]"
-          viewBox="0 0 160 60"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <rect x="8" y="15" width="120" height="30" rx="15" />
-          <circle cx="138" cy="30" r="8" />
-          <line x1="143" y1="35" x2="150" y2="42" strokeWidth="3" />
-          <line x1="20" y1="30" x2="55" y2="30" strokeWidth="2" opacity="0.5" />
-        </svg>
-
-        {/* CENTER Math Graph 2: Scatter plot - center right area - VISIBLE ON MOBILE */}
-        <svg
-          className="absolute left-[58%] top-[50%] w-24 h-20 opacity-30 sm:w-28 sm:h-24"
-          viewBox="0 0 130 110"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-        >
-          <line x1="15" y1="95" x2="115" y2="95" strokeWidth="1.5" />
-          <line x1="15" y1="15" x2="15" y2="95" strokeWidth="1.5" />
-          <circle cx="30" cy="75" r="3" fill="currentColor" />
-          <circle cx="45" cy="60" r="3" fill="currentColor" />
-          <circle cx="38" cy="80" r="3" fill="currentColor" />
-          <circle cx="60" cy="45" r="3" fill="currentColor" />
-          <circle cx="55" cy="55" r="3" fill="currentColor" />
-          <circle cx="75" cy="35" r="3" fill="currentColor" />
-          <circle cx="80" cy="40" r="3" fill="currentColor" />
-          <circle cx="70" cy="50" r="3" fill="currentColor" />
-          <circle cx="95" cy="30" r="3" fill="currentColor" />
-          <circle cx="90" cy="38" r="3" fill="currentColor" />
-        </svg>
-
-        {/* CENTER UI Sketch 3: Tab navigation - center left area */}
-        <svg
-          className="absolute left-[15%] top-[48%] w-30 h-12 opacity-30 hidden md:block"
-          viewBox="0 0 140 60"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <rect x="8" y="8" width="38" height="28" rx="4" opacity="0.6" />
-          <rect x="50" y="8" width="38" height="28" rx="4" />
-          <rect x="92" y="8" width="38" height="28" rx="4" opacity="0.6" />
-          <line x1="8" y1="45" x2="130" y2="45" strokeWidth="2.5" />
-        </svg>
-
-        {/* CENTER Math Graph 3: Tangent curve - center bottom right */}
-        <svg
-          className="absolute left-[50%] bottom-[15%] w-26 h-26 opacity-28 hidden md:block"
-          viewBox="0 0 120 120"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-        >
-          <line x1="15" y1="60" x2="105" y2="60" strokeWidth="1.5" />
-          <line x1="60" y1="15" x2="60" y2="105" strokeWidth="1.5" opacity="0.4" />
-          <path d="M30 95 Q40 80, 48 65 Q56 45, 58 20" strokeWidth="2.5" />
-          <path x1="62" y1="100" x2="72" y2="55" strokeWidth="2.5" />
-        </svg>
-
-        {/* CENTER UI Sketch 4: Progress bar - center middle left */}
-        <svg
-          className="absolute left-[22%] top-[56%] w-28 h-10 opacity-32 hidden md:block"
-          viewBox="0 0 140 50"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <rect x="8" y="15" width="124" height="20" rx="10" />
-          <rect x="11" y="18" width="80" height="14" rx="7" opacity="0.7" />
-          <circle cx="88" cy="25" r="4" fill="currentColor" />
-        </svg>
-
-        {/* CENTER UI Sketch 5: Notification badge - center top right */}
-        <svg
-          className="absolute left-[72%] top-[32%] w-20 h-20 opacity-30 hidden md:block"
-          viewBox="0 0 100 100"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="M50 20 C50 20, 35 25, 35 45 C35 60, 35 65, 30 70 L70 70 C65 65, 65 60, 65 45 C65 25, 50 20, 50 20" />
-          <path d="M42 70 C42 75, 45 80, 50 80 C55 80, 58 75, 58 70" />
-          <circle cx="65" cy="30" r="8" opacity="0.7" />
-          <circle cx="65" cy="30" r="5" fill="currentColor" />
-        </svg>
-
-        {/* CENTER Math Graph 4: Circle with geometric shapes - center bottom left */}
-        <svg
-          className="absolute left-[28%] bottom-[12%] w-24 h-24 opacity-32 hidden md:block"
-          viewBox="0 0 110 110"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <circle cx="55" cy="55" r="40" />
-          <polygon points="55,25 75,65 35,65" opacity="0.6" />
-          <rect x="43" y="43" width="24" height="24" opacity="0.5" />
-          <line x1="55" y1="15" x2="55" y2="95" strokeWidth="1" opacity="0.4" />
-          <line x1="15" y1="55" x2="95" y2="55" strokeWidth="1" opacity="0.4" />
-        </svg>
-      </div>
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 py-12 sm:py-16">
         <div className="mb-16">
           <span id="projects" className="hero-jelly inline-block rounded-full border-2 px-3 sm:px-6 py-1.5 sm:py-2 text-xs sm:text-sm font-medium transition-all hover:scale-105 hover:bg-black hover:text-white">
@@ -827,7 +441,7 @@ export default function ProjectsPage() {
                       <h2 className="hero-jelly section-subtitle text-xl sm:text-2xl font-black uppercase transition-all duration-300 md:text-3xl">
                         {section.subtitle}
                       </h2>
-                      <p className="hero-jelly hero-jelly-fast mt-2 text-sm text-muted-foreground max-w-xl">{section.description}</p>
+                      <p className="hero-jelly hero-jelly-fast mt-2 text-sm md:text-base text-muted-foreground max-w-xl">{section.description}</p>
                     </div>
                   </div>
                  <div className="flex items-center justify-center border md:border-none border-stone-500 dark:border-teal-500/50 rounded-md mt-4 md:mt-0 w-full md:w-auto hover:bg-muted transition">
@@ -853,7 +467,6 @@ export default function ProjectsPage() {
 
               <div
                 className={`section-content overflow-hidden ${expandedSection === index ? 'border-b border-stone-500 dark:border-teal-700/80' : ''}`}
-                style={{ height: expandedSection === index ? undefined : '0px', opacity: expandedSection === index ? 1 : 0 }}
               >
                 <div className="mt-6 relative">
                   <div className="flex gap-2 mb-4 justify-end">
@@ -928,7 +541,7 @@ export default function ProjectsPage() {
 
                                 <Button
                                   variant="outline"
-                                  className="w-full bg-transparent"
+                                  className="w-full bg-transparent hover:scale-105 hover:shadow-lg hover:bg-primary hover:text-primary-foreground transition-all duration-300 cursor-pointer"
                                   onClick={(e) => {
                                     e.stopPropagation()
                                     window.open(repo.html_url, "_blank")
@@ -967,28 +580,32 @@ export default function ProjectsPage() {
                               { id: "ExqvZey", title: "Project 20" },
                             ];
                             return codepenProjectsData.map((project, i) => (
-                              <Card key={project.id} className="project-card flex-shrink-0 w-64 sm:w-72 md:w-80 p-4 sm:p-6 border border-stone-600/80 dark:border-teal-700/80">
-                                <div className="w-full h-40 overflow-hidden rounded-md mb-4 bg-[#181818] border border-[#3332328f] relative">
-                                  <div
-                                    className="w-full h-full transform scale-50 origin-top-left"
-                                    style={{ width: "200%", height: "200%" }}
-                                  >
-                                    <iframe
-                                      title={project.title}
-                                      src={`https://codepen.io/username/embed/${project.id}?default-tab=result&editable=true&theme-id=dark`}
-                                      className="w-full h-full"
-                                      style={{ border: "none" }}
-                                      allowFullScreen
-                                    />
+                              <Card key={project.id} className="project-card flex-shrink-0 w-64 sm:w-72 md:w-80 p-4 sm:p-6 border border-stone-600/80 dark:border-teal-700/80 flex flex-col">
+                                <div>
+                                  <div className="w-full h-40 overflow-hidden rounded-md mb-4 bg-[#181818] border border-[#3332328f] relative">
+                                    <div
+                                      className="w-full h-full transform scale-50 origin-top-left"
+                                      style={{ width: "200%", height: "200%" }}
+                                    >
+                                      <iframe
+                                        title={project.title}
+                                        src={`https://codepen.io/username/embed/${project.id}?default-tab=result&editable=true&theme-id=dark`}
+                                        className="w-full h-full"
+                                        style={{ border: "none" }}
+                                        allowFullScreen
+                                      />
+                                    </div>
                                   </div>
+                                  <h3 className="font-semibold text-lg mb-2">{project.title}</h3>
+                                  <p className="text-sm text-muted-foreground mb-4">
+                                    Interactive CSS and JavaScript experiment
+                                  </p>
                                 </div>
-                                <h3 className="font-semibold text-lg mb-2">{project.title}</h3>
-                                <p className="text-sm text-muted-foreground mb-4">
-                                  Interactive CSS and JavaScript experiment
-                                </p>
-                                <Button variant="outline" className="w-full bg-transparent" onClick={() => window.open(`https://codepen.io/username/pen/${project.id}`, "_blank") }>
-                                  View on CodePen
-                                </Button>
+                                <div className="mt-auto">
+                                  <Button variant="outline" className="w-full bg-transparent hover:scale-105 hover:shadow-lg hover:bg-primary hover:text-primary-foreground transition-all duration-300 cursor-pointer" onClick={() => window.open(`https://codepen.io/username/pen/${project.id}`, "_blank") }>
+                                    View on CodePen
+                                  </Button>
+                                </div>
                               </Card>
                             ));
                           })()
@@ -1009,14 +626,32 @@ export default function ProjectsPage() {
                               url: "https://uiverse.io/NK2552003/fat-goose-73",
                               embed: "https://uiverse.io/embed/fat-goose-73",
                               description: "Monitor your shipment status in real-time."
+                            },
+                             {
+                              id: "chatty-eel-90",
+                              title: "Chatty Eel",
+                              url: "https://uiverse.io/NK2552003/chatty-eel-90",
+                              embed: "https://uiverse.io/NK2552003/chatty-eel-90",
+                              description: "Awesome Card"
+                            },
+                             {
+                              id: "purple-seahorse-91",
+                              title: "Purple Seahorse",
+                              url: "https://uiverse.io/NK2552003/purple-seahorse-91",
+                              embed: "https://uiverse.io/embed/purple-seahorse-91",
+                              description: "Awesome Game Card"
                             }
                           ].map((card) => (
-                            <Card key={card.id} className="project-card flex-shrink-0 w-64 sm:w-72 md:w-80 p-4 sm:p-6 border border-stone-600/80 dark:border-teal-700/80">
-                              <h3 className="font-semibold text-lg mb-2">{card.title}</h3>
-                              <p className="text-sm text-muted-foreground mb-4">{card.description}</p>
-                              <Button variant="outline" className="w-full bg-transparent" onClick={() => window.open(card.url, "_blank") }>
-                                View on Uiverse
-                              </Button>
+                            <Card key={card.id} className="project-card flex-shrink-0 w-64 sm:w-72 md:w-80 p-4 sm:p-6 border border-stone-600/80 dark:border-teal-700/80 flex flex-col">
+                              <div>
+                                <h3 className="font-semibold text-lg mb-2">{card.title}</h3>
+                                <p className="text-sm text-muted-foreground mb-4">{card.description}</p>
+                              </div>
+                              <div className="mt-auto">
+                                <Button variant="outline" className="w-full bg-transparent hover:scale-105 hover:shadow-lg hover:bg-primary hover:text-primary-foreground transition-all duration-300 cursor-pointer" onClick={() => window.open(card.url, "_blank") }>
+                                  View on Uiverse
+                                </Button>
+                              </div>
                             </Card>
                           ))
                         }
@@ -1024,40 +659,43 @@ export default function ProjectsPage() {
                           devtoArticles.map((article) => (
                             <Card
                               key={article.id}
-                              className="project-card flex-shrink-0 w-64 sm:w-72 md:w-80 p-4 sm:p-6 hover:shadow-md transition-shadow border border-stone-600/80 dark:border-teal-700/80"
+                              className="project-card flex-shrink-0 w-64 sm:w-72 md:w-80 p-4 sm:p-6 hover:shadow-md transition-shadow border border-stone-600/80 dark:border-teal-700/80 flex flex-col"
                             >
-                              <h3 className="font-semibold text-lg mb-2 line-clamp-2">{article.title}</h3>
-                              <p className="text-sm text-muted-foreground mb-4 line-clamp-3">{article.description}</p>
-                              {(() => {
-                                const tags = Array.isArray(article.tags)
-                                  ? article.tags
-                                  : (typeof article.tags === "string"
-                                    ? (article.tags as string).split(",").map((t: string) => t.trim()).filter(Boolean)
-                                    : [])
+                              <div>
+                                <h3 className="font-semibold text-lg mb-2 line-clamp-2">{article.title}</h3>
+                                <p className="text-sm text-muted-foreground mb-4 line-clamp-3">{article.description}</p>
+                                {(() => {
+                                  const tags = Array.isArray(article.tags)
+                                    ? article.tags
+                                    : (typeof article.tags === "string"
+                                      ? (article.tags as string).split(",").map((t: string) => t.trim()).filter(Boolean)
+                                      : [])
 
-                                if (tags.length === 0) return null
+                                  if (tags.length === 0) return null
 
-                                return (
-                                  <div className="flex flex-wrap gap-2 mb-4">
-                                    {tags.slice(0, 3).map((tag:any) => (
-                                      <span key={tag} className="text-xs bg-primary/10 text-primary px-2 py-1 rounded">
-                                        #{tag}
-                                      </span>
-                                    ))}
-                                  </div>
-                                )
-                              })()}
-                              <Button
-                                variant="outline"
-                           
-                                className="w-full bg-transparent"
-                                onClick={(e) => {
-                                  e.stopPropagation()
-                                  window.open(article.url, "_blank")
-                                }}
-                              >
-                                Read Article
-                              </Button>
+                                  return (
+                                    <div className="flex flex-wrap gap-2 mb-4">
+                                      {tags.slice(0, 3).map((tag:any) => (
+                                        <span key={tag} className="text-xs bg-primary/10 text-primary px-2 py-1 rounded">
+                                          #{tag}
+                                        </span>
+                                      ))}
+                                    </div>
+                                  )
+                                })()}
+                              </div>
+                              <div className="mt-auto">
+                                <Button
+                                  variant="outline"
+                                  className="w-full bg-transparent hover:scale-105 hover:shadow-lg hover:bg-primary hover:text-primary-foreground transition-all duration-300 cursor-pointer"
+                                  onClick={(e) => {
+                                    e.stopPropagation()
+                                    window.open(article.url, "_blank")
+                                  }}
+                                >
+                                  Read Article
+                                </Button>
+                              </div>
                             </Card>
                           ))}
 
