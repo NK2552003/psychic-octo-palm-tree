@@ -208,7 +208,7 @@ export default function ContactSection() {
             {loading ? "Sending..." : "Send Me"}
           </button>
 
-          <p className="text-gray-500 dark:text-white/40 text-sm hero-jelly">
+          <p className="text-gray-500 dark:text-white/80 text-sm hero-jelly">
             I’ll get back to you within 24 hours
           </p>
         </div>

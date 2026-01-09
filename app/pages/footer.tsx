@@ -67,7 +67,11 @@ export default function Footer() {
               {
                 name: "Instagram",
                 url: "https://www.instagram.com/natur_hacks/"
-              }
+              },
+              {
+                name: "Uiverse",
+                url: "https://uiverse.io/nk2552003"
+              },
             ].map((item, idx) => (
               <a
                 key={item.name}
