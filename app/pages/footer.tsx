@@ -1,20 +1,22 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import gsap from "gsap"
 import { MoveUpRight } from "lucide-react"
+import { t, type LangCode } from '@/lib/i18n'
 const sections = [
-  {label: "Home", id: "hero"},
-  { label: "About Me", id: "about" },
-  { label: "Skills", id: "skills" },
-  { label: "Projects", id: "projects" },
-  { label: "Photography", id: "photography" },
-  { label: "Experience", id: "qualifications" },
-  { label: "Contact", id: "contact" },
+  { id: "hero" },
+  { id: "about" },
+  { id: "skills" },
+  { id: "projects" },
+  { id: "photography" },
+  { id: "qualifications" },
+  { id: "contact" },
 ];
 
 export default function Footer() {
   const footerRef = useRef<HTMLDivElement>(null)
+  const [lang, setLang] = useState<LangCode>(typeof window !== 'undefined' ? ((localStorage.getItem('preferredLang') as LangCode) || 'en') : 'en')
 
   useEffect(() => {
     if (!footerRef.current) return
@@ -37,6 +39,16 @@ export default function Footer() {
     }, footerRef)
 
     return () => ctx.revert()
+  }, [])
+
+  useEffect(() => {
+    const onPref = (e: any) => setLang(((e && e.detail) as LangCode) || ((localStorage.getItem('preferredLang') as LangCode) || 'en'))
+    window.addEventListener('preferredLangChange', onPref)
+    window.addEventListener('storage', onPref)
+    return () => {
+      window.removeEventListener('preferredLangChange', onPref)
+      window.removeEventListener('storage', onPref)
+    }
   }, [])
 
   return (
@@ -102,7 +114,7 @@ export default function Footer() {
 <div className="grid gap-8 text-sm footer-fade justify-end items-end hidden md:block">
  <div>
               <ul className="space-y-4 text-lg text-end">
-                {sections.map(({ label, id }) => (
+                {sections.map(({ id }) => (
                   <li key={id}>
                     <a
                       href={`#${id}`}
@@ -131,7 +143,7 @@ export default function Footer() {
                       className="group relative inline-flex items-center hero-jelly cursor-pointer transition-all duration-300 ease-out hover:translate-x-2 active:scale-95 text-end"
                     >
                       <span className="relative">
-                        {label}
+                        {t(`nav.${id === 'hero' ? 'home' : id === 'qualifications' ? 'experience' : id}`, lang)}
                         <span className="pointer-events-none absolute right-0 -bottom-1 h-[2px] w-full bg-stone-800 dark:bg-teal-300 origin-right scale-x-0 transition-transform duration-300 ease-out group-hover:scale-x-100" />
                       </span>
                     </a>

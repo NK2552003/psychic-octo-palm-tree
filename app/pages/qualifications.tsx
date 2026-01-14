@@ -272,6 +272,14 @@ const QualificationCard: React.FC<{ qualification: Qualification; index: number;
 export default function QualificationsSection() {
   const myRef = useRef<HTMLElement | null>(null);
   const journeyRef = useRef<HTMLElement | null>(null);
+
+  const splitGraphemes = (s: string) => {
+    try { const Seg = (Intl as any).Segmenter; if (typeof Seg === 'function') return Array.from(new Seg(undefined, { granularity: 'grapheme' }).segment(s), (seg: any) => seg.segment) } catch (e) {}
+    return Array.from(s)
+  }
+
+  const mySizes = ["clamp(10rem, 35vw, 35rem)", "clamp(9rem, 30vw, 30rem)"]
+  const journeySizes = ["clamp(10rem, 34vw, 34rem)", "clamp(9rem, 31vw, 31rem)", "clamp(10.5rem, 36vw, 36rem)", "clamp(9rem, 30vw, 30rem)", "clamp(10.5rem, 36vw, 36rem)", "clamp(9rem, 30vw, 30rem)", "clamp(8rem, 27vw, 27rem)"]
   const [lang, setLang] = useState<LangCode>(typeof window !== 'undefined' ? ((localStorage.getItem('preferredLang') as LangCode) || 'en') : 'en')
 
   useEffect(() => {
@@ -351,40 +359,25 @@ export default function QualificationsSection() {
             }}
           >
           <span ref={myRef} className="my-wrap flex">
-  <span className="my-letter inline-block" style={{ fontSize: "clamp(10rem, 35vw, 35rem)" }}>
-    M
-  </span>
-  <span className="my-letter inline-block" style={{ fontSize: "clamp(9rem, 30vw, 30rem)" }}>
-    Y
-  </span>
+  {(() => {
+    const left = t('qual.title.left', lang) || ''
+    return splitGraphemes(left).map((ch, i) => (
+      <span key={`my-${i}`} className="my-letter inline-block" style={{ fontSize: mySizes[i] ?? 'clamp(9rem, 30vw, 30rem)' }}>{ch}</span>
+    ))
+  })()}
 </span>
 
 <span style={{ fontSize: "clamp(5rem, 16vw, 16rem)" }}></span>
 
 <span ref={journeyRef} className="journey-wrap flex">
-  <span className="journey-letter inline-block opacity-0" style={{ fontSize: "clamp(10rem, 34vw, 34rem)" }}>
-    J
-  </span>
-  <span className="journey-letter inline-block opacity-0" style={{ fontSize: "clamp(9rem, 31vw, 31rem)" }}>
-    O
-  </span>
-  <span className="journey-letter inline-block opacity-0" style={{ fontSize: "clamp(10.5rem, 36vw, 36rem)" }}>
-    U
-  </span>
-  <span className="journey-letter inline-block opacity-0" style={{ fontSize: "clamp(9rem, 30vw, 30rem)" }}>
-    R
-  </span>
-  <span className="journey-letter inline-block opacity-0" style={{ fontSize: "clamp(10.5rem, 36vw, 36rem)" }}>
-    N
-  </span>
-  <span className="journey-letter inline-block opacity-0" style={{ fontSize: "clamp(9rem, 30vw, 30rem)" }}>
-    E
-  </span>
-  <span className="journey-letter inline-block opacity-0" style={{ fontSize: "clamp(8rem, 27vw, 27rem)" }}>
-    Y
-  </span>
+  {(() => {
+    const right = t('qual.title.right', lang) || ''
+    return splitGraphemes(right).map((ch, i) => (
+      <span key={`journey-${i}`} className="journey-letter inline-block opacity-0" style={{ fontSize: journeySizes[i] ?? 'clamp(9rem, 30vw, 30rem)' }}>{ch}</span>
+    ))
+  })()}
 
-            </span>
+            </span> 
           </div>
         <div className="">
           <div className="p-6 sm:p-8 lg:p-10">

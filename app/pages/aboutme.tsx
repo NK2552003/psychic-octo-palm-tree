@@ -1,7 +1,8 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { gsap } from "gsap"
+import { t, type LangCode } from '@/lib/i18n' 
 
 
 export default function AboutPage() {
@@ -11,6 +12,51 @@ export default function AboutPage() {
   const worksRef = useRef<HTMLDivElement>(null)
   const nameRef = useRef<HTMLDivElement>(null)
   const aboutRef = useRef<HTMLSpanElement>(null)
+
+  const [lang, setLang] = useState<LangCode>(typeof window !== 'undefined' ? ((localStorage.getItem('preferredLang') as LangCode) || 'en') : 'en')
+
+  useEffect(() => {
+    const onPref = (e: any) => setLang(((e && e.detail) as LangCode) || ((localStorage.getItem('preferredLang') as LangCode) || 'en'))
+    window.addEventListener('preferredLangChange', onPref)
+    window.addEventListener('storage', onPref)
+    return () => {
+      window.removeEventListener('preferredLangChange', onPref)
+      window.removeEventListener('storage', onPref)
+    }
+  }, [])
+
+  const leftSizes = [
+    "clamp(10rem, 35vw, 35rem)",
+    "clamp(9rem, 30vw, 30rem)",
+    "clamp(11rem, 38vw, 38rem)",
+    "clamp(8.5rem, 28vw, 28rem)",
+    "clamp(10rem, 34vw, 34rem)",
+    "clamp(9rem, 31vw, 31rem)",
+    "clamp(10.5rem, 36vw, 36rem)",
+    "clamp(9rem, 30vw, 30rem)",
+  ]
+
+  const rightSizes = [
+    "clamp(10.5rem, 36vw, 36rem)",
+    "clamp(9rem, 30vw, 30rem)",
+    "clamp(8rem, 27vw, 27rem)",
+    "clamp(10rem, 34vw, 34rem)",
+    "clamp(8.5rem, 29vw, 29rem)",
+  ]
+
+  const splitGraphemes = (s: string) => {
+    if (!s) return []
+    // Prefer Intl.Segmenter if available (handles grapheme clusters & combining marks)
+    try {
+      const Seg = (Intl as any).Segmenter
+      if (typeof Seg === 'function') {
+        return Array.from(new Seg(undefined, { granularity: 'grapheme' }).segment(s), (seg: any) => seg.segment)
+      }
+    } catch (e) {}
+
+    // Fallback: Array.from handles surrogate pairs; it won't perfectly handle all combining marks but is acceptable as a fallback
+    return Array.from(s)
+  }
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -121,46 +167,27 @@ export default function AboutPage() {
               fontWeight: "700",
             }}
           >
-            <span className="title-letter" style={{ fontSize: "clamp(10rem, 35vw, 35rem)" }}>
-              C
-            </span>
-            <span className="title-letter" style={{ fontSize: "clamp(9rem, 30vw, 30rem)" }}>
-              R
-            </span>
-            <span className="title-letter" style={{ fontSize: "clamp(11rem, 38vw, 38rem)" }}>
-              E
-            </span>
-            <span className="title-letter" style={{ fontSize: "clamp(8.5rem, 28vw, 28rem)" }}>
-              A
-            </span>
-            <span className="title-letter" style={{ fontSize: "clamp(10rem, 34vw, 34rem)" }}>
-              T
-            </span>
-            <span className="title-letter" style={{ fontSize: "clamp(9rem, 31vw, 31rem)" }}>
-              I
-            </span>
-            <span className="title-letter" style={{ fontSize: "clamp(10.5rem, 36vw, 36rem)" }}>
-              V
-            </span>
-            <span className="title-letter" style={{ fontSize: "clamp(9rem, 30vw, 30rem)" }}>
-              E
-            </span>
-            <span className="title-letter mx-2" style={{ fontSize: "clamp(5rem, 16vw, 16rem)" }}></span>
-            <span className="title-letter" style={{ fontSize: "clamp(10.5rem, 36vw, 36rem)" }}>
-              D
-            </span>
-            <span className="title-letter" style={{ fontSize: "clamp(9rem, 30vw, 30rem)" }}>
-              E
-            </span>
-            <span className="title-letter" style={{ fontSize: "clamp(8rem, 27vw, 27rem)" }}>
-              V
-            </span>
-            <span className="title-letter hidden md:block" style={{ fontSize: "clamp(10rem, 34vw, 34rem)" }}>
-              O
-            </span>
-            <span className="title-letter hidden md:block" style={{ fontSize: "clamp(8.5rem, 29vw, 29rem)" }}>
-              P
-            </span>
+            {(() => {
+              const leftTitle = t('about.title.left', lang) || ''
+              const leftChars = splitGraphemes(leftTitle)
+              return leftChars.map((ch, i) => (
+                <span key={`left-${i}`} className="title-letter" style={{ fontSize: leftSizes[i] ?? 'clamp(9rem, 30vw, 30rem)' }}>{ch}</span>
+              ))
+            })()}
+
+            <span className="title-letter mx-2" style={{ fontSize: "clamp(5rem, 16vw, 16rem)" }} />
+
+            {(() => {
+              const rightTitle = t('about.title.right', lang) || ''
+              const rightChars = splitGraphemes(rightTitle)
+              const total = rightChars.length
+              return rightChars.map((ch, i) => {
+                const isHidden = i >= total - 2
+                return (
+                  <span key={`right-${i}`} className={`title-letter ${isHidden ? 'hidden md:block' : ''}`} style={{ fontSize: rightSizes[i] ?? 'clamp(9rem, 30vw, 30rem)' }}>{ch}</span>
+                )
+              })
+            })()}
           </div>
         </div>
 

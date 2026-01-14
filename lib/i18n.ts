@@ -6,6 +6,9 @@ export const translations: Record<string, Record<LangCode, string>> = {
     hi: 'मेरे बारे में',
     hinglish: 'About Me — मेरे बारे में',
   },
+  // Decorative large title letters (rendered per-character)
+  'about.title.left': { en: 'CREATIVE', hi: 'रचनात्मक', hinglish: 'CREATIVE / रचनात्मक' },
+  'about.title.right': { en: 'DEVOP', hi: 'डेवलप', hinglish: 'DEVOP / डेवेलप' },
   'quote.left.1': {
     en: '"Code is poetry written',
     hi: '"कोड कविता है जो लिखी जाती है',
@@ -53,6 +56,7 @@ export const translations: Record<string, Record<LangCode, string>> = {
     hinglish: 'Creative समस्या समाधान',
   },
   // Navigation labels
+  'nav.home': { en: 'Home', hi: 'होम', hinglish: 'Home / होम' },
   'nav.about': { en: 'About Me', hi: 'मेरे बारे में', hinglish: 'About / मेरे बारे में' },
   'nav.skills': { en: 'Skills', hi: 'कौशल', hinglish: 'Skills / कौशल' },
   'nav.projects': { en: 'Projects', hi: 'परियोजनाएँ', hinglish: 'Projects / परियोजनाएँ' },
@@ -370,6 +374,13 @@ export const extraTranslations: Record<string, Record<LangCode, string>> = {
   'skills.quote.left': { en: 'In the vast universe of code, every developer carries their own arsenal...', hi: 'कोड के विशाल ब्रह्मांड में, हर डेवलपर के पास अपना हथियार भण्डार होता है...', hinglish: 'In the vast universe of code, हर developer carries their own arsenal...' },
   'skills.quote.right': { en: 'Tools sharpened through countless hours of debugging, skills honed in the fires of production deployments, and wisdom gained from a thousand Stack Overflow searches.', hi: 'असंख्य डीबगिंग घंटों से तेज़ किये गए उपकरण, प्रोडक्शन में डिप्लॉयमेंट के अनुभव से निखरे कौशल, और हजारों Stack Overflow खोजों से मिली समझ।', hinglish: 'Tools sharpened through countless hours of debugging, skills honed in production, and wisdom from Stack Overflow searches.' },
   'skills.quote.center': { en: 'These are not just technologies... they are the building blocks of digital dreams, the instruments of creation, the weapons against impossible deadlines.', hi: 'ये केवल तकनीकें नहीं हैं... ये डिजिटल सपनों के निर्माण खण्ड हैं, सृजन के साधन हैं, असंभव डेडलाइनों के खिलाफ हथियार हैं।', hinglish: 'These are not just technologies... ये building blocks हैं of digital dreams.' },
+  // Decorative title pieces
+  'skills.title.left': { en: 'THE', hi: 'THE', hinglish: 'THE' },
+  'skills.title.right': { en: 'ARSENAL', hi: 'औज़ार', hinglish: 'ARSENAL / औज़ार' },
+  'qual.title.left': { en: 'MY', hi: 'मेरी', hinglish: 'MY / मेरी' },
+  'qual.title.right': { en: 'JOURNEY', hi: 'यात्रा', hinglish: 'JOURNEY / यात्रा' },
+  'photography.title.left': { en: 'QUIET', hi: 'शांत', hinglish: 'QUIET / शांत' },
+  'photography.title.right': { en: 'FRAMES', hi: 'फ्रेम', hinglish: 'FRAMES / फ़्रेम' },
 
   // Qualifications
   'qual.badge': { en: 'Qualification & Certifications', hi: 'योग्यता और प्रमाणपत्र', hinglish: 'Qualification & Certifications' },

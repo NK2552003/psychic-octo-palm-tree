@@ -22,15 +22,26 @@ export default function WildlifePage() {
   const detailBottomImageRef = useRef<HTMLImageElement | null>(null);
   const quietRef = useRef<HTMLElement | null>(null);
   const framesRef = useRef<HTMLElement | null>(null);
-  const [savedScroll, setSavedScroll] = useState<number | null>(null);
-  // reactive language state for translations
   const [lang, setLang] = useState<LangCode>(typeof window !== 'undefined' ? ((localStorage.getItem('preferredLang') as LangCode) || 'en') : 'en')
+
   useEffect(() => {
     const onPref = (e: any) => setLang(((e && e.detail) as LangCode) || ((localStorage.getItem('preferredLang') as LangCode) || 'en'))
     window.addEventListener('preferredLangChange', onPref)
     window.addEventListener('storage', onPref)
-    return () => { window.removeEventListener('preferredLangChange', onPref); window.removeEventListener('storage', onPref) }
+    return () => {
+      window.removeEventListener('preferredLangChange', onPref)
+      window.removeEventListener('storage', onPref)
+    }
   }, [])
+
+  const splitGraphemes = (s: string) => {
+    try { const Seg = (Intl as any).Segmenter; if (typeof Seg === 'function') return Array.from(new Seg(undefined, { granularity: 'grapheme' }).segment(s), (seg: any) => seg.segment) } catch (e) {}
+    return Array.from(s)
+  }
+
+  const quietSizes = ["clamp(9rem, 30vw, 30rem)", "clamp(9rem, 30vw, 30rem)", "clamp(9rem, 30vw, 30rem)", "clamp(9rem, 30vw, 30rem)", "clamp(9rem, 30vw, 30rem)"]
+  const framesSizes = ["clamp(10rem, 34vw, 34rem)", "clamp(9rem, 31vw, 31rem)", "clamp(10.5rem, 36vw, 36rem)", "clamp(9rem, 30vw, 30rem)", "clamp(10.5rem, 36vw, 36rem)", "clamp(9rem, 30vw, 30rem)", "clamp(8rem, 27vw, 27rem)"]
+  const [savedScroll, setSavedScroll] = useState<number | null>(null);
 
   // Nature-themed two-word titles
   const natureTitles = [
@@ -397,22 +408,23 @@ export default function WildlifePage() {
                 } ]`}</p>
                 <div className="leading-none tracking-tight flex items-center justify-center" style={{ transform: "scaleX(0.3)", fontFamily: "var(--font-bebas), sans-serif", fontWeight: "700" }}>
                   <span ref={quietRef} className="quiet-wrap flex">
-                    <span className="quiet-letter inline-block" style={{ fontSize: "clamp(9rem, 30vw, 30rem)" }}>Q</span>
-                    <span className="quiet-letter inline-block" style={{ fontSize: "clamp(9rem, 30vw, 30rem)" }}>U</span>
-                    <span className="quiet-letter inline-block" style={{ fontSize: "clamp(9rem, 30vw, 30rem)" }}>I</span>
-                    <span className="quiet-letter inline-block" style={{ fontSize: "clamp(9rem, 30vw, 30rem)" }}>E</span>
-                    <span className="quiet-letter inline-block" style={{ fontSize: "clamp(9rem, 30vw, 30rem)" }}>T</span>
+                    {(() => {
+                      const left = t('photography.title.left', lang) || ''
+                      return splitGraphemes(left).map((ch, i) => (
+                        <span key={`quiet-${i}`} className="quiet-letter inline-block" style={{ fontSize: quietSizes[i] ?? 'clamp(9rem, 30vw, 30rem)' }}>{ch}</span>
+                      ))
+                    })()}
                   </span>
 
                   <span style={{ fontSize: "clamp(5rem, 16vw, 16rem)" }}></span>
 
                   <span ref={framesRef} className="frames-wrap flex">
-                    <span className="frames-letter inline-block opacity-0" style={{ fontSize: "clamp(10rem, 34vw, 34rem)" }}>F</span>
-                    <span className="frames-letter inline-block opacity-0" style={{ fontSize: "clamp(9rem, 31vw, 31rem)" }}>R</span>
-                    <span className="frames-letter inline-block opacity-0" style={{ fontSize: "clamp(10.5rem, 36vw, 36rem)" }}>A</span>
-                    <span className="frames-letter inline-block opacity-0" style={{ fontSize: "clamp(9rem, 30vw, 30rem)" }}>M</span>
-                    <span className="frames-letter inline-block opacity-0" style={{ fontSize: "clamp(10.5rem, 36vw, 36rem)" }}>E</span>
-                    <span className="frames-letter inline-block opacity-0" style={{ fontSize: "clamp(9rem, 30vw, 30rem)" }}>S</span>
+                    {(() => {
+                      const right = t('photography.title.right', lang) || ''
+                      return splitGraphemes(right).map((ch, i) => (
+                        <span key={`frames-${i}`} className="frames-letter inline-block opacity-0" style={{ fontSize: framesSizes[i] ?? 'clamp(9rem, 30vw, 30rem)' }}>{ch}</span>
+                      ))
+                    })()}
                   </span>
                 </div>
               </div>

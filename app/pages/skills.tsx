@@ -1,7 +1,8 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { gsap } from "gsap"
+import { t, type LangCode } from '@/lib/i18n'
 
 
 export default function SkillsPage() {
@@ -12,6 +13,28 @@ export default function SkillsPage() {
   const storyRef = useRef<HTMLDivElement>(null)
   const chartRef = useRef<HTMLDivElement>(null)
   const doodlesRef = useRef<HTMLDivElement>(null)
+  const [lang, setLang] = useState<LangCode>(typeof window !== 'undefined' ? ((localStorage.getItem('preferredLang') as LangCode) || 'en') : 'en')
+
+  useEffect(() => {
+    const onPref = (e: any) => setLang(((e && e.detail) as LangCode) || ((localStorage.getItem('preferredLang') as LangCode) || 'en'))
+    window.addEventListener('preferredLangChange', onPref)
+    window.addEventListener('storage', onPref)
+    return () => {
+      window.removeEventListener('preferredLangChange', onPref)
+      window.removeEventListener('storage', onPref)
+    }
+  }, [])
+
+  const splitGraphemes = (s: string) => {
+    try {
+      const Seg = (Intl as any).Segmenter
+      if (typeof Seg === 'function') return Array.from(new Seg(undefined, { granularity: 'grapheme' }).segment(s), (seg: any) => seg.segment)
+    } catch (e) {}
+    return Array.from(s)
+  }
+
+  const leftSizes = ["clamp(10rem, 35vw, 35rem)", "clamp(9rem, 30vw, 30rem)", "clamp(11rem, 38vw, 38rem)"]
+  const rightSizes = ["clamp(10rem, 34vw, 34rem)", "clamp(9rem, 31vw, 31rem)", "clamp(10.5rem, 36vw, 36rem)", "clamp(9rem, 30vw, 30rem)", "clamp(8rem, 27vw, 27rem)", "clamp(9rem, 30vw, 30rem)", "clamp(8rem, 27vw, 27rem)"]
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -100,41 +123,23 @@ export default function SkillsPage() {
             }}
           >
             <span ref={titleRef} className="skill-title-wrap flex">
-              <span className="skill-title-letter inline-block" style={{ fontSize: "clamp(10rem, 35vw, 35rem)" }}>
-                T
-              </span>
-              <span className="skill-title-letter inline-block" style={{ fontSize: "clamp(9rem, 30vw, 30rem)" }}>
-                H
-              </span>
-              <span className="skill-title-letter inline-block" style={{ fontSize: "clamp(11rem, 38vw, 38rem)" }}>
-                E
-              </span>
+              {(() => {
+                const left = t('skills.title.left', lang) || ''
+                return splitGraphemes(left).map((ch, i) => (
+                  <span key={`skill-left-${i}`} className="skill-title-letter inline-block" style={{ fontSize: leftSizes[i] ?? 'clamp(9rem, 30vw, 30rem)' }}>{ch}</span>
+                ))
+              })()}
             </span>
 
             <span style={{ fontSize: "clamp(5rem, 16vw, 16rem)" }}></span>
 
             <span ref={arsenalRef} className="arsenal-wrap flex">
-              <span className="arsenal-letter inline-block opacity-0" style={{ fontSize: "clamp(10rem, 34vw, 34rem)" }}>
-                A
-              </span>
-              <span className="arsenal-letter inline-block opacity-0" style={{ fontSize: "clamp(9rem, 31vw, 31rem)" }}>
-                R
-              </span>
-              <span className="arsenal-letter inline-block opacity-0" style={{ fontSize: "clamp(10.5rem, 36vw, 36rem)" }}>
-                S
-              </span>
-              <span className="arsenal-letter inline-block opacity-0" style={{ fontSize: "clamp(9rem, 30vw, 30rem)" }}>
-                E
-              </span>
-              <span className="arsenal-letter inline-block opacity-0" style={{ fontSize: "clamp(10.5rem, 36vw, 36rem)" }}>
-                N
-              </span>
-              <span className="arsenal-letter inline-block opacity-0" style={{ fontSize: "clamp(9rem, 30vw, 30rem)" }}>
-                A
-              </span>
-              <span className="arsenal-letter inline-block opacity-0" style={{ fontSize: "clamp(8rem, 27vw, 27rem)" }}>
-                L
-              </span>
+              {(() => {
+                const right = t('skills.title.right', lang) || ''
+                return splitGraphemes(right).map((ch, i) => (
+                  <span key={`arsenal-${i}`} className="arsenal-letter inline-block opacity-0" style={{ fontSize: rightSizes[i] ?? 'clamp(9rem, 30vw, 30rem)' }}>{ch}</span>
+                ))
+              })()}
             </span>
           </div>
         </div>
