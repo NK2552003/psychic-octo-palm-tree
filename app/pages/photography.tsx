@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
+import { t, type LangCode } from '@/lib/i18n'
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { shouldReduceAnimations } from "../../lib/deviceDetection";
@@ -21,6 +22,25 @@ export default function WildlifePage() {
   const detailBottomImageRef = useRef<HTMLImageElement | null>(null);
   const quietRef = useRef<HTMLElement | null>(null);
   const framesRef = useRef<HTMLElement | null>(null);
+  const [lang, setLang] = useState<LangCode>(typeof window !== 'undefined' ? ((localStorage.getItem('preferredLang') as LangCode) || 'en') : 'en')
+
+  useEffect(() => {
+    const onPref = (e: any) => setLang(((e && e.detail) as LangCode) || ((localStorage.getItem('preferredLang') as LangCode) || 'en'))
+    window.addEventListener('preferredLangChange', onPref)
+    window.addEventListener('storage', onPref)
+    return () => {
+      window.removeEventListener('preferredLangChange', onPref)
+      window.removeEventListener('storage', onPref)
+    }
+  }, [])
+
+  const splitGraphemes = (s: string) => {
+    try { const Seg = (Intl as any).Segmenter; if (typeof Seg === 'function') return Array.from(new Seg(undefined, { granularity: 'grapheme' }).segment(s), (seg: any) => seg.segment) } catch (e) {}
+    return Array.from(s)
+  }
+
+  const quietSizes = ["clamp(9rem, 30vw, 30rem)", "clamp(9rem, 30vw, 30rem)", "clamp(9rem, 30vw, 30rem)", "clamp(9rem, 30vw, 30rem)", "clamp(9rem, 30vw, 30rem)"]
+  const framesSizes = ["clamp(10rem, 34vw, 34rem)", "clamp(9rem, 31vw, 31rem)", "clamp(10.5rem, 36vw, 36rem)", "clamp(9rem, 30vw, 30rem)", "clamp(10.5rem, 36vw, 36rem)", "clamp(9rem, 30vw, 30rem)", "clamp(8rem, 27vw, 27rem)"]
   const [savedScroll, setSavedScroll] = useState<number | null>(null);
 
   // Nature-themed two-word titles
@@ -373,10 +393,10 @@ export default function WildlifePage() {
             {/* Bottom Section - Wildlife Text */}
             <div className="relative pb-8 md:pb-12">
               <div className="flex justify-between items-end mb-2 md:mb-4">
-                <span id="photography" className="inline-block rounded-full border-2 px-3 sm:px-6 py-1.5 sm:py-2 text-xs sm:text-sm font-medium transition-all hover:scale-105 hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black">
+                <span data-i18n="photography.badge" id="photography" className="inline-block rounded-full border-2 px-3 sm:px-6 py-1.5 sm:py-2 text-xs sm:text-sm font-medium transition-all hover:scale-105 hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black">
                   Photography
                 </span>
-                <span className="text-xs md:text-sm lg:text-base">
+                <span data-i18n="photography.top" className="text-xs md:text-sm lg:text-base">
                   TOP SHOT
                 </span>
               </div>
@@ -388,22 +408,23 @@ export default function WildlifePage() {
                 } ]`}</p>
                 <div className="leading-none tracking-tight flex items-center justify-center" style={{ transform: "scaleX(0.3)", fontFamily: "var(--font-bebas), sans-serif", fontWeight: "700" }}>
                   <span ref={quietRef} className="quiet-wrap flex">
-                    <span className="quiet-letter inline-block" style={{ fontSize: "clamp(9rem, 30vw, 30rem)" }}>Q</span>
-                    <span className="quiet-letter inline-block" style={{ fontSize: "clamp(9rem, 30vw, 30rem)" }}>U</span>
-                    <span className="quiet-letter inline-block" style={{ fontSize: "clamp(9rem, 30vw, 30rem)" }}>I</span>
-                    <span className="quiet-letter inline-block" style={{ fontSize: "clamp(9rem, 30vw, 30rem)" }}>E</span>
-                    <span className="quiet-letter inline-block" style={{ fontSize: "clamp(9rem, 30vw, 30rem)" }}>T</span>
+                    {(() => {
+                      const left = t('photography.title.left', lang) || ''
+                      return splitGraphemes(left).map((ch, i) => (
+                        <span key={`quiet-${i}`} className="quiet-letter inline-block" style={{ fontSize: quietSizes[i] ?? 'clamp(9rem, 30vw, 30rem)' }}>{ch}</span>
+                      ))
+                    })()}
                   </span>
 
                   <span style={{ fontSize: "clamp(5rem, 16vw, 16rem)" }}></span>
 
                   <span ref={framesRef} className="frames-wrap flex">
-                    <span className="frames-letter inline-block opacity-0" style={{ fontSize: "clamp(10rem, 34vw, 34rem)" }}>F</span>
-                    <span className="frames-letter inline-block opacity-0" style={{ fontSize: "clamp(9rem, 31vw, 31rem)" }}>R</span>
-                    <span className="frames-letter inline-block opacity-0" style={{ fontSize: "clamp(10.5rem, 36vw, 36rem)" }}>A</span>
-                    <span className="frames-letter inline-block opacity-0" style={{ fontSize: "clamp(9rem, 30vw, 30rem)" }}>M</span>
-                    <span className="frames-letter inline-block opacity-0" style={{ fontSize: "clamp(10.5rem, 36vw, 36rem)" }}>E</span>
-                    <span className="frames-letter inline-block opacity-0" style={{ fontSize: "clamp(9rem, 30vw, 30rem)" }}>S</span>
+                    {(() => {
+                      const right = t('photography.title.right', lang) || ''
+                      return splitGraphemes(right).map((ch, i) => (
+                        <span key={`frames-${i}`} className="frames-letter inline-block opacity-0" style={{ fontSize: framesSizes[i] ?? 'clamp(9rem, 30vw, 30rem)' }}>{ch}</span>
+                      ))
+                    })()}
                   </span>
                 </div>
               </div>
@@ -487,7 +508,7 @@ export default function WildlifePage() {
                   src={
                     images[currentGalleryIndex].image || "/placeholder.svg"
                   }
-                  alt={images[currentGalleryIndex].name}
+                  alt={t(`photography.title.${currentGalleryIndex}`, lang)}
                   className="h-48 w-40 sm:h-64 sm:w-52 md:h-80 md:w-64 lg:h-96 lg:w-80 object-cover grayscale shadow-2xl transition-all duration-500 group-hover:scale-105 group-hover:grayscale-0"
                 />
                 <div className="pointer-events-none absolute inset-0 hidden dark:block mix-blend-color bg-teal-600/30" />
@@ -522,7 +543,7 @@ export default function WildlifePage() {
                       <div className="relative">
                         <img
                           src={img.image || "/placeholder.svg"}
-                          alt={img.name}
+                          alt={t(`photography.title.${index}`, lang)}
                           className="h-32 w-24 sm:h-40 sm:w-32 md:h-48 md:w-40 lg:h-56 lg:w-44 object-cover grayscale transition-all duration-500"
                         />
                         <div className="pointer-events-none absolute inset-0 hidden dark:block mix-blend-color bg-teal-600/30" />
@@ -559,7 +580,7 @@ export default function WildlifePage() {
                       <img
                         ref={detailImageRef}
                         src={images[selectedImage].detailImage}
-                        alt={images[selectedImage].name}
+                        alt={t(`photography.title.${selectedImage}`, lang)}
                         className="w-full h-full object-contain max-h-[70vh]"
                         onError={(e) => {
                           console.error('Image failed to load:', images[selectedImage].detailImage);
@@ -585,10 +606,10 @@ export default function WildlifePage() {
 
                           <div>
                             <p className="text-xs md:text-sm font-bold mb-1 md:mb-2">
-                              [ {images[selectedImage].name} ]
+                              [ {t(`photography.title.${selectedImage}`, lang)} ]
                             </p>
                             <p className="text-xs md:text-sm lg:text-base leading-relaxed">
-                              {images[selectedImage].quote}
+                              {t(`photography.quote.${selectedImage}`, lang)}
                             </p>
                           </div>
                         </div>
@@ -599,7 +620,7 @@ export default function WildlifePage() {
                         <img
                           ref={detailBottomImageRef}
                           src={images[selectedImage].detailBottomImage}
-                          alt={`${images[selectedImage].name} scene`}
+                          alt={`${t(`photography.title.${selectedImage}`, lang)} scene`}
                           className="w-full h-full object-cover grayscale md:block hidden"
                           onError={(e) => {
                             console.error('Bottom image failed to load:', images[selectedImage].detailBottomImage);

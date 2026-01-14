@@ -1,7 +1,8 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { gsap } from "gsap"
+import { t, type LangCode } from '@/lib/i18n' 
 
 
 export default function AboutPage() {
@@ -11,6 +12,51 @@ export default function AboutPage() {
   const worksRef = useRef<HTMLDivElement>(null)
   const nameRef = useRef<HTMLDivElement>(null)
   const aboutRef = useRef<HTMLSpanElement>(null)
+
+  const [lang, setLang] = useState<LangCode>(typeof window !== 'undefined' ? ((localStorage.getItem('preferredLang') as LangCode) || 'en') : 'en')
+
+  useEffect(() => {
+    const onPref = (e: any) => setLang(((e && e.detail) as LangCode) || ((localStorage.getItem('preferredLang') as LangCode) || 'en'))
+    window.addEventListener('preferredLangChange', onPref)
+    window.addEventListener('storage', onPref)
+    return () => {
+      window.removeEventListener('preferredLangChange', onPref)
+      window.removeEventListener('storage', onPref)
+    }
+  }, [])
+
+  const leftSizes = [
+    "clamp(10rem, 35vw, 35rem)",
+    "clamp(9rem, 30vw, 30rem)",
+    "clamp(11rem, 38vw, 38rem)",
+    "clamp(8.5rem, 28vw, 28rem)",
+    "clamp(10rem, 34vw, 34rem)",
+    "clamp(9rem, 31vw, 31rem)",
+    "clamp(10.5rem, 36vw, 36rem)",
+    "clamp(9rem, 30vw, 30rem)",
+  ]
+
+  const rightSizes = [
+    "clamp(10.5rem, 36vw, 36rem)",
+    "clamp(9rem, 30vw, 30rem)",
+    "clamp(8rem, 27vw, 27rem)",
+    "clamp(10rem, 34vw, 34rem)",
+    "clamp(8.5rem, 29vw, 29rem)",
+  ]
+
+  const splitGraphemes = (s: string) => {
+    if (!s) return []
+    // Prefer Intl.Segmenter if available (handles grapheme clusters & combining marks)
+    try {
+      const Seg = (Intl as any).Segmenter
+      if (typeof Seg === 'function') {
+        return Array.from(new Seg(undefined, { granularity: 'grapheme' }).segment(s), (seg: any) => seg.segment)
+      }
+    } catch (e) {}
+
+    // Fallback: Array.from handles surrogate pairs; it won't perfectly handle all combining marks but is acceptable as a fallback
+    return Array.from(s)
+  }
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -103,6 +149,7 @@ export default function AboutPage() {
         <span
           ref={aboutRef}
           id="about"
+          data-i18n="about.badge"
           className="inline-block rounded-full border-2 px-3 sm:px-6 py-1.5 sm:py-2 text-xs sm:text-sm font-medium transition-all opacity-0 hover:scale-105 hover:bg-black hover:text-white"
         >
             About Me
@@ -120,46 +167,27 @@ export default function AboutPage() {
               fontWeight: "700",
             }}
           >
-            <span className="title-letter" style={{ fontSize: "clamp(10rem, 35vw, 35rem)" }}>
-              C
-            </span>
-            <span className="title-letter" style={{ fontSize: "clamp(9rem, 30vw, 30rem)" }}>
-              R
-            </span>
-            <span className="title-letter" style={{ fontSize: "clamp(11rem, 38vw, 38rem)" }}>
-              E
-            </span>
-            <span className="title-letter" style={{ fontSize: "clamp(8.5rem, 28vw, 28rem)" }}>
-              A
-            </span>
-            <span className="title-letter" style={{ fontSize: "clamp(10rem, 34vw, 34rem)" }}>
-              T
-            </span>
-            <span className="title-letter" style={{ fontSize: "clamp(9rem, 31vw, 31rem)" }}>
-              I
-            </span>
-            <span className="title-letter" style={{ fontSize: "clamp(10.5rem, 36vw, 36rem)" }}>
-              V
-            </span>
-            <span className="title-letter" style={{ fontSize: "clamp(9rem, 30vw, 30rem)" }}>
-              E
-            </span>
-            <span className="title-letter mx-2" style={{ fontSize: "clamp(5rem, 16vw, 16rem)" }}></span>
-            <span className="title-letter" style={{ fontSize: "clamp(10.5rem, 36vw, 36rem)" }}>
-              D
-            </span>
-            <span className="title-letter" style={{ fontSize: "clamp(9rem, 30vw, 30rem)" }}>
-              E
-            </span>
-            <span className="title-letter" style={{ fontSize: "clamp(8rem, 27vw, 27rem)" }}>
-              V
-            </span>
-            <span className="title-letter hidden md:block" style={{ fontSize: "clamp(10rem, 34vw, 34rem)" }}>
-              O
-            </span>
-            <span className="title-letter hidden md:block" style={{ fontSize: "clamp(8.5rem, 29vw, 29rem)" }}>
-              P
-            </span>
+            {(() => {
+              const leftTitle = t('about.title.left', lang) || ''
+              const leftChars = splitGraphemes(leftTitle)
+              return leftChars.map((ch, i) => (
+                <span key={`left-${i}`} className="title-letter" style={{ fontSize: leftSizes[i] ?? 'clamp(9rem, 30vw, 30rem)' }}>{ch}</span>
+              ))
+            })()}
+
+            <span className="title-letter mx-2" style={{ fontSize: "clamp(5rem, 16vw, 16rem)" }} />
+
+            {(() => {
+              const rightTitle = t('about.title.right', lang) || ''
+              const rightChars = splitGraphemes(rightTitle)
+              const total = rightChars.length
+              return rightChars.map((ch, i) => {
+                const isHidden = i >= total - 2
+                return (
+                  <span key={`right-${i}`} className={`title-letter ${isHidden ? 'hidden md:block' : ''}`} style={{ fontSize: rightSizes[i] ?? 'clamp(9rem, 30vw, 30rem)' }}>{ch}</span>
+                )
+              })
+            })()}
           </div>
         </div>
 
@@ -172,39 +200,39 @@ export default function AboutPage() {
         <div ref={quotesRef} className="relative z-20">
           {/* Left Quote */}
           <div className="quote-item absolute left-4 sm:left-8 md:left-16 top-[200px] sm:top-[250px] md:top-[300px] max-w-[200px] sm:max-w-[240px]">
-            <p className="text-xs sm:text-sm md:text-base leading-relaxed hero-jelly">"Code is poetry written</p>
-            <p className="text-xs sm:text-sm md:text-base leading-relaxed hero-jelly">in logic and translated</p>
-            <p className="text-xs sm:text-sm md:text-base leading-relaxed hero-jelly">into possibility."</p>
+            <p className="text-xs sm:text-sm md:text-base leading-relaxed hero-jelly" data-i18n="quote.left.1">"Code is poetry written</p>
+            <p className="text-xs sm:text-sm md:text-base leading-relaxed hero-jelly" data-i18n="quote.left.2">in logic and translated</p>
+            <p className="text-xs sm:text-sm md:text-base leading-relaxed hero-jelly" data-i18n="quote.left.3">into possibility."</p>
           </div>
 
           {/* Right Top Quote */}
           <div className="quote-item absolute right-4 sm:right-8 md:right-16 top-[180px] sm:top-[220px] md:top-[260px] max-w-[200px] sm:max-w-[280px]">
-            <p className="text-xs sm:text-sm md:text-base leading-relaxed text-right hero-jelly">
+            <p className="text-xs sm:text-sm md:text-base leading-relaxed text-right hero-jelly" data-i18n="quote.right.1">
               "Passionate about crafting
             </p>
-            <p className="text-xs sm:text-sm md:text-base leading-relaxed text-right hero-jelly">
+            <p className="text-xs sm:text-sm md:text-base leading-relaxed text-right hero-jelly" data-i18n="quote.right.2">
               experiences that blend
             </p>
-            <p className="text-xs sm:text-sm md:text-base leading-relaxed text-right hero-jelly">
+            <p className="text-xs sm:text-sm md:text-base leading-relaxed text-right hero-jelly" data-i18n="quote.right.3">
               design with functionality."
             </p>
           </div>
 
           {/* Center Bottom Quote */}
           <div className="quote-item absolute left-1/2 -translate-x-1/2 bottom-[-160px] sm:bottom-[-150px] max-w-[280px] sm:max-w-[340px]">
-            <p className="text-xs sm:text-sm md:text-base leading-relaxed text-center hero-jelly">
+            <p className="text-xs sm:text-sm md:text-base leading-relaxed text-center hero-jelly" data-i18n="quote.center.1">
               "Every pixel, every line
             </p>
-            <p className="text-xs sm:text-sm md:text-base leading-relaxed text-center hero-jelly">
+            <p className="text-xs sm:text-sm md:text-base leading-relaxed text-center hero-jelly" data-i18n="quote.center.2">
               of code is an opportunity
             </p>
-            <p className="text-xs sm:text-sm md:text-base leading-relaxed text-center hero-jelly">
+            <p className="text-xs sm:text-sm md:text-base leading-relaxed text-center hero-jelly" data-i18n="quote.center.3">
               to create something
             </p>
-            <p className="text-xs sm:text-sm md:text-base leading-relaxed text-center hero-jelly">
+            <p className="text-xs sm:text-sm md:text-base leading-relaxed text-center hero-jelly" data-i18n="quote.center.4">
               extraordinary and push
             </p>
-            <p className="text-xs sm:text-sm md:text-base leading-relaxed text-center hero-jelly">
+            <p className="text-xs sm:text-sm md:text-base leading-relaxed text-center hero-jelly" data-i18n="quote.center.5">
               the boundaries of design."
             </p>
           </div>
@@ -214,29 +242,29 @@ export default function AboutPage() {
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
             {/* Skills/Specialties */}
             <div className="col-span-1">
-              <h3 className="text-xs sm:text-sm font-bold tracking-wider mb-4 uppercase hero-jelly">Specialties</h3>
+              <h3 className="text-xs sm:text-sm font-bold tracking-wider mb-4 uppercase hero-jelly" data-i18n="specialties.title">Specialties</h3>
               <ul className="space-y-2 text-xs sm:text-sm ">
-                <li className="hero-jelly">Full-Stack Development</li>
-                <li className="hero-jelly">UI/UX Design & Animation</li>
-                <li className="hero-jelly">Creative Problem Solving</li>
+                <li className="hero-jelly" data-i18n="specialties.li1">Full-Stack Development</li>
+                <li className="hero-jelly" data-i18n="specialties.li2">UI/UX Design & Animation</li>
+                <li className="hero-jelly" data-i18n="specialties.li3">Creative Problem Solving</li>
               </ul>
             </div>
 
             {/* Center Column */}
             <div className="col-span-1 flex justify-center items-center hidden lg:block">
               <div className="flex flex-col items-center gap-2">
-                <div className="text-[#B8392D] font-black text-3xl sm:text-4xl md:text-5xl hero-jelly">BUILDING</div>
-                <div className="text-[#B8392D] font-black text-3xl sm:text-4xl md:text-5xl hero-jelly">THE FUTURE</div>
+                <div className="text-[#B8392D] font-black text-3xl sm:text-4xl md:text-5xl hero-jelly" data-i18n="center.building.1">BUILDING</div>
+                <div className="text-[#B8392D] font-black text-3xl sm:text-4xl md:text-5xl hero-jelly" data-i18n="center.building.2">THE FUTURE</div>
               </div>
             </div>
 
             {/* Name */}
             <div className="col-span-1 flex flex-col items-end md:justify-end">
-              <h1 className="text-xl sm:text-3xl md:text-4xl font-black tracking-tight text-right hero-jelly">
+              <h1 className="text-xl sm:text-3xl md:text-4xl font-black tracking-tight text-right hero-jelly" data-i18n="name.turning">
                 TURNING
               </h1>
-              <h1 className="text-xl sm:text-3xl md:text-4xl font-black tracking-tight text-right hero-jelly">IDEAS</h1>
-              <h1 className="text-xl sm:text-3xl md:text-4xl font-black tracking-tight text-right hero-jelly">
+              <h1 className="text-xl sm:text-3xl md:text-4xl font-black tracking-tight text-right hero-jelly" data-i18n="name.ideas">IDEAS</h1>
+              <h1 className="text-xl sm:text-3xl md:text-4xl font-black tracking-tight text-right hero-jelly" data-i18n="name.into">
                 INTO REALITY
               </h1>
             </div>

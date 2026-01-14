@@ -1,3 +1,27 @@
+/* Load Tiro Devanagari directly from Google Fonts to avoid PostCSS resolving a local file */
+@import url('https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Hindi:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+/* Utility class for Hindi text */
+.tiro-hindi, [lang="hi"] {
+	font-family: 'Tiro Devanagari Hindi', serif !important;
+	/* inherit the nearest font-weight (so bold/700 applies when parent requests it) */
+	font-weight: inherit;
+	letter-spacing: 0;
+}
+
+// Hinglish: fallback to Hindi font for Devanagari, else default
+.hinglish, [lang="hinglish"] {
+	font-family: 'Tiro Devanagari Hindi', serif, system-ui, sans-serif;
+	/* allow parent font-weight (bold) to apply to devanagari runs */
+	font-weight: inherit;
+	letter-spacing: 0.01em;
+}
+
+/* Apply Tiro only to wrapped Devanagari spans in hinglish-mode */
+.hinglish-mode .tiro-hindi {
+	font-family: 'Tiro Devanagari Hindi', serif !important;
+}
+
 @import "tailwindcss";
 
 @custom-variant dark (&:is(.dark *));

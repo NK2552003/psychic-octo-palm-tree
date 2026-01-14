@@ -89,11 +89,13 @@ export default function LandingPage() {
           }
         `}
       >
-        <span className="hero-jelly text-[11px] tracking-[0.35em] font-medium text-stone-700 dark:text-teal-300">
+        <span data-i18n="scroll.label" className="hero-jelly text-[11px] tracking-[0.35em] font-medium text-stone-700 dark:text-teal-300">
           SCROLL
         </span>
  <button
           onClick={scrollDown}
+          data-i18n="scroll.button"
+          data-i18n-attr="aria-label"
           aria-label="Scroll down"
           className="transition-opacity
           duration-300

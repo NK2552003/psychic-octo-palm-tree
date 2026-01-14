@@ -29,6 +29,31 @@ export const applyJellyText = (
 
   let charIndex = 0;
 
+  // Grapheme-aware splitter: prefer Intl.Segmenter, fallback to combining-mark-aware joiner
+  const splitGraphemes = (s: string) => {
+    if (typeof (Intl as any).Segmenter === 'function') {
+      try {
+        const seg = new (Intl as any).Segmenter(undefined, { granularity: 'grapheme' })
+        return Array.from(seg.segment(s), (segm: any) => segm.segment)
+      } catch (e) {
+        // fallthrough to fallback
+      }
+    }
+
+    // Fallback: Array.from + attach combining marks to previous base glyph
+    const parts = Array.from(s)
+    const out: string[] = []
+    const markRe = /\p{M}/u
+    for (const ch of parts) {
+      if (markRe.test(ch) && out.length > 0) {
+        out[out.length - 1] = out[out.length - 1] + ch
+      } else {
+        out.push(ch)
+      }
+    }
+    return out
+  }
+
   const animateInline = (node: HTMLElement, indexForDelay?: number) => {
     const i = typeof indexForDelay === "number" ? indexForDelay : charIndex++;
     node.style.opacity = node.style.opacity || "0";
@@ -65,7 +90,9 @@ export const applyJellyText = (
       wordSpan.style.display = "inline-block";
       wordSpan.style.whiteSpace = "nowrap";
 
-      token.split("").forEach((char) => {
+      // Use grapheme-aware split so combining marks (eg. Devanagari matras) stay attached
+      const chars = splitGraphemes(token)
+      chars.forEach((char) => {
         const span = document.createElement("span");
         span.textContent = char;
         span.className = "inline-block jelly-letter";

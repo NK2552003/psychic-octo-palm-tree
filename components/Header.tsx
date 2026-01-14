@@ -66,7 +66,7 @@ export default function Header({ time }: { time: string }) {
     <header className="relative px-4 sm:px-8 py-6">
       <div className="flex justify-between items-center text-xs sm:text-sm text-stone-700 dark:text-teal-300">
         <div>
-          <span className="hero-jelly">
+          <span className="hero-jelly" data-i18n="header.location">
           Haryana, India ·
         </span>
         <span ref={timeRef} className="hero-jelly">

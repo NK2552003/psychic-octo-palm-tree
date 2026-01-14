@@ -29,6 +29,7 @@ import {
 } from "recharts"
 
 gsap.registerPlugin(ScrollTrigger, MotionPathPlugin)
+import { t, type LangCode } from '@/lib/i18n' 
 
 interface MarkerData {
   id: number
@@ -186,6 +187,18 @@ export default function ScrollAnimation() {
   const [isLargeScreen, setIsLargeScreen] = useState<boolean>(false)
   const [isSmallScreen, setIsSmallScreen] = useState<boolean>(false)
   const [hoveredSlice, setHoveredSlice] = useState<number | null>(null) 
+
+  // reactive language so translations update on preferredLangChange
+  const [lang, setLang] = useState<LangCode>(typeof window !== 'undefined' ? ((localStorage.getItem('preferredLang') as LangCode) || 'en') : 'en')
+  useEffect(() => {
+    const onPref = (e: any) => setLang(((e && e.detail) as LangCode) || ((localStorage.getItem('preferredLang') as LangCode) || 'en'))
+    window.addEventListener('preferredLangChange', onPref)
+    window.addEventListener('storage', onPref)
+    return () => {
+      window.removeEventListener('preferredLangChange', onPref)
+      window.removeEventListener('storage', onPref)
+    }
+  }, [])
 
   // Doodles: randomized positions, non-overlapping
   type DoodleSpec = {
@@ -717,14 +730,14 @@ export default function ScrollAnimation() {
 <div className="relative z-20">
           {/* Left Quote */}
           <div className="quote-item absolute left-4 sm:left-8 md:left-16  top-0 md:-top-[80px] max-w-[200px] sm:max-w-[240px]">
-            <p className="text-xs sm:text-sm md:text-base leading-relaxed hero-jelly hero-jelly-fast"> 
+            <p className="text-xs sm:text-sm md:text-base leading-relaxed hero-jelly hero-jelly-fast" data-i18n="skills.quote.left"> 
               In the vast universe of code, every developer carries their own arsenal...
             </p>
           </div>
 
           {/* Right Top Quote */}
           <div className="quote-item absolute right-4 sm:right-8 md:right-16 top-[180px] sm:top-[220px] md:top-[260px] max-w-[200px] sm:max-w-[280px]  hidden md:block ">
-            <p className="text-xs sm:text-sm md:text-base leading-relaxed text-right hero-jelly hero-jelly-fast">
+            <p className="text-xs sm:text-sm md:text-base leading-relaxed text-right hero-jelly hero-jelly-fast" data-i18n="skills.quote.right">
                Tools sharpened through countless hours of debugging, skills honed in the fires of production deployments,
               and wisdom gained from a thousand Stack Overflow searches.
                
@@ -733,7 +746,7 @@ export default function ScrollAnimation() {
 
           {/* Center Bottom Quote */}
           <div className="quote-item absolute left-1/2 -translate-x-1/2 bottom-[-160px] sm:bottom-[-150px] max-w-[280px] sm:max-w-[340px]">
-            <p className="text-xs sm:text-sm md:text-base leading-relaxed text-center hero-jelly hero-jelly-fast">
+            <p className="text-xs sm:text-sm md:text-base leading-relaxed text-center hero-jelly hero-jelly-fast" data-i18n="skills.quote.center">
                            These are not just technologies... they are the building blocks of digital dreams, the instruments of
               creation, the weapons against impossible deadlines.
             </p>
@@ -833,9 +846,9 @@ export default function ScrollAnimation() {
                 }}
               >
                 <h2 className="hero-jelly text-lg sm:text-xl md:text-2xl lg:text-4xl font-bold text-foreground mb-1 leading-tight">
-                  {marker.heading}
+                  {t(`skills.marker.${marker.id}.heading`, lang)}
                 </h2>
-                <p className="hero-jelly hero-jelly-fast text-xs sm:text-sm text-primary font-medium">{marker.subheading}</p>
+                <p className="hero-jelly hero-jelly-fast text-xs sm:text-sm text-primary font-medium">{t(`skills.marker.${marker.id}.subheading`, lang)}</p>
               </div>
 
               <div
@@ -846,7 +859,7 @@ export default function ScrollAnimation() {
                   zIndex: 10,
                 }}
               >
-                <p className="hero-jelly hero-jelly-fast text-xs sm:text-sm md:text-base leading-relaxed">{marker.description}</p>
+                <p className="hero-jelly hero-jelly-fast text-xs sm:text-sm md:text-base leading-relaxed">{t(`skills.marker.${marker.id}.description`, lang)}</p>
               </div>
 
               <div
@@ -871,17 +884,20 @@ export default function ScrollAnimation() {
                   zIndex: 10,
                 }}
               >
-                <h3 className="hero-jelly text-sm sm:text-base font-semibold text-foreground mb-2">Technologies</h3>
+                <h3 className="hero-jelly text-sm sm:text-base font-semibold text-foreground mb-2">{t('skills.technologies', lang)}</h3>
                 <div className="flex flex-wrap gap-2">
                   {marker.skills.map((skill, idx) => {
                     const Icon = skill.icon
+                    const keyName = `skill.${skill.name.toLowerCase().replace(/[^a-z0-9]+/g, '_')}`
+                    const val = t(keyName, lang)
+                    const label = val === keyName ? skill.name : val
                     return (
                       <div
                         key={idx}
                         className="flex items-center gap-1.5 text-xs sm:text-sm text-foreground/90 transition-colors hover:text-primary bg-background/60 backdrop-blur-sm px-2 py-1 rounded-md border border-border/30"
                       >
                         <Icon className="w-3 h-3 sm:w-4 sm:h-4" />
-                        <span className="font-medium hero-jelly">{skill.name}</span>
+                        <span className="font-medium hero-jelly">{label}</span>
                       </div>
                     )
                   })}

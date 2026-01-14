@@ -16,12 +16,49 @@ export default function InstallPrompt({ deferredPrompt, setDeferredPrompt }: { d
       // @ts-ignore
       const choice = await deferredPrompt.userChoice
       if (choice?.outcome === "accepted") {
-        toast.success("App installed — thanks!")
+        try {
+          const gl = (window as any).__i18n
+          if (gl && typeof gl.t === 'function') {
+            const lang = (localStorage.getItem('preferredLang') as any) || 'en'
+            toast.success(gl.t('install.toast.installed', lang))
+          } else {
+            import('../lib/i18n').then(({ t }) => {
+              const lang = (localStorage.getItem('preferredLang') as any) || 'en'
+              toast.success(t('install.toast.installed', lang))
+            }).catch(() => {
+              toast.success('App installed — thanks!')
+            })
+          }
+        } catch (e) { toast.success('App installed — thanks!') }
       } else {
-        toast("Installation dismissed")
+        try {
+          const gl = (window as any).__i18n
+          if (gl && typeof gl.t === 'function') {
+            const lang = (localStorage.getItem('preferredLang') as any) || 'en'
+            toast(gl.t('install.toast.dismissed', lang))
+          } else {
+            import('../lib/i18n').then(({ t }) => {
+              const lang = (localStorage.getItem('preferredLang') as any) || 'en'
+              toast(t('install.toast.dismissed', lang))
+            }).catch(() => {
+              toast('Installation dismissed')
+            })
+          }
+        } catch (e) { toast('Installation dismissed') }
       }
     } catch (err) {
-      toast.error("Install failed")
+      try {
+        const gl = (window as any).__i18n
+        const lang = (localStorage.getItem('preferredLang') as any) || 'en'
+        if (gl && typeof gl.t === 'function') {
+          toast.error(gl.t('install.toast.failed', lang))
+        } else {
+          import('../lib/i18n').then(({ t }) => {
+            const lang = (localStorage.getItem('preferredLang') as any) || 'en'
+            toast.error(t('install.toast.failed', lang))
+          }).catch(() => { toast.error('Install failed') })
+        }
+      } catch (e) { toast.error('Install failed') }
     } finally {
       setDeferredPrompt(null)
     }
@@ -37,13 +74,13 @@ export default function InstallPrompt({ deferredPrompt, setDeferredPrompt }: { d
         </div>
 
         <div className="flex-1 text-center lg:text-left">
-          <div className="font-semibold">Install this app</div>
-          <div className="mt-1 text-foreground/70 text-sm">Install this site as an app for a faster, more integrated experience.</div>
+          <div className="font-semibold" data-i18n="install.title">Install this app</div>
+          <div className="mt-1 text-foreground/70 text-sm" data-i18n="install.subtitle">Install this site as an app for a faster, more integrated experience.</div>
         </div>
 
         <div className="flex w-full lg:w-auto flex-col lg:flex-row gap-2 actions">
-          <button onClick={install} style={{ background: 'var(--btn-accent)', color: 'var(--btn-accent-foreground)' }} className="w-full md:w-auto text-sm px-4 py-2 rounded-md shadow-sm hover:scale-[1.03] active:scale-[0.98] focus:outline-none transition transform duration-150">Install</button>
-          <button onClick={() => setDeferredPrompt(null)} className="w-full md:w-auto text-sm px-4 py-2 rounded-md border border-border hover:bg-muted/60 hover:scale-[1.02] transition transform duration-150">Dismiss</button>
+          <button data-i18n="install.install" onClick={install} style={{ background: 'var(--btn-accent)', color: 'var(--btn-accent-foreground)' }} className="w-full md:w-auto text-sm px-4 py-2 rounded-md shadow-sm hover:scale-[1.03] active:scale-[0.98] focus:outline-none transition transform duration-150">Install</button>
+          <button data-i18n="install.dismiss" onClick={() => setDeferredPrompt(null)} className="w-full md:w-auto text-sm px-4 py-2 rounded-md border border-border hover:bg-muted/60 hover:scale-[1.02] transition transform duration-150">Dismiss</button>
         </div>
       </div>
     </div>
