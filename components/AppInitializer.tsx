@@ -5,12 +5,39 @@ import SplashScreen from "./SplashScreen"
 import Signature from "./signature"
 import InstallPrompt from "./InstallPrompt"
 import CookieConsent from "./CookieConsent"
+import DoodleOverlay from "./DoodleOverlay"
 import { ThemeProvider } from "./theme-provider"
 
 export default function AppInitializer({ children }: { children: React.ReactNode }) {
   const [themeDetected, setThemeDetected] = useState(false)
   const [systemTheme, setSystemTheme] = useState<"light" | "dark">("light")
-  const [splashDone, setSplashDone] = useState(false)
+  const [splashDone, setSplashDone] = useState<boolean>(() => {
+    try {
+      if (typeof window === 'undefined') return false
+      const params = new URLSearchParams(window.location.search)
+      const force = params.get('forceSplash') === '1'
+
+      // If explicitly forcing the splash, remove any previously-set session flag
+      if (force) {
+        try { sessionStorage.removeItem('splashDone') } catch (e) {}
+        return false
+      }
+
+      // If this navigation was a full page reload, show the splash again (clear the session flag)
+      try {
+        const entries = performance.getEntriesByType('navigation') as PerformanceNavigationTiming[]
+        const navType = entries && entries[0] && (entries[0] as any).type ? (entries[0] as any).type : ''
+        if (navType === 'reload') {
+          try { sessionStorage.removeItem('splashDone') } catch (e) {}
+          return false
+        }
+      } catch (e) {}
+
+      return sessionStorage.getItem('splashDone') === '1'
+    } catch (e) {
+      return false
+    }
+  })
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-color-scheme: dark)")
@@ -160,8 +187,14 @@ export default function AppInitializer({ children }: { children: React.ReactNode
 
   return (
     <ThemeProvider attribute="class" defaultTheme={systemTheme}>
-      {!splashDone && <SplashScreen onLoaded={() => setSplashDone(true)} />}
+      {!splashDone && (
+        <SplashScreen onLoaded={() => {
+          setSplashDone(true)
+          try { sessionStorage.setItem('splashDone', '1') } catch (e) {}
+        }} />
+      )}
       {splashDone && children}
+      {splashDone && <DoodleOverlay />}
       {splashDone && <InstallPrompt deferredPrompt={deferredPrompt} setDeferredPrompt={setDeferredPrompt} />}
       {splashDone && <CookieConsent />}
     </ThemeProvider>

@@ -194,6 +194,11 @@ export const extraTranslations: Record<string, Record<LangCode, string>> = {
     hinglish: "used to cache resources and make page loads faster.",
   },
   "cookie.essential": { en: "Essential cookies", hi: "ज़रूरी कुकीज़", hinglish: "Essential cookies" },
+  "cookie.note": {
+    en: "You can clear or block cookies in your browser at any time. If you reject performance cookies, the site will still work but may be slower.",
+    hi: "आप किसी भी समय अपने ब्राउज़र में कुकीज़ हटा या ब्लॉक कर सकते हैं। यदि आप प्रदर्शन कुकीज़ को अस्वीकार करते हैं, तो साइट अभी भी काम करेगी लेकिन धीमी हो सकती है।",
+    hinglish: "You browser में कभी भी cookies clear या block कर सकते हो। अगर performance cookies reject करोगे तो साइट धीरे चल सकती है।",
+  },
   "cookie.essential.desc": {
     en: "required for navigation and basic functionality.",
     hi: "नेविगेशन और बुनियादी कार्यक्षमता के लिए आवश्यक।",
