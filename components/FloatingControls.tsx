@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import type { MouseEvent } from "react";
 import { createPortal } from "react-dom";
 import { translateDocument, t } from "@/lib/i18n";
+// Use inline outlined SVGs for language icons to avoid lucide-react HMR issues
 
 export default function FloatingControls({
   toggleTheme,
@@ -274,7 +275,7 @@ export default function FloatingControls({
         bg-white/40 dark:bg-black/40
 
         transition-all duration-500 ease-out
-     px-2 py-2 gap-2 shadow-md
+     px-2 py-2 shadow-md
       `}
     >
       {/* LANGUAGE SELECTOR */}
@@ -283,11 +284,17 @@ export default function FloatingControls({
           <button
             key={opt.code}
             onClick={() => { setLang(opt.code); applyNow(opt.code as 'en'|'hi'|'hinglish') }}
-            className={`w-8 h-8 flex items-center justify-center rounded-xl transition-all duration-200 hover:scale-110 active:scale-95 text-sm font-medium border ${lang === opt.code ? "bg-white text-stone-900 border-stone-200 dark:bg-stone-900 dark:text-white dark:border-white/20 scale-105 ring-2 ring-teal-300/40" : "bg-white/30 dark:bg-white/5 border-stone-200 dark:border-white/10"}`}
+            className={`w-8 h-8 flex items-center justify-center rounded-xl transition-all duration-200 hover:scale-110 active:scale-95 text-sm font-medium border ${lang === opt.code ? "bg-white text-stone-900 border-stone-200 dark:bg-stone-900 dark:text-white dark:border-white/20 scale-105 ring-1" : "bg-white/30 dark:bg-white/5 border-stone-200 dark:border-white/10"}`}
             aria-label={`Select ${opt.title}`}
             title={opt.title}
           >
-            {opt.label}
+            {opt.code === 'en' ? (
+              <span className="text-sm font-medium">E</span>
+            ) : opt.code === 'hi' ? (
+              <span className="tiro-hindi text-sm font-medium">ह</span>
+            ) : (
+              <span className="text-sm font-medium">H</span>
+            )} 
           </button>
         ))}
       </div>
@@ -303,6 +310,7 @@ export default function FloatingControls({
           hover:scale-110
           hover:bg-black/5 dark:hover:bg-white/10
           active:scale-95
+          border border-stone-200 dark:border-white/20 
         "
         aria-label="Toggle theme"
       >
