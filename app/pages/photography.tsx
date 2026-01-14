@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
+import { t, type LangCode } from '@/lib/i18n'
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { shouldReduceAnimations } from "../../lib/deviceDetection";
@@ -22,6 +23,14 @@ export default function WildlifePage() {
   const quietRef = useRef<HTMLElement | null>(null);
   const framesRef = useRef<HTMLElement | null>(null);
   const [savedScroll, setSavedScroll] = useState<number | null>(null);
+  // reactive language state for translations
+  const [lang, setLang] = useState<LangCode>(typeof window !== 'undefined' ? ((localStorage.getItem('preferredLang') as LangCode) || 'en') : 'en')
+  useEffect(() => {
+    const onPref = (e: any) => setLang(((e && e.detail) as LangCode) || ((localStorage.getItem('preferredLang') as LangCode) || 'en'))
+    window.addEventListener('preferredLangChange', onPref)
+    window.addEventListener('storage', onPref)
+    return () => { window.removeEventListener('preferredLangChange', onPref); window.removeEventListener('storage', onPref) }
+  }, [])
 
   // Nature-themed two-word titles
   const natureTitles = [
@@ -487,7 +496,7 @@ export default function WildlifePage() {
                   src={
                     images[currentGalleryIndex].image || "/placeholder.svg"
                   }
-                  alt={images[currentGalleryIndex].name}
+                  alt={t(`photography.title.${currentGalleryIndex}`, lang)}
                   className="h-48 w-40 sm:h-64 sm:w-52 md:h-80 md:w-64 lg:h-96 lg:w-80 object-cover grayscale shadow-2xl transition-all duration-500 group-hover:scale-105 group-hover:grayscale-0"
                 />
                 <div className="pointer-events-none absolute inset-0 hidden dark:block mix-blend-color bg-teal-600/30" />
@@ -522,7 +531,7 @@ export default function WildlifePage() {
                       <div className="relative">
                         <img
                           src={img.image || "/placeholder.svg"}
-                          alt={img.name}
+                          alt={t(`photography.title.${index}`, lang)}
                           className="h-32 w-24 sm:h-40 sm:w-32 md:h-48 md:w-40 lg:h-56 lg:w-44 object-cover grayscale transition-all duration-500"
                         />
                         <div className="pointer-events-none absolute inset-0 hidden dark:block mix-blend-color bg-teal-600/30" />
@@ -559,7 +568,7 @@ export default function WildlifePage() {
                       <img
                         ref={detailImageRef}
                         src={images[selectedImage].detailImage}
-                        alt={images[selectedImage].name}
+                        alt={t(`photography.title.${selectedImage}`, lang)}
                         className="w-full h-full object-contain max-h-[70vh]"
                         onError={(e) => {
                           console.error('Image failed to load:', images[selectedImage].detailImage);
@@ -585,10 +594,10 @@ export default function WildlifePage() {
 
                           <div>
                             <p className="text-xs md:text-sm font-bold mb-1 md:mb-2">
-                              [ {images[selectedImage].name} ]
+                              [ {t(`photography.title.${selectedImage}`, lang)} ]
                             </p>
                             <p className="text-xs md:text-sm lg:text-base leading-relaxed">
-                              {images[selectedImage].quote}
+                              {t(`photography.quote.${selectedImage}`, lang)}
                             </p>
                           </div>
                         </div>
@@ -599,7 +608,7 @@ export default function WildlifePage() {
                         <img
                           ref={detailBottomImageRef}
                           src={images[selectedImage].detailBottomImage}
-                          alt={`${images[selectedImage].name} scene`}
+                          alt={`${t(`photography.title.${selectedImage}`, lang)} scene`}
                           className="w-full h-full object-cover grayscale md:block hidden"
                           onError={(e) => {
                             console.error('Bottom image failed to load:', images[selectedImage].detailBottomImage);

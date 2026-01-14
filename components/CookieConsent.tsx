@@ -49,24 +49,40 @@ export default function CookieConsent() {
     setCookie("cookie_consent", "accepted")
     setCookie("performance_cookies", "1")
     setVisible(false)
-    import('../lib/i18n').then(({ t }) => {
+    try {
+      const gl = (window as any).__i18n
       const lang = (localStorage.getItem('preferredLang') as any) || 'en'
-      toast.success(t('cookie.accept.toast', lang))
-    }).catch(()=>{
-      toast.success('Cookies accepted — thanks!')
-    })
+      if (gl && typeof gl.t === 'function') {
+        toast.success(gl.t('cookie.accept.toast', lang))
+      } else {
+        import('../lib/i18n').then(({ t }) => {
+          const lang = (localStorage.getItem('preferredLang') as any) || 'en'
+          toast.success(t('cookie.accept.toast', lang))
+        }).catch(()=>{
+          toast.success('Cookies accepted — thanks!')
+        })
+      }
+    } catch (e) { toast.success('Cookies accepted — thanks!') }
   }
 
   const reject = () => {
     setCookie("cookie_consent", "rejected")
     setCookie("performance_cookies", "0")
     setVisible(false)
-    import('../lib/i18n').then(({ t }) => {
+    try {
+      const gl = (window as any).__i18n
       const lang = (localStorage.getItem('preferredLang') as any) || 'en'
-      toast(t('cookie.reject.toast', lang))
-    }).catch(()=>{
-      toast('You have rejected performance cookies')
-    })
+      if (gl && typeof gl.t === 'function') {
+        toast(gl.t('cookie.reject.toast', lang))
+      } else {
+        import('../lib/i18n').then(({ t }) => {
+          const lang = (localStorage.getItem('preferredLang') as any) || 'en'
+          toast(t('cookie.reject.toast', lang))
+        }).catch(()=>{
+          toast('You have rejected performance cookies')
+        })
+      }
+    } catch (e) { toast('You have rejected performance cookies') }
   }
 
   if (!visible) return null

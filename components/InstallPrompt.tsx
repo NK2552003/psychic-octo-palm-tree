@@ -16,27 +16,49 @@ export default function InstallPrompt({ deferredPrompt, setDeferredPrompt }: { d
       // @ts-ignore
       const choice = await deferredPrompt.userChoice
       if (choice?.outcome === "accepted") {
-        import('../lib/i18n').then(({ t }) => {
-          const lang = (localStorage.getItem('preferredLang') as any) || 'en'
-          toast.success(t('install.toast.installed', lang))
-        }).catch(() => {
-          toast.success('App installed — thanks!')
-        })
+        try {
+          const gl = (window as any).__i18n
+          if (gl && typeof gl.t === 'function') {
+            const lang = (localStorage.getItem('preferredLang') as any) || 'en'
+            toast.success(gl.t('install.toast.installed', lang))
+          } else {
+            import('../lib/i18n').then(({ t }) => {
+              const lang = (localStorage.getItem('preferredLang') as any) || 'en'
+              toast.success(t('install.toast.installed', lang))
+            }).catch(() => {
+              toast.success('App installed — thanks!')
+            })
+          }
+        } catch (e) { toast.success('App installed — thanks!') }
       } else {
-        import('../lib/i18n').then(({ t }) => {
-          const lang = (localStorage.getItem('preferredLang') as any) || 'en'
-          toast(t('install.toast.dismissed', lang))
-        }).catch(() => {
-          toast('Installation dismissed')
-        })
+        try {
+          const gl = (window as any).__i18n
+          if (gl && typeof gl.t === 'function') {
+            const lang = (localStorage.getItem('preferredLang') as any) || 'en'
+            toast(gl.t('install.toast.dismissed', lang))
+          } else {
+            import('../lib/i18n').then(({ t }) => {
+              const lang = (localStorage.getItem('preferredLang') as any) || 'en'
+              toast(t('install.toast.dismissed', lang))
+            }).catch(() => {
+              toast('Installation dismissed')
+            })
+          }
+        } catch (e) { toast('Installation dismissed') }
       }
     } catch (err) {
-      import('../lib/i18n').then(({ t }) => {
+      try {
+        const gl = (window as any).__i18n
         const lang = (localStorage.getItem('preferredLang') as any) || 'en'
-        toast.error(t('install.toast.failed', lang))
-      }).catch(() => {
-        toast.error('Install failed')
-      })
+        if (gl && typeof gl.t === 'function') {
+          toast.error(gl.t('install.toast.failed', lang))
+        } else {
+          import('../lib/i18n').then(({ t }) => {
+            const lang = (localStorage.getItem('preferredLang') as any) || 'en'
+            toast.error(t('install.toast.failed', lang))
+          }).catch(() => { toast.error('Install failed') })
+        }
+      } catch (e) { toast.error('Install failed') }
     } finally {
       setDeferredPrompt(null)
     }

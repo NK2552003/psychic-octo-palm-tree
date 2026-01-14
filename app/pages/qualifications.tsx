@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ChevronDown, GraduationCap, Award, BookOpen } from 'lucide-react';
 import { gsap } from 'gsap';
+import { t, type LangCode } from '@/lib/i18n'
 
 interface Qualification {
   category: string;
@@ -117,10 +118,17 @@ const qualificationsData: Qualification[] = [
   },
 ];
 
-const QualificationCard: React.FC<{ qualification: Qualification; index: number }> = ({
+const QualificationCard: React.FC<{ qualification: Qualification; index: number; lang: LangCode }> = ({
   qualification,
   index,
+  lang,
 }) => {
+  const getTrans = (key: string, fallback?: string) => {
+    try {
+      const val = t(key, lang)
+      return val === key ? (fallback ?? '') : val
+    } catch (e) { return fallback ?? '' }
+  }
   const [isExpanded, setIsExpanded] = useState(false);
   const detailsRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -164,27 +172,27 @@ const QualificationCard: React.FC<{ qualification: Qualification; index: number 
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 min-w-0">
            <div className='flex w-full justify-between '>
-              {qualification.institution && (
+              {(getTrans(`qual.entry.${index}.institution`, qualification.institution)) && (
             <p className="text-foreground/90 text-sm sm:text-base mb-1 hero-jelly">
-              {qualification.institution}
+              {getTrans(`qual.entry.${index}.institution`, qualification.institution)}
             </p>
           )} 
-           {qualification.duration && (
-            <p className="text-foreground/60 text-sm md:text-base mb-2 hidden md:block hero-jelly">{qualification.duration}</p>
+           {(getTrans(`qual.entry.${index}.duration`, qualification.duration)) && (
+            <p className="text-foreground/60 text-sm md:text-base mb-2 hidden md:block hero-jelly">{getTrans(`qual.entry.${index}.duration`, qualification.duration)}</p>
           )} 
            </div>
           <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-2">
             <h3 className="text-xl md:text-2xl lg:text-3xl font-bold uppercase tracking-tight hero-jelly">
-              {qualification.title}
+              {getTrans(`qual.entry.${index}.title`, qualification.title)}
             </h3> 
           </div> 
        
-          {qualification.duration && (
-            <p id="qualifications" className="text-foreground/60 text-sm md:text-base mb-2 block md:hidden">{qualification.duration}</p>
+          {(getTrans(`qual.entry.${index}.duration`, qualification.duration)) && (
+            <p id="qualifications" className="text-foreground/60 text-sm md:text-base mb-2 block md:hidden">{getTrans(`qual.entry.${index}.duration`, qualification.duration)}</p>
           )} 
-          {qualification.description && (
+          {(getTrans(`qual.entry.${index}.description`, qualification.description)) && (
             <p className="text-foreground/70 text-sm sm:text-base md:text-lg">
-              {qualification.description}
+              {getTrans(`qual.entry.${index}.description`, qualification.description)}
             </p>
           )} 
         </div>
@@ -208,43 +216,50 @@ const QualificationCard: React.FC<{ qualification: Qualification; index: number 
         >
           <div className="mt-6 pt-6 border-t border-border/30">
             <p className="text-sm md:text-base text-foreground/70 italic mb-4">
-              {qualification.details.challenge} {qualification.details.solution} {qualification.details.result}
+              {qualification.details && (
+                <>
+                  {getTrans(`qual.entry.${index}.details.challenge`, qualification.details.challenge)} {getTrans(`qual.entry.${index}.details.solution`, qualification.details.solution)} {getTrans(`qual.entry.${index}.details.result`, qualification.details.result)}
+                </>
+              )}
             </p> 
 
             {qualification.details.academic?.semesters && (
               <div className="mb-4">
-                <h5 data-i18n="qual.semesters" className="font-semibold mb-2 text-sm md:text-base">Semesters</h5>
+                <h5 data-i18n="qual.semesters" className="font-semibold mb-2 text-sm md:text-base">{t('qual.semesters', lang)}</h5>
                 <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-8 gap-2 text-xs md:text-sm">
-                  {qualification.details.academic.semesters.map((s, idx) => (
-                    <div
-                      key={idx}
-                      className={`p-2 rounded-md border text-center ${
-                        s.percent === 'Ongoing'
-                          ? 'bg-accent/10 border-accent/30'
-                          : s.percent === 'Pending'
-                          ? 'bg-background/20 border-dashed border-border/30'
-                          : 'bg-card/80 border-border/10'
-                      }`}>
-                      <div className="font-semibold text-sm md:text-base">S{s.sem}</div>
-                      <div className="text-xs text-foreground/70 text-sm md:text-base">{s.percent}</div>
-                    </div>
-                  ))}
+                  {qualification.details.academic.semesters.map((s, idx) => {
+                    const displayPercent = s.percent === 'Ongoing' ? t('qual.status.ongoing', lang) : s.percent === 'Pending' ? t('qual.status.pending', lang) : s.percent
+                    return (
+                      <div
+                        key={idx}
+                        className={`p-2 rounded-md border text-center ${
+                          s.percent === 'Ongoing'
+                            ? 'bg-accent/10 border-accent/30'
+                            : s.percent === 'Pending'
+                            ? 'bg-background/20 border-dashed border-border/30'
+                            : 'bg-card/80 border-border/10'
+                        }`}>
+                        <div className="font-semibold text-sm md:text-base">S{s.sem}</div>
+                        <div className="text-xs text-foreground/70 text-sm md:text-base">{displayPercent}</div>
+                      </div>
+                    )
+                  })}
                 </div>
               </div>
             )}
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className='border p-2 md:p-4 rounded-xl'>
-                <h4 data-i18n="qual.challenge" className="font-bold text-sm md:text-base mb-2">Challenge</h4>
-                <p className="text-sm text-foreground/70">{qualification.details.challenge}</p>
+                <h4 data-i18n="qual.challenge" className="font-bold text-sm md:text-base mb-2">{t('qual.challenge', lang)}</h4>
+                <p className="text-sm text-foreground/70">{getTrans(`qual.entry.${index}.details.challenge`, qualification.details.challenge)}</p>
               </div>
               <div className='border p-2 md:p-4 rounded-xl'>
-                <h4 className="font-bold text-sm mb-2">Solution</h4>
-                <p className="text-sm text-foreground/70">{qualification.details.solution}</p>
+                <h4 data-i18n="qual.solution" className="font-bold text-sm mb-2">{t('qual.solution', lang)}</h4>
+                <p className="text-sm text-foreground/70">{getTrans(`qual.entry.${index}.details.solution`, qualification.details.solution)}</p>
               </div>
               <div className='border p-2 md:p-4 rounded-xl'>
-                <h4 className="font-bold text-sm mb-2">Result</h4>
-                <p className="text-sm text-foreground/70">{qualification.details.result}</p>
+                <h4 data-i18n="qual.result" className="font-bold text-sm mb-2">{t('qual.result', lang)}</h4>
+                <p className="text-sm text-foreground/70">{getTrans(`qual.entry.${index}.details.result`, qualification.details.result)}</p>
               </div>
             </div>
           </div>
@@ -257,6 +272,17 @@ const QualificationCard: React.FC<{ qualification: Qualification; index: number 
 export default function QualificationsSection() {
   const myRef = useRef<HTMLElement | null>(null);
   const journeyRef = useRef<HTMLElement | null>(null);
+  const [lang, setLang] = useState<LangCode>(typeof window !== 'undefined' ? ((localStorage.getItem('preferredLang') as LangCode) || 'en') : 'en')
+
+  useEffect(() => {
+    const onPref = (e: any) => setLang(((e && e.detail) as LangCode) || ((localStorage.getItem('preferredLang') as LangCode) || 'en'))
+    window.addEventListener('preferredLangChange', onPref)
+    window.addEventListener('storage', onPref)
+    return () => {
+      window.removeEventListener('preferredLangChange', onPref)
+      window.removeEventListener('storage', onPref)
+    }
+  }, [])
 
   useEffect(() => {
     const cards = document.querySelectorAll('.qual-card');
@@ -312,8 +338,8 @@ export default function QualificationsSection() {
 
   return (
     <div className="p-2 sm:p-12 lg:p-16">
-         <span id="qualifications" className="hero-jelly inline-block rounded-full border-2 px-3 sm:px-6 py-1.5 sm:py-2 text-xs sm:text-sm font-medium transition-all hover:scale-105 hover:bg-black hover:text-white">
-            Qualification & Certifications
+         <span id="qualifications" data-i18n="qual.badge" className="hero-jelly inline-block rounded-full border-2 px-3 sm:px-6 py-1.5 sm:py-2 text-xs sm:text-sm font-medium transition-all hover:scale-105 hover:bg-black hover:text-white">
+            {t('qual.badge', lang)}
           </span>
       <div className="max-w-7xl mx-auto">
         <div
@@ -362,8 +388,8 @@ export default function QualificationsSection() {
           </div>
         <div className="">
           <div className="p-6 sm:p-8 lg:p-10">
-            <p className="text-foreground/70 text-center mx-auto max-w-3xl mb-8 text-[15px] sm:text-base md:text-lg leading-relaxed italic hero-jelly">
-              Every entry below is a short chapter—click to unfold the challenge, the solution, and the result.
+            <p data-i18n="qual.intro" className="text-foreground/70 text-center mx-auto max-w-3xl mb-8 text-[15px] sm:text-base md:text-lg leading-relaxed italic hero-jelly">
+              {t('qual.intro', lang)}
             </p>
             <div className="relative">
               {/* vertical timeline line (desktop) */}
@@ -385,10 +411,11 @@ export default function QualificationsSection() {
                       <QualificationCard
                         qualification={qualification}
                         index={index}
+                        lang={lang}
                       />
                     </div>
                   </div>
-                ))} 
+                ))}
               </div>
             </div>
           </div>

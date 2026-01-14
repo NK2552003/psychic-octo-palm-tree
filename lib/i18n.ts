@@ -169,11 +169,186 @@ export const extraTranslations: Record<string, Record<LangCode, string>> = {
   'projects.section.3.description': { en: 'Stories of code, insights from battles fought, and wisdom gained through debugging.', hi: 'कोड की कहानियाँ, समस्याओं से मिली समझ और डीबगिंग के अनुभव से प्राप्त ज्ञान।', hinglish: 'Stories of code, insights from battles fought, and wisdom gained through debugging.' },
 
   // Photography
-  'photography.badge': { en: 'Photography', hi: 'फ़ोटोग्राफी', hinglish: 'Photography' },
+  'photography.badge': { en: 'Photography', hi: 'फ़ोटोग्राफ़ी', hinglish: 'Photography' },
   'photography.top': { en: 'TOP SHOT', hi: 'सर्वोत्तम शॉट', hinglish: 'TOP SHOT' },
+
+  // Qualifications entries
+  'qual.entry.0.title': { en: 'Secondary Schooling', hi: 'माध्यमिक शिक्षा', hinglish: 'Secondary Schooling' },
+  'qual.entry.0.institution': { en: 'Honey Modern High School', hi: 'हनी मॉडर्न हाई स्कूल', hinglish: 'Honey Modern High School' },
+  'qual.entry.0.duration': { en: '2018 - 2019', hi: '2018 - 2019', hinglish: '2018 - 2019' },
+  'qual.entry.0.description': { en: 'Completed with distinction in Science and Mathematics. Scored 87.6% aggregate', hi: 'विज्ञान और गणित में उत्कृष्टता के साथ पूरा किया। कुल मिलाकर 87.6%', hinglish: 'Completed with distinction in Science and Mathematics. Scored 87.6% aggregate' },
+
+  'qual.entry.1.title': { en: 'Senior Secondary Schooling', hi: 'हायर सेकेंडरी शिक्षा', hinglish: 'Senior Secondary Schooling' },
+  'qual.entry.1.institution': { en: 'Hindu Sr. Sec. School', hi: 'हिंदू सीनियर सेकेंडरी स्कूल', hinglish: 'Hindu Sr. Sec. School' },
+  'qual.entry.1.duration': { en: '2020 - 2021', hi: '2020 - 2021', hinglish: '2020 - 2021' },
+  'qual.entry.1.description': { en: 'Science Stream with 80.2% aggregate', hi: 'साइंस स्ट्रीम, कुल मिलाकर 80.2%', hinglish: 'Science Stream with 80.2% aggregate' },
+
+  'qual.entry.2.title': { en: 'B.Tech in Computer Science', hi: 'बी.टेक कंप्यूटर साइंस', hinglish: 'B.Tech in Computer Science' },
+  'qual.entry.2.institution': { en: "University: Tula's Institute, Dehradun aff. VMSBUTU", hi: 'यूनिवर्सिटी: तुला इंस्टिट्यूट, देहरादून (VMSBUTU से संबद्ध)', hinglish: "University: Tula's Institute, Dehradun aff. VMSBUTU" },
+  'qual.entry.2.duration': { en: '2022 - Present', hi: '2022 - वर्तमान', hinglish: '2022 - Present' },
+  'qual.entry.2.description': { en: 'Specialized in Software Engineering and Data Structures', hi: 'सॉफ़्टवेयर इंजीनियरिंग और डेटा स्ट्रक्चर में विशेषज्ञता', hinglish: 'Specialized in Software Engineering and Data Structures' },
+  'qual.entry.2.details.challenge': { en: 'Balancing rigorous coursework with internships and projects.', hi: 'कठोर पाठ्यक्रम को इंटर्नशिप और परियोजनाओं के साथ संतुलित करना।', hinglish: 'Balancing rigorous coursework with internships and projects.' },
+  'qual.entry.2.details.solution': { en: 'Focused on core subjects, practical projects and continuous learning.', hi: 'मुख्य विषयों, व्यावहारिक परियोजनाओं और लगातार सीखने पर ध्यान दिया।', hinglish: 'Focused on core subjects, practical projects and continuous learning.' },
+  'qual.entry.2.details.result': { en: 'Consistent performance and multiple shipped projects.', hi: 'सतत प्रदर्शन और कई सफल परियोजनाएँ।', hinglish: 'Consistent performance and multiple shipped projects.' },
+
+  'qual.entry.3.title': { en: 'Web Development Internship', hi: 'वेब विकास इंटर्नशिप', hinglish: 'Web Development Internship' },
+  'qual.entry.3.institution': { en: 'Internshala', hi: 'इंटरनशाला', hinglish: 'Internshala' },
+  'qual.entry.3.duration': { en: 'Aug-Oct 2023', hi: 'अगस्त-अक्टूबर 2023', hinglish: 'Aug-Oct 2023' },
+  'qual.entry.3.description': { en: 'Completed a web dev internship via Internshala, working with HTML, CSS, JS, React, and Node.js.', hi: 'Internshala के माध्यम से वेब डेवलपमेंट इंटर्नशिप पूरी की, HTML, CSS, JS, React और Node.js के साथ काम किया।', hinglish: 'Completed a web dev internship via Internshala, working with HTML, CSS, JS, React, and Node.js.' },
+  'qual.entry.3.details.challenge': { en: 'Required expertise in modern web technologies and responsive design principles.', hi: 'आधुनिक वेब तकनीक और उत्तरदायी डिज़ाइन सिद्धांतों में विशेषज्ञता की आवश्यकता।', hinglish: 'Required expertise in modern web technologies and responsive design principles.' },
+  'qual.entry.3.details.solution': { en: 'Mastered React, Node.js, and database management through hands-on projects.', hi: 'हाथों-हाथ परियोजनाओं के माध्यम से React, Node.js और डेटाबेस प्रबंधन में महारत हासिल की।', hinglish: 'Mastered React, Node.js, and database management through hands-on projects.' },
+  'qual.entry.3.details.result': { en: 'Built 12+ responsive web applications serving 10,000+ users.', hi: '12+ उत्तरदायी वेब एप्लिकेशन बनाईं जो 10,000+ उपयोगकर्ताओं की सेवा करते हैं।', hinglish: 'Built 12+ responsive web applications serving 10,000+ users.' },
+
+  'qual.entry.4.title': { en: 'App Development', hi: 'ऐप विकास', hinglish: 'App Development' },
+  'qual.entry.4.institution': { en: 'Flutter & Dart Course - Udemy', hi: 'Flutter & Dart कोर्स - Udemy', hinglish: 'Flutter & Dart Course - Udemy' },
+  'qual.entry.4.duration': { en: 'Apr-Jun 2024', hi: 'अप्रैल-जून 2024', hinglish: 'Apr-Jun 2024' },
+  'qual.entry.4.description': { en: 'Completed a Flutter & Dart course on Udemy, learning to build cross-platform mobile apps.', hi: 'Udemy पर Flutter & Dart कोर्स पूरा किया, क्रॉस-प्लैटफ़ॉर्म मोबाइल ऐप्स बनाना सीखा।', hinglish: 'Completed a Flutter & Dart course on Udemy, learning to build cross-platform mobile apps.' },
+  'qual.entry.4.details.challenge': { en: 'Needed to master cross-platform mobile development for rapid deployment.', hi: 'तेज़ तैनाती के लिए क्रॉस-प्लैटफ़ॉर्म मोबाइल विकास में माहिर होना आवश्यक था।', hinglish: 'Needed to master cross-platform mobile development for rapid deployment.' },
+  'qual.entry.4.details.solution': { en: 'Completed comprehensive Flutter certification covering UI/UX, state management, and API integration.', hi: 'UI/UX, स्टेट मैनेजमेंट और API इंटीग्रेशन कवर करने वाली Flutter प्रमाणन पूरी की।', hinglish: 'Completed comprehensive Flutter certification covering UI/UX, state management, and API integration.' },
+  'qual.entry.4.details.result': { en: 'Successfully deployed 5 production apps with 50% reduced development time.', hi: '5 प्रोडक्शन ऐप्स सफलतापूर्वक डिप्लॉय कीं, विकास समय में 50% कमी।', hinglish: 'Successfully deployed 5 production apps with 50% reduced development time.' },
+
+  'qual.entry.5.title': { en: 'React Course', hi: 'React कोर्स', hinglish: 'React Course' },
+  'qual.entry.5.institution': { en: 'Udemy', hi: 'Udemy', hinglish: 'Udemy' },
+  'qual.entry.5.duration': { en: 'September 2025', hi: 'सितंबर 2025', hinglish: 'September 2025' },
+  'qual.entry.5.description': { en: 'Pursuing an advanced React course covering components, hooks, state, and SPA architecture.', hi: 'कम्पोनेंट्स, hooks, state और SPA आर्किटेक्चर कवर करने वाला उन्नत React कोर्स कर रहा हूँ।', hinglish: 'Pursuing an advanced React course covering components, hooks, state, and SPA architecture.' },
+  'qual.entry.5.details.challenge': { en: 'Mastering advanced React concepts and SPA architecture for scalable web apps.', hi: 'स्केलेबल वेब ऐप्स के लिए उन्नत React अवधारणाओं और SPA आर्किटेक्चर में महारत हासिल करना।', hinglish: 'Mastering advanced React concepts and SPA architecture for scalable web apps.' },
+  'qual.entry.5.details.solution': { en: 'Completed an advanced React course focused on hooks, component architecture, and performance optimization.', hi: 'hooks, component architecture और प्रदर्शन अनुकूलन पर केंद्रित उन्नत React कोर्स पूरा किया।', hinglish: 'Completed an advanced React course focused on hooks, component architecture, and performance optimization.' },
+  'qual.entry.5.details.result': { en: 'Built multiple scalable, responsive SPAs with improved maintainability and speed.', hi: 'बेहतर रखरखाव और गति के साथ कई स्केलेबल, उत्तरदायी SPAs बनाए।', hinglish: 'Built multiple scalable, responsive SPAs with improved maintainability and speed.' },
+
+  'qual.entry.6.title': { en: 'Big Data & Cloud Computing', hi: 'बिग डेटा और क्लाउड कंप्यूटिंग', hinglish: 'Big Data & Cloud Computing' },
+  'qual.entry.6.institution': { en: 'Campus Shutra', hi: 'Campus Shutra', hinglish: 'Campus Shutra' },
+  'qual.entry.6.duration': { en: 'November 2025', hi: 'नवंबर 2025', hinglish: 'November 2025' },
+  'qual.entry.6.description': { en: 'Completed a Big Data & Cloud Computing course at Campus Shutra, learning distributed data processing and cloud infrastructure.', hi: 'Campus Shutra में Big Data और Cloud Computing कोर्स पूरा किया, वितरित डेटा प्रोसेसिंग और क्लाउड इंफ़्रास्ट्रक्चर सीखा।', hinglish: 'Completed a Big Data & Cloud Computing course at Campus Shutra, learning distributed data processing and cloud infrastructure.' },
+  'qual.entry.6.details.challenge': { en: 'Handling massive datasets and deploying scalable analytics in the cloud.', hi: 'विशाल डेटासेट को संभालना और क्लाउड में स्केलेबल एनालिटिक्स तैनात करना।', hinglish: 'Handling massive datasets और क्लाउड में scalable analytics तैनात करना।' },
+  'qual.entry.6.details.solution': { en: 'Mastered Hadoop, Spark, and AWS cloud services for distributed computing and data engineering.', hi: 'वितरित कंप्यूटिंग और डेटा इंजीनियरिंग के लिए Hadoop, Spark और AWS क्लाउड सेवाओं में महारत हासिल की।', hinglish: 'Mastered Hadoop, Spark, और AWS cloud services for distributed computing और data engineering.' },
+  'qual.entry.6.details.result': { en: 'Built and deployed scalable big data pipelines and cloud-based analytics platforms.', hi: 'स्केलेबल बिग डेटा पाइपलाइनों और क्लाउड-आधारित एनालिटिक्स प्लेटफ़ॉर्म का निर्माण और तैनाती की।', hinglish: 'Built and deployed scalable big data pipelines और cloud-based analytics platforms.' },
+
+  'qual.status.ongoing': { en: 'Ongoing', hi: 'चालू', hinglish: 'Ongoing' },
+  'qual.status.pending': { en: 'Pending', hi: 'लंबित', hinglish: 'Pending' },
+  // Titles (nature-themed two-word titles)
+  'photography.title.0': { en: 'Silent Woods', hi: 'मौन जंगल', hinglish: 'Silent Woods' },
+  'photography.title.1': { en: 'Golden Dawn', hi: 'स्वर्णिम भोर', hinglish: 'Golden Dawn' },
+  'photography.title.2': { en: 'Misty Lake', hi: 'धुँधला झील', hinglish: 'Misty Lake' },
+  'photography.title.3': { en: 'Wild Bloom', hi: 'जंगली खिलना', hinglish: 'Wild Bloom' },
+  'photography.title.4': { en: 'Crystal River', hi: 'स्फटिक नदी', hinglish: 'Crystal River' },
+  'photography.title.5': { en: 'Frosty Peaks', hi: 'हिमाच्छादित चोटियाँ', hinglish: 'Frosty Peaks' },
+  'photography.title.6': { en: 'Sunny Glade', hi: 'सूर्यप्रकाशित घाटी', hinglish: 'Sunny Glade' },
+  'photography.title.7': { en: 'Hidden Valley', hi: 'छुपा हुआ घाटी', hinglish: 'Hidden Valley' },
+  'photography.title.8': { en: 'Gentle Breeze', hi: 'हल्की हवा', hinglish: 'Gentle Breeze' },
+  'photography.title.9': { en: 'Emerald Forest', hi: 'पन्ना जंगल', hinglish: 'Emerald Forest' },
+  'photography.title.10': { en: 'Shady Grove', hi: 'छायादार बाग', hinglish: 'Shady Grove' },
+  'photography.title.11': { en: 'Peaceful Stream', hi: 'शांत धारा', hinglish: 'Peaceful Stream' },
+  'photography.title.12': { en: 'Starry Night', hi: 'तारों की रात', hinglish: 'Starry Night' },
+  'photography.title.13': { en: 'Autumn Leaves', hi: 'पतझड़ के पत्ते', hinglish: 'Autumn Leaves' },
+  'photography.title.14': { en: 'Winter Chill', hi: 'शीत ऋतु की ठंड', hinglish: 'Winter Chill' },
+  'photography.title.15': { en: 'Spring Dew', hi: 'वसंत शारद', hinglish: 'Spring Dew' },
+  'photography.title.16': { en: 'Summer Rain', hi: 'गर्मी की बारिश', hinglish: 'Summer Rain' },
+  'photography.title.17': { en: 'Desert Rose', hi: 'रेगिस्तान का गुलाब', hinglish: 'Desert Rose' },
+  'photography.title.18': { en: 'Ocean Whisper', hi: 'महासागर की फुसफुसाहट', hinglish: 'Ocean Whisper' },
+  'photography.title.19': { en: 'Mountain Echo', hi: 'पहाड़ की प्रतिध्वनि', hinglish: 'Mountain Echo' },
+  'photography.title.20': { en: 'Twilight Sky', hi: 'सांझ का आकाश', hinglish: 'Twilight Sky' },
+  'photography.title.21': { en: 'Falling Petals', hi: 'गिरते पंखुड़ियाँ', hinglish: 'Falling Petals' },
+  'photography.title.22': { en: 'Dancing Shadows', hi: 'नृत्यरत छायाएँ', hinglish: 'Dancing Shadows' },
+  'photography.title.23': { en: 'Serene Path', hi: 'शांत पथ', hinglish: 'Serene Path' },
+  'photography.title.24': { en: 'Quiet Meadow', hi: 'शांत घास का मैदान', hinglish: 'Quiet Meadow' },
+  'photography.title.25': { en: 'Lush Canopy', hi: 'घना आवरण', hinglish: 'Lush Canopy' },
+  'photography.title.26': { en: 'Silver Mist', hi: 'चांदी सी झील', hinglish: 'Silver Mist' },
+  'photography.title.27': { en: 'Amber Fields', hi: 'अंबर खेत', hinglish: 'Amber Fields' },
+  'photography.title.28': { en: 'Cobalt Wave', hi: 'कोबाल्ट लहर', hinglish: 'Cobalt Wave' },
+  'photography.title.29': { en: 'Blossom Trail', hi: 'खिलता मार्ग', hinglish: 'Blossom Trail' },
+  'photography.title.30': { en: 'Sunset Haze', hi: 'सूर्यास्त की धुंध', hinglish: 'Sunset Haze' },
+  'photography.title.31': { en: 'Rainy Silence', hi: 'बारिश की चुप्पी', hinglish: 'Rainy Silence' },
+  'photography.title.32': { en: 'Moonlit Plains', hi: 'चाँदनी मैदान', hinglish: 'Moonlit Plains' },
+  'photography.title.33': { en: 'Verdant Hills', hi: 'हरित पहाड़ियाँ', hinglish: 'Verdant Hills' },
+  'photography.title.34': { en: 'Cloudy Summit', hi: 'बादली शिखर', hinglish: 'Cloudy Summit' },
+  'photography.title.35': { en: 'Tranquil Bay', hi: 'शांत बंदरगाह', hinglish: 'Tranquil Bay' },
+  'photography.title.36': { en: 'Willow Shade', hi: 'बाँस का साया', hinglish: 'Willow Shade' },
+  'photography.title.37': { en: 'Cedar Light', hi: 'देवदार प्रकाश', hinglish: 'Cedar Light' },
+  // Quotes (mapped by index)
+  'photography.quote.0': { en: 'Photography is the story I fail to put into words.', hi: 'फोटोग्राफी वह कहानी है जिसे मैं शब्दों में नहीं बया कर पाता।', hinglish: 'Photography is the story I fail to put into words.' },
+  'photography.quote.1': { en: 'A picture is a poem without words.', hi: 'एक तस्वीर बिना शब्दों की कविता है।', hinglish: 'A picture is a poem without words.' },
+  'photography.quote.2': { en: 'The best thing about a picture is that it never changes, even when the people in it do.', hi: 'तस्वीर की सबसे अच्छी बात यह है कि यह कभी नहीं बदलती, भले ही इसमें लोग बदल जाएँ।', hinglish: 'The best thing about a picture is that it never changes, even when the people in it do.' },
+  'photography.quote.3': { en: 'Taking pictures is savoring life intensely, every hundredth of a second.', hi: 'तस्वीरें लेना जीवन को तीव्रता से अनुभव करने जैसा है, हर सैकंड में।', hinglish: 'Taking pictures is savoring life intensely, every hundredth of a second.' },
+  'photography.quote.4': { en: "You don't take a photograph, you make it.", hi: 'आप एक तस्वीर नहीं लेते, आप उसे बनाते हैं।', hinglish: "You don't take a photograph, you make it." },
+  'photography.quote.5': { en: 'A photograph is the pause button of life.', hi: 'एक तस्वीर जीवन का पॉज़ बटन है।', hinglish: 'A photograph is the pause button of life.' },
+  'photography.quote.6': { en: 'When words become unclear, I shall focus with photographs.', hi: 'जब शब्द स्पष्ट नहीं होते, मैं तस्वीरों पर ध्यान केंद्रित करूँगा।', hinglish: 'When words become unclear, I shall focus with photographs.' },
+  'photography.quote.7': { en: 'Photography helps people to see.', hi: 'फोटोग्राफी लोगों को देखने में मदद करती है।', hinglish: 'Photography helps people to see.' },
+  'photography.quote.8': { en: 'A good snapshot keeps a moment from running away.', hi: 'एक अच्छा स्नैपशॉट पल को दूर जाने से रोकता है।', hinglish: 'A good snapshot keeps a moment from running away.' },
+  'photography.quote.9': { en: 'The camera is an instrument that teaches people how to see without a camera.', hi: 'कैमरा एक ऐसा यंत्र है जो लोगों को बिना कैमरे के देखना सिखाता है।', hinglish: 'The camera is an instrument that teaches people how to see without a camera.' },
+  'photography.quote.10': { en: 'To photograph is to hold one\'s breath, when all faculties converge to capture fleeting reality.', hi: 'तस्वीर लेना उस समय अपनी साँस रोकने जैसा है, जब सभी इन्द्रियाँ क्षणिक वास्तविकता को पकड़ने के लिए मिलती हैं।', hinglish: 'To photograph is to hold one\'s breath, when all faculties converge to capture fleeting reality.' },
+  'photography.quote.11': { en: 'A great photograph is one that fully expresses what one feels, in the deepest sense, about what is being photographed.', hi: 'एक महान तस्वीर वही है जो गहरे अर्थ में उस विषय के बारे में जिसको तस्वीर में लिया गया है, वह पूरा भाव व्यक्त करती है।', hinglish: 'A great photograph is one that fully expresses what one feels, in the deepest sense, about what is being photographed.' },
+  'photography.quote.12': { en: 'Photography is the beauty of life captured.', hi: 'फोटोग्राफी जीवन की सुंदरता को कैद कर लेती है।', hinglish: 'Photography is the beauty of life captured.' },
+  'photography.quote.13': { en: 'A photograph can be an instant of life captured for eternity that will never cease looking back at you.', hi: 'एक तस्वीर जीवन का एक क्षण हो सकती है जो अनन्तकाल के लिए पकड़ा गया हो और जो कभी आपको वापस नहीं देखना बंद करेगा।', hinglish: 'A photograph can be an instant of life captured for eternity that will never cease looking back at you.' },
+  'photography.quote.14': { en: 'The whole point of taking pictures is so that you don\'t have to explain things with words.', hi: 'तस्वीरें लेने का पूरा मकसद यह है कि आप चीज़ों को शब्दों से समझाने की जरूरत न महसूस करें।', hinglish: 'The whole point of taking pictures is so that you don\'t have to explain things with words.' },
+  'photography.quote.15': { en: 'A camera is a SAVE button for the mind\'s eye.', hi: 'कैमरा दिमाग की आंख के लिए एक SAVE बटन है।', hinglish: 'A camera is a SAVE button for the mind\'s eye.' },
+  'photography.quote.16': { en: 'Photography is the only language that can be understood anywhere in the world.', hi: 'फोटोग्राफी एकमात्र भाषा है जिसे दुनिया भर में समझा जा सकता है।', hinglish: 'Photography is the only language that can be understood anywhere in the world.' },
+  'photography.quote.17': { en: 'A photograph is a secret about a secret. The more it tells you the less you know.', hi: 'एक तस्वीर रहस्य के बारे में रहस्य है। जितना अधिक यह बताती है उतना ही कम आप जानते हैं।', hinglish: 'A photograph is a secret about a secret. The more it tells you the less you know.' },
+  'photography.quote.18': { en: 'The eye should learn to listen before it looks.', hi: 'आँख को देखने से पहले सुनना सीखना चाहिये।', hinglish: 'The eye should learn to listen before it looks.' },
+  'photography.quote.19': { en: 'A thing that you see in my pictures is that I was not afraid to fall in love with these people.', hi: 'मेरी तस्वीरों में आप एक चीज देखेंगे कि मैं इन लोगों के प्यार में पड़ने से नहीं डरता था।', hinglish: 'A thing that you see in my pictures is that I was not afraid to fall in love with these people.' },
+  'photography.quote.20': { en: 'The picture that you took with your camera is the imagination you want to create with reality.', hi: 'जिस तस्वीर को आपने अपने कैमरे से लिया है वह वही कल्पना है जिसे आप वास्तविकता के साथ बनाना चाहते हैं।', hinglish: 'The picture that you took with your camera is the imagination you want to create with reality.' },
+  'photography.quote.21': { en: 'A photograph is memory in the raw.', hi: 'एक तस्वीर कच्ची स्मृति है।', hinglish: 'A photograph is memory in the raw.' },
+  'photography.quote.22': { en: 'A photo is not just an image, it\'s a memory.', hi: 'एक फोटो केवल एक छवि नहीं है, यह एक स्मृति है।', hinglish: 'A photo is not just an image, it\'s a memory.' },
+  'photography.quote.23': { en: 'A photograph is the pause button of life.', hi: 'एक तस्वीर जीवन का पॉज़ बटन है।', hinglish: 'A photograph is the pause button of life.' },
+  'photography.quote.24': { en: 'Photography is the art of frozen time… the ability to store emotion and feelings within a frame.', hi: 'फोटोग्राफी जमाए हुए समय की कला है… भावनाओं और अहसासों को फ्रेम में संजोने की क्षमता।', hinglish: 'Photography is the art of frozen time… the ability to store emotion and feelings within a frame.' },
+  'photography.quote.25': { en: 'A photograph is a return ticket to a moment otherwise gone.', hi: 'एक तस्वीर एक वापसी टिकट है उस पल के लिए जो अन्यथा चला गया होता।', hinglish: 'A photograph is a return ticket to a moment otherwise gone.' },
+  'photography.quote.26': { en: 'A photograph is the only language that can be understood anywhere in the world.', hi: 'फोटोग्राफी एकमात्र भाषा है जिसे दुनिया भर में समझा जा सकता है।', hinglish: 'A photograph is the only language that can be understood anywhere in the world.' },
+  'photography.quote.27': { en: 'A photograph is a moment—when you press the button, it will never come back.', hi: 'एक तस्वीर एक पल है — जब आप बटन दबाते हैं, वह कभी वापस नहीं आता।', hinglish: 'A photograph is a moment—when you press the button, it will never come back.' },
+  'photography.quote.28': { en: 'A photograph is a way of feeling, of touching, of loving.', hi: 'एक तस्वीर महसूस करने, छूने और प्यार करने का तरीका है।', hinglish: 'A photograph is a way of feeling, of touching, of loving.' },
+  'photography.quote.29': { en: 'A photograph is a memory in the raw.', hi: 'एक तस्वीर कच्ची स्मृति है।', hinglish: 'A photograph is a memory in the raw.' },
+  'photography.quote.30': { en: 'A photograph is the pause button of life.', hi: 'एक तस्वीर जीवन का पॉज़ बटन है।', hinglish: 'A photograph is the pause button of life.' },
+  'photography.quote.31': { en: 'A photograph is the story I fail to put into words.', hi: 'फोटोग्राफी वह कहानी है जिसे मैं शब्दों में नहीं बया कर पाता।', hinglish: 'A photograph is the story I fail to put into words.' },
+  'photography.quote.32': { en: 'A photograph is the beauty of life captured.', hi: 'फोटोग्राफी जीवन की सुंदरता को कैद कर लेती है।', hinglish: 'A photograph is the beauty of life captured.' },
+  'photography.quote.33': { en: 'A photograph is a secret about a secret. The more it tells you the less you know.', hi: 'एक तस्वीर रहस्य के बारे में रहस्य है। जितना अधिक यह बताती है उतना ही कम आप जानते हैं।', hinglish: 'A photograph is a secret about a secret. The more it tells you the less you know.' },
+  'photography.quote.34': { en: 'A photograph is a return ticket to a moment otherwise gone.', hi: 'एक तस्वीर एक वापसी टिकट है उस पल के लिए जो अन्यथा चला गया होता।', hinglish: 'A photograph is a return ticket to a moment otherwise gone.' },
+  'photography.quote.35': { en: 'A photograph is the only language that can be understood anywhere in the world.', hi: 'फोटोग्राफी एकमात्र भाषा है जिसे दुनिया भर में समझा जा सकता है।', hinglish: 'A photograph is the only language that can be understood anywhere in the world.' },
+  'photography.quote.36': { en: 'A photograph is a moment—when you press the button, it will never come back.', hi: 'एक तस्वीर एक पल है — जब आप बटन दबाते हैं, वह कभी वापस नहीं आता।', hinglish: 'A photograph is a moment—when you press the button, it will never come back.' },
+  'photography.quote.37': { en: 'A photograph is a way of feeling, of touching, of loving.', hi: 'एक तस्वीर महसूस करने, छूने और प्यार करने का तरीका है।', hinglish: 'A photograph is a way of feeling, of touching, of loving.' },
 
   // Skills
   'skills.badge': { en: 'Skills', hi: 'कौशल', hinglish: 'Skills' },
+  'skills.technologies': { en: 'Technologies', hi: 'प्रौद्योगिकियाँ', hinglish: 'Technologies' },
+  // Marker headings, subheadings, descriptions
+  'skills.marker.1.heading': { en: 'Frontend Development', hi: 'फ्रंटेंड विकास', hinglish: 'Frontend Development' },
+  'skills.marker.1.subheading': { en: 'Building Interactive UIs', hi: 'इंटरैक्टिव UI बनाना', hinglish: 'Building Interactive UIs' },
+  'skills.marker.1.description': { en: 'Expertise in creating responsive and dynamic user interfaces with modern frameworks and libraries.', hi: 'आधुनिक फ्रेमवर्क और लाइब्रेरीज़ के साथ उत्तरदायी और गतिशील उपयोगकर्ता इंटरफेस बनाने में विशेषज्ञता।', hinglish: 'Expertise in creating responsive and dynamic user interfaces with modern frameworks and libraries.' },
+
+  'skills.marker.2.heading': { en: 'Backend Systems', hi: 'बैकएंड सिस्टम', hinglish: 'Backend Systems' },
+  'skills.marker.2.subheading': { en: 'Scalable Server Architecture', hi: 'स्केलेबल सर्वर आर्किटेक्चर', hinglish: 'Scalable Server Architecture' },
+  'skills.marker.2.description': { en: 'Designing and implementing robust backend systems with focus on scalability, security, and performance.', hi: 'स्केलेबिलिटी, सुरक्षा और प्रदर्शन पर ध्यान देने के साथ मजबूत बैकएंड सिस्टम डिजाइन और लागू करना।', hinglish: 'Designing and implementing robust backend systems with focus on scalability, security, and performance.' },
+
+  'skills.marker.3.heading': { en: 'Mobile Development', hi: 'मोबाइल विकास', hinglish: 'Mobile Development' },
+  'skills.marker.3.subheading': { en: 'Cross-Platform Apps', hi: 'क्रॉस-प्लैटफ़ॉर्म ऐप्स', hinglish: 'Cross-Platform Apps' },
+  'skills.marker.3.description': { en: 'Creating seamless mobile experiences for iOS and Android. Specializing in Flutter and progressive web apps for optimal performance.', hi: 'iOS और Android के लिए सुगम मोबाइल अनुभव बनाना। उच्च प्रदर्शन के लिए Flutter और प्रोग्रेसिव वेब ऐप्स में विशेषज्ञता।', hinglish: 'Creating seamless mobile experiences for iOS and Android.' },
+
+  'skills.marker.4.heading': { en: 'DevOps & CI/CD', hi: 'DevOps और CI/CD', hinglish: 'DevOps & CI/CD' },
+  'skills.marker.4.subheading': { en: 'Automation & Deployment', hi: 'स्वचालन और डिप्लॉयमेंट', hinglish: 'Automation & Deployment' },
+  'skills.marker.4.description': { en: 'Streamlining development workflows with automated testing, continuous integration, and deployment pipelines.', hi: 'स्वचालित परीक्षण, सतत एकीकरण और तैनाती पाइपलाइनों के साथ विकास वर्कफ़्लो को सुव्यवस्थित करना।', hinglish: 'Streamlining development workflows with automated testing, continuous integration, and deployment pipelines.' },
+
+  'skills.marker.5.heading': { en: 'UI/UX Design', hi: 'UI/UX डिज़ाइन', hinglish: 'UI/UX Design' },
+  'skills.marker.5.subheading': { en: 'User-Centered Design', hi: 'उपयोगकर्ता-केंद्रित डिज़ाइन', hinglish: 'User-Centered Design' },
+  'skills.marker.5.description': { en: 'Crafting beautiful and intuitive interfaces with focus on accessibility and user research.', hi: 'पहुंच और उपयोगकर्ता अनुसंधान पर ध्यान केंद्रित करते हुए सुंदर और सहज इंटरफ़ेस बनाना।', hinglish: 'Crafting beautiful and intuitive interfaces with focus on accessibility and user research.' },
+
+  // Individual skill names (used in the marker lists)
+  'skill.react': { en: 'React', hi: 'React', hinglish: 'React' },
+  'skill.typescript': { en: 'TypeScript', hi: 'TypeScript', hinglish: 'TypeScript' },
+  'skill.css_tailwind': { en: 'CSS / Tailwind', hi: 'CSS / Tailwind', hinglish: 'CSS / Tailwind' },
+  'skill.nextjs': { en: 'Next.js', hi: 'Next.js', hinglish: 'Next.js' },
+  'skill.nodejs': { en: 'Node.js', hi: 'Node.js', hinglish: 'Node.js' },
+  'skill.apis': { en: 'APIs', hi: 'APIs', hinglish: 'APIs' },
+  'skill.supabase': { en: 'Supabase', hi: 'Supabase', hinglish: 'Supabase' },
+  'skill.firebase': { en: 'Firebase', hi: 'Firebase', hinglish: 'Firebase' },
+  'skill.flutter': { en: 'Flutter', hi: 'Flutter', hinglish: 'Flutter' },
+  'skill.pwa': { en: 'PWA', hi: 'PWA', hinglish: 'PWA' },
+  'skill.performance': { en: 'Performance', hi: 'प्रदर्शन', hinglish: 'Performance' },
+  'skill.uiux': { en: 'UI/UX', hi: 'UI/UX', hinglish: 'UI/UX' },
+  'skill.git': { en: 'Git', hi: 'Git', hinglish: 'Git' },
+  'skill.cicd': { en: 'CI/CD', hi: 'CI/CD', hinglish: 'CI/CD' },
+  'skill.docker': { en: 'Docker', hi: 'Docker', hinglish: 'Docker' },
+  'skill.cloud': { en: 'Cloud', hi: 'क्लाउड', hinglish: 'Cloud' },
+  'skill.design': { en: 'Design', hi: 'डिज़ाइन', hinglish: 'Design' },
+  'skill.prototyping': { en: 'Prototyping', hi: 'प्रोटोटाइपिंग', hinglish: 'Prototyping' },
+  'skill.accessibility': { en: 'Accessibility', hi: 'एक्सेसिबिलिटी', hinglish: 'Accessibility' },
+  'skill.research': { en: 'Research', hi: 'अनुसंधान', hinglish: 'Research' },
 
   // Install prompt
   'install.title': { en: 'Install this app', hi: 'इस ऐप को इंस्टॉल करें', hinglish: 'Install this app' },
@@ -195,7 +370,10 @@ export const extraTranslations: Record<string, Record<LangCode, string>> = {
   'skills.quote.left': { en: 'In the vast universe of code, every developer carries their own arsenal...', hi: 'कोड के विशाल ब्रह्मांड में, हर डेवलपर के पास अपना हथियार भण्डार होता है...', hinglish: 'In the vast universe of code, हर developer carries their own arsenal...' },
   'skills.quote.right': { en: 'Tools sharpened through countless hours of debugging, skills honed in the fires of production deployments, and wisdom gained from a thousand Stack Overflow searches.', hi: 'असंख्य डीबगिंग घंटों से तेज़ किये गए उपकरण, प्रोडक्शन में डिप्लॉयमेंट के अनुभव से निखरे कौशल, और हजारों Stack Overflow खोजों से मिली समझ।', hinglish: 'Tools sharpened through countless hours of debugging, skills honed in production, and wisdom from Stack Overflow searches.' },
   'skills.quote.center': { en: 'These are not just technologies... they are the building blocks of digital dreams, the instruments of creation, the weapons against impossible deadlines.', hi: 'ये केवल तकनीकें नहीं हैं... ये डिजिटल सपनों के निर्माण खण्ड हैं, सृजन के साधन हैं, असंभव डेडलाइनों के खिलाफ हथियार हैं।', hinglish: 'These are not just technologies... ये building blocks हैं of digital dreams.' },
+
   // Qualifications
+  'qual.badge': { en: 'Qualification & Certifications', hi: 'योग्यता और प्रमाणपत्र', hinglish: 'Qualification & Certifications' },
+  'qual.intro': { en: 'Every entry below is a short chapter—click to unfold the challenge, the solution, and the result.', hi: 'नीचे प्रत्येक प्रविष्टि एक छोटा अध्याय है — चुनौती, समाधान और परिणाम को खोलने के लिए क्लिक करें।', hinglish: 'Every entry below is a short chapter—click to unfold the challenge, the solution, and the result.' },
   'qual.semesters': { en: 'Semesters', hi: 'सेमेस्टर', hinglish: 'Semesters' },
   'qual.challenge': { en: 'Challenge', hi: 'चुनौती', hinglish: 'Challenge' },
   'qual.solution': { en: 'Solution', hi: 'समाधान', hinglish: 'Solution' },
@@ -243,4 +421,39 @@ export function translateDocument(lang?: LangCode) {
       if (n instanceof HTMLElement) n.textContent = tstr
     })
   })
+}
+
+// Expose a global helper and auto-apply on load so language preference is active immediately
+if (typeof window !== 'undefined') {
+  try {
+    ;(window as any).__i18n = {
+      t,
+      translateDocument,
+      translations,
+      extraTranslations,
+    }
+
+    // notify any listeners that i18n is attached (helps HMR timing)
+    try { window.dispatchEvent(new CustomEvent('i18n:ready')) } catch (e) {}
+
+    // Auto-apply the preferred language on initial load (non-blocking)
+    try {
+      const applyPref = () => {
+        try {
+          const pref = (localStorage.getItem('preferredLang') as LangCode) || 'en'
+          // microtask to ensure DOM is ready
+          setTimeout(() => {
+            try { translateDocument(pref) } catch (e) {}
+            try { window.dispatchEvent(new CustomEvent('preferredLangChange', { detail: pref })) } catch (e) {}
+          }, 0)
+        } catch (e) {}
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', applyPref, { once: true })
+      } else {
+        applyPref()
+      }
+    } catch (e) {}
+  } catch (e) {}
 }

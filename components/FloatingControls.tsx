@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import type { MouseEvent } from "react";
 import { createPortal } from "react-dom";
+import { translateDocument, t } from "@/lib/i18n";
 
 export default function FloatingControls({
   toggleTheme,
@@ -13,6 +14,115 @@ export default function FloatingControls({
     if (typeof window === "undefined") return "en";
     return localStorage.getItem("preferredLang") || "en";
   });
+
+  // Expose wrapping helpers so we can re-apply right away when the user clicks
+  const unwrapDevanagari = () => {
+    document.querySelectorAll('span[data-devanagari-wrapped="true"]').forEach((el) => {
+      const parent = el.parentNode
+      if (!parent) return
+      parent.replaceChild(document.createTextNode(el.textContent || ''), el)
+    })
+  }
+
+  const wrapDevanagari = (rootEl: ParentNode) => {
+    const walker = document.createTreeWalker(rootEl, NodeFilter.SHOW_TEXT, null)
+    const nodes: Text[] = []
+    let node: Node | null
+    while ((node = walker.nextNode())) {
+      nodes.push(node as Text)
+    }
+
+    const devRange = /[\u0900-\u097F]+/g
+
+    nodes.forEach((textNode) => {
+      const parent = textNode.parentElement
+      if (!parent) return
+      // Skip scripts/styles and common form/markup containers
+      if (parent.closest('script, style, textarea, code, pre, input, svg')) return
+      // Skip already wrapped content
+      if (parent.closest('[data-devanagari-wrapped="true"]')) return
+
+      const text = textNode.nodeValue || ''
+      if (!devRange.test(text)) return
+
+      // create a document fragment and rebuild node with wraps
+      const frag = document.createDocumentFragment()
+      let lastIndex = 0
+      devRange.lastIndex = 0
+      let m
+      while ((m = devRange.exec(text)) !== null) {
+        const start = m.index
+        const end = devRange.lastIndex
+        if (start > lastIndex) {
+          frag.appendChild(document.createTextNode(text.slice(lastIndex, start)))
+        }
+        const span = document.createElement('span')
+        span.setAttribute('data-devanagari-wrapped', 'true')
+        span.className = 'tiro-hindi'
+        span.setAttribute('lang', 'hi')
+        span.textContent = text.slice(start, end)
+        frag.appendChild(span)
+        lastIndex = end
+      }
+      if (lastIndex < text.length) {
+        frag.appendChild(document.createTextNode(text.slice(lastIndex)))
+      }
+      if (frag.childNodes.length) textNode.parentNode?.replaceChild(frag, textNode)
+    })
+  }
+
+  // helper to immediately apply translations and wrapping (used by click handler)
+  const applyNow = async (selectedLang: 'en'|'hi'|'hinglish') => {
+    try {
+      localStorage.setItem('preferredLang', selectedLang)
+
+      // fast path: use global helper
+      const gl = (window as any).__i18n
+      try {
+        translateDocument(selectedLang as any)
+      } catch (e) {
+        // fallback to global or dynamic import
+        try {
+          const gl = (window as any).__i18n
+          if (gl && typeof gl.translateDocument === 'function') gl.translateDocument(selectedLang)
+          else {
+            const m = await import('../lib/i18n')
+            try { m.translateDocument(selectedLang as any) } catch (e) {}
+          }
+        } catch (e) {}
+      }
+
+      // Force-apply any nodes that might not have been picked up by translateDocument
+      try {
+        const gl = (window as any).__i18n
+        document.querySelectorAll('[data-i18n]').forEach((n) => {
+          const key = (n as HTMLElement).getAttribute('data-i18n')
+          if (!key) return
+          const val = gl && typeof gl.t === 'function' ? gl.t(key, selectedLang) : t(key, selectedLang as any)
+
+          if (n instanceof HTMLInputElement || n instanceof HTMLTextAreaElement) {
+            n.placeholder = val
+            return
+          }
+
+          const attr = (n as HTMLElement).getAttribute('data-i18n-attr')
+          if (attr) {
+            ;(n as HTMLElement).setAttribute(attr, val)
+            if (n instanceof HTMLElement && n.childElementCount === 0) n.textContent = val
+            return
+          }
+
+          if (n instanceof HTMLElement) n.textContent = val
+        })
+      } catch (e) {}
+
+      // re-wrap Devanagari runs
+      try { unwrapDevanagari(); wrapDevanagari(document.body) } catch (e) {}
+
+      // notify other listeners
+      try { window.dispatchEvent(new CustomEvent('preferredLangChange', { detail: selectedLang })) } catch (e) {}
+    } catch (e) {}
+  }
 
   // Add Hinglish support
   const langOptions = [
@@ -26,7 +136,46 @@ export default function FloatingControls({
 
     // persist preference
     localStorage.setItem("preferredLang", lang)
-    window.dispatchEvent(new CustomEvent("preferredLangChange", { detail: lang }))
+
+    // apply translations first (ensure DOM updated), then notify components
+    const applyTranslations = async () => {
+      try {
+        const gl = (window as any).__i18n
+        const applyFromGlobal = () => {
+          try {
+            const g = (window as any).__i18n
+            if (g && typeof g.translateDocument === 'function') {
+              g.translateDocument(lang as any)
+              return true
+            }
+          } catch (e) {}
+          return false
+        }
+
+        if (applyFromGlobal()) {
+          // re-wrap after translations
+          setTimeout(() => { try { wrapDevanagari(document.body) } catch (e) {} }, 40)
+          return
+        }
+
+        // listen for i18n ready and apply when available
+        let done = false
+        const onReady = () => {
+          try { if (!done && applyFromGlobal()) { done = true; setTimeout(() => { try { wrapDevanagari(document.body) } catch (e) {} }, 40) } } catch (e) {}
+          try { window.removeEventListener('i18n:ready', onReady) } catch (e) {}
+        }
+        try { window.addEventListener('i18n:ready', onReady) } catch (e) {}
+
+        // No dynamic import here to avoid HMR module factory issues. If not attached yet, the 'i18n:ready' listener will handle it; otherwise translations may apply on next navigation or reload.
+      } catch (e) {
+        // swallow to avoid HMR crash
+      }
+    }
+
+    applyTranslations().then(() => {
+      // notify other components to update (they may re-render using t(key, lang) too)
+      try { window.dispatchEvent(new CustomEvent("preferredLangChange", { detail: lang })) } catch (e) {}
+    })
 
     // Apply lang attribute and classes for styling/behavior
     const root = document.documentElement
@@ -133,7 +282,7 @@ export default function FloatingControls({
         {langOptions.map(opt => (
           <button
             key={opt.code}
-            onClick={() => setLang(opt.code)}
+            onClick={() => { setLang(opt.code); applyNow(opt.code as 'en'|'hi'|'hinglish') }}
             className={`w-8 h-8 flex items-center justify-center rounded-xl transition-all duration-200 hover:scale-110 active:scale-95 text-sm font-medium border ${lang === opt.code ? "bg-white text-stone-900 border-stone-200 dark:bg-stone-900 dark:text-white dark:border-white/20 scale-105 ring-2 ring-teal-300/40" : "bg-white/30 dark:bg-white/5 border-stone-200 dark:border-white/10"}`}
             aria-label={`Select ${opt.title}`}
             title={opt.title}

@@ -59,26 +59,90 @@ export default function AppInitializer({ children }: { children: React.ReactNode
   // Apply translations when language preference changes
   useEffect(() => {
     let mounted = true
+
+    const tryGlobal = (lang: 'en' | 'hi' | 'hinglish') => {
+      try {
+        const gl = (typeof window !== 'undefined' && (window as any).__i18n) as any
+        if (gl && typeof gl.translateDocument === 'function') {
+          try { gl.translateDocument(lang) } catch (e) {}
+          return true
+        }
+      } catch (e) {}
+      return false
+    }
+
     const apply = () => {
       if (!mounted) return
       try {
         const lang = (localStorage.getItem('preferredLang') as 'en' | 'hi' | 'hinglish') || 'en'
-        // dynamic import so HMR can replace this module safely
-        import('../lib/i18n').then((m) => {
-          try { m.translateDocument(lang) } catch (e) {}
-        }).catch(() => {})
+
+        // Fast path: use global helper if available
+        if (tryGlobal(lang)) return
+
+        // Poll briefly for window.__i18n to appear (covers HMR timing)
+        let attempts = 0
+        const maxAttempts = 40
+        const id = window.setInterval(() => {
+          attempts++
+          if (tryGlobal(lang)) {
+            clearInterval(id)
+            return
+          }
+          if (attempts >= maxAttempts) {
+            clearInterval(id)
+            // Listen for explicit readiness event as a safer fallback
+            const onReady = () => {
+              try { tryGlobal(lang) } catch (e) {}
+              try { window.removeEventListener('i18n:ready', onReady) } catch (e) {}
+            }
+            try { window.addEventListener('i18n:ready', onReady) } catch (e) {}
+            // give up after a brief timeout
+            const giveUp = window.setTimeout(() => {
+              try { window.removeEventListener('i18n:ready', onReady) } catch (e) {}
+              clearTimeout(giveUp)
+            }, 5000)
+          }
+        }, 50)
       } catch (e) {}
     }
 
     // apply initial
     apply()
 
+    // Listen for storage changes (other tabs) and apply language updates
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === 'preferredLang') {
+        try {
+          const val = (e.newValue as 'en'|'hi'|'hinglish') || 'en'
+          try { const gl = (window as any).__i18n; if (gl && typeof gl.translateDocument === 'function') gl.translateDocument(val) } catch (e) {}
+          window.dispatchEvent(new CustomEvent('preferredLangChange', { detail: val }))
+        } catch (e) {}
+      }
+    }
+
+    try { window.addEventListener('storage', onStorage as EventListener) } catch (e) {}
+
+    // Final effort: if i18n helper appears shortly after mount, try applying it once more
+    const finalAttempt = setTimeout(() => {
+      try { const lang = (localStorage.getItem('preferredLang') as 'en'|'hi'|'hinglish') || 'en'; const gl = (window as any).__i18n; if (gl && typeof gl.translateDocument === 'function') gl.translateDocument(lang) } catch (e) {}
+    }, 200)
+
     const handler = (e: Event) => {
       // @ts-ignore
       const detail = (e as CustomEvent).detail as 'en' | 'hi' | 'hinglish'
-      import('../lib/i18n').then((m) => {
-        try { m.translateDocument(detail || 'en') } catch (e) {}
-      }).catch(() => {})
+      const lang = detail || 'en'
+
+      // prefer global helper
+      if (tryGlobal(lang)) return
+
+      // Listen for i18n ready once and then apply
+      const onReady = () => {
+        try { tryGlobal(lang) } catch (e) {}
+        try { window.removeEventListener('i18n:ready', onReady) } catch (e) {}
+      }
+      try { window.addEventListener('i18n:ready', onReady) } catch (e) {}
+
+      // No dynamic import fallback here to avoid HMR module factory issues — we rely on the global helper and i18n:ready event instead.
     }
 
     window.addEventListener('preferredLangChange', handler as EventListener)
@@ -86,6 +150,8 @@ export default function AppInitializer({ children }: { children: React.ReactNode
     return () => {
       mounted = false
       window.removeEventListener('preferredLangChange', handler as EventListener)
+      try { window.removeEventListener('storage', onStorage as EventListener) } catch (e) {}
+      clearTimeout(finalAttempt)
     }
   }, [])
 

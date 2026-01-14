@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react"
 import emailjs from "emailjs-com"
 import gsap from "gsap"
 import { toast } from "sonner"
+import { t } from "../../lib/i18n"
 
 const SERVICES = [
   { key: 'service.mobile_app', default: 'Mobile App' },
