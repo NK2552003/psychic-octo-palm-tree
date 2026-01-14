@@ -717,14 +717,14 @@ export default function ScrollAnimation() {
 <div className="relative z-20">
           {/* Left Quote */}
           <div className="quote-item absolute left-4 sm:left-8 md:left-16  top-0 md:-top-[80px] max-w-[200px] sm:max-w-[240px]">
-            <p className="text-xs sm:text-sm md:text-base leading-relaxed hero-jelly hero-jelly-fast"> 
+            <p className="text-xs sm:text-sm md:text-base leading-relaxed hero-jelly hero-jelly-fast" data-i18n="skills.quote.left"> 
               In the vast universe of code, every developer carries their own arsenal...
             </p>
           </div>
 
           {/* Right Top Quote */}
           <div className="quote-item absolute right-4 sm:right-8 md:right-16 top-[180px] sm:top-[220px] md:top-[260px] max-w-[200px] sm:max-w-[280px]  hidden md:block ">
-            <p className="text-xs sm:text-sm md:text-base leading-relaxed text-right hero-jelly hero-jelly-fast">
+            <p className="text-xs sm:text-sm md:text-base leading-relaxed text-right hero-jelly hero-jelly-fast" data-i18n="skills.quote.right">
                Tools sharpened through countless hours of debugging, skills honed in the fires of production deployments,
               and wisdom gained from a thousand Stack Overflow searches.
                
@@ -733,7 +733,7 @@ export default function ScrollAnimation() {
 
           {/* Center Bottom Quote */}
           <div className="quote-item absolute left-1/2 -translate-x-1/2 bottom-[-160px] sm:bottom-[-150px] max-w-[280px] sm:max-w-[340px]">
-            <p className="text-xs sm:text-sm md:text-base leading-relaxed text-center hero-jelly hero-jelly-fast">
+            <p className="text-xs sm:text-sm md:text-base leading-relaxed text-center hero-jelly hero-jelly-fast" data-i18n="skills.quote.center">
                            These are not just technologies... they are the building blocks of digital dreams, the instruments of
               creation, the weapons against impossible deadlines.
             </p>

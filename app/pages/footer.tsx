@@ -49,9 +49,9 @@ export default function Footer() {
         {/* Left */}
         <div className="space-y-4 text-sm">
           <p className="text-lg md:text-xl">nk2552003@gmail.com</p>
-          <p>© 2026 Nitish's Portfolio</p>
-          <p>All rights reserved.</p>
-          <p><a href="/cookies" className="underline">Cookie Policy</a></p>
+          <p data-i18n="footer.copyright">© 2026 Nitish's Portfolio</p>
+          <p data-i18n="footer.all_rights">All rights reserved.</p>
+          <p><a href="/cookies" data-i18n="footer.cookie_policy" className="underline">Cookie Policy</a></p>
         </div>
 
         {/* Center Social */}

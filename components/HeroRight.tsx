@@ -8,12 +8,12 @@ export const handwriting = Patrick_Hand({
   variable: "--font-handwriting",
 });
 const sections = [
-  { label: "About Me", id: "about" },
-  { label: "Skills", id: "skills" },
-  { label: "Projects", id: "projects" },
-  { label: "Photography", id: "photography" },
-  { label: "Experience", id: "qualifications" },
-  { label: "Contact", id: "contact" },
+  { label: "About Me", id: "about", key: 'nav.about' },
+  { label: "Skills", id: "skills", key: 'nav.skills' },
+  { label: "Projects", id: "projects", key: 'nav.projects' },
+  { label: "Photography", id: "photography", key: 'nav.photography' },
+  { label: "Experience", id: "qualifications", key: 'nav.experience' },
+  { label: "Contact", id: "contact", key: 'nav.contact' },
 ];
 export default function HeroRight() {
   return (
@@ -89,8 +89,10 @@ export default function HeroRight() {
                 "
               >
                 {/* TEXT */}
-                <span className="relative">
-                  {label}
+                <span className="relative" data-i18n={typeof (label as any) === 'string' ? undefined : undefined}>
+                  <span data-i18n={
+                    sections.find((s) => s.id === id)?.key || undefined
+                  }>{label}</span>
 
                   {/* UNDERLINE */}
                   <span
@@ -129,7 +131,7 @@ export default function HeroRight() {
 
       <div className="relative max-w-md">
        <Signature/>
-       <p className="absolute top-16 hero-jelly hero-jelly-fast mt-2 text-sm leading-relaxed text-stone-900 dark:text-teal-300">
+       <p data-i18n="hero.description" className="absolute top-16 hero-jelly hero-jelly-fast mt-2 text-sm leading-relaxed text-stone-900 dark:text-teal-300">
               I’m an undergraduate engineering student who enjoys building
               real-world web applications, learning modern technologies, and
               expressing creativity through photography. I love turning ideas

@@ -83,6 +83,7 @@ export default function SkillsPage() {
       <span
           ref={smallTitleRef}
           id="skills"
+          data-i18n="skills.badge"
           className="inline-block rounded-full border-2 px-3 sm:px-6 py-1.5 sm:py-2 text-xs sm:text-sm font-medium transition-all opacity-0 hover:scale-105 hover:bg-black hover:text-white"
         >
             Skills

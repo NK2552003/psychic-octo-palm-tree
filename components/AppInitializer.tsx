@@ -56,6 +56,39 @@ export default function AppInitializer({ children }: { children: React.ReactNode
     return () => window.removeEventListener('beforeinstallprompt', handler as EventListener)
   }, [])
 
+  // Apply translations when language preference changes
+  useEffect(() => {
+    let mounted = true
+    const apply = () => {
+      if (!mounted) return
+      try {
+        const lang = (localStorage.getItem('preferredLang') as 'en' | 'hi' | 'hinglish') || 'en'
+        // dynamic import so HMR can replace this module safely
+        import('../lib/i18n').then((m) => {
+          try { m.translateDocument(lang) } catch (e) {}
+        }).catch(() => {})
+      } catch (e) {}
+    }
+
+    // apply initial
+    apply()
+
+    const handler = (e: Event) => {
+      // @ts-ignore
+      const detail = (e as CustomEvent).detail as 'en' | 'hi' | 'hinglish'
+      import('../lib/i18n').then((m) => {
+        try { m.translateDocument(detail || 'en') } catch (e) {}
+      }).catch(() => {})
+    }
+
+    window.addEventListener('preferredLangChange', handler as EventListener)
+
+    return () => {
+      mounted = false
+      window.removeEventListener('preferredLangChange', handler as EventListener)
+    }
+  }, [])
+
   // don't mount or initialize anything until we know the system theme
   if (!themeDetected) return null
 

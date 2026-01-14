@@ -213,7 +213,7 @@ const QualificationCard: React.FC<{ qualification: Qualification; index: number 
 
             {qualification.details.academic?.semesters && (
               <div className="mb-4">
-                <h5 className="font-semibold mb-2 text-sm md:text-base">Semesters</h5>
+                <h5 data-i18n="qual.semesters" className="font-semibold mb-2 text-sm md:text-base">Semesters</h5>
                 <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-8 gap-2 text-xs md:text-sm">
                   {qualification.details.academic.semesters.map((s, idx) => (
                     <div
@@ -235,7 +235,7 @@ const QualificationCard: React.FC<{ qualification: Qualification; index: number 
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className='border p-2 md:p-4 rounded-xl'>
-                <h4 className="font-bold text-sm md:text-base mb-2">Challenge</h4>
+                <h4 data-i18n="qual.challenge" className="font-bold text-sm md:text-base mb-2">Challenge</h4>
                 <p className="text-sm text-foreground/70">{qualification.details.challenge}</p>
               </div>
               <div className='border p-2 md:p-4 rounded-xl'>

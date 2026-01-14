@@ -398,13 +398,13 @@ export default function ProjectsPage() {
     <div ref={containerRef} className="relative overflow-hidden">
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 py-12 sm:py-16">
         <div className="mb-16">
-          <span id="projects" className="hero-jelly inline-block rounded-full border-2 px-3 sm:px-6 py-1.5 sm:py-2 text-xs sm:text-sm font-medium transition-all hover:scale-105 hover:bg-black hover:text-white">
+          <span data-i18n="projects.badge" id="projects" className="hero-jelly inline-block rounded-full border-2 px-3 sm:px-6 py-1.5 sm:py-2 text-xs sm:text-sm font-medium transition-all hover:scale-105 hover:bg-black hover:text-white">
             Projects
           </span>
-          <h1 className="hero-jelly mt-6 text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black uppercase leading-tight">
+          <h1 data-i18n="projects.h1" className="hero-jelly mt-6 text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black uppercase leading-tight">
             Crafting Digital Experiences
           </h1>
-          <p className="hero-jelly hero-jelly-fast mt-6 max-w-2xl text-sm md:text-base lg:text-xl ">
+          <p data-i18n="projects.p" className="hero-jelly hero-jelly-fast mt-6 max-w-2xl text-sm md:text-base lg:text-xl ">
             A journey through code, creativity, and endless possibilities.
           </p>
         </div>
@@ -436,12 +436,12 @@ export default function ProjectsPage() {
                     </button>
                     <div>
                       <h3 className="hero-jelly text-sm font-medium uppercase tracking-wider flex items-center gap-2">
-                        <span className="section-title">{section.title}</span>
+                        <span data-i18n={`projects.section.${index}.title`} className="section-title">{section.title}</span>
                       </h3>
-                      <h2 className="hero-jelly section-subtitle text-xl sm:text-2xl font-black uppercase transition-all duration-300 md:text-3xl">
+                      <h2 data-i18n={`projects.section.${index}.subtitle`} className="hero-jelly section-subtitle text-xl sm:text-2xl font-black uppercase transition-all duration-300 md:text-3xl">
                         {section.subtitle}
                       </h2>
-                      <p className="hero-jelly hero-jelly-fast mt-2 text-sm md:text-base text-muted-foreground max-w-xl">{section.description}</p>
+                      <p data-i18n={`projects.section.${index}.description`} className="hero-jelly hero-jelly-fast mt-2 text-sm md:text-base text-muted-foreground max-w-xl">{section.description}</p>
                     </div>
                   </div>
                  <div className="flex items-center justify-center border md:border-none border-stone-500 dark:border-teal-500/50 rounded-md mt-4 md:mt-0 w-full md:w-auto hover:bg-muted transition">
