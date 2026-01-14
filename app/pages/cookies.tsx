@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { ArrowLeft } from 'lucide-react'
+import { t, type LangCode } from '@/lib/i18n'
 
 function setCookie(name: string, value: string, days = 365) {
   const maxAge = days * 24 * 60 * 60
@@ -17,10 +18,19 @@ function getCookie(name: string) {
 
 export default function CookiesPage() {
   const [consent, setConsent] = useState<'accepted' | 'rejected' | null>(null)
+  const [lang, setLang] = useState<LangCode>(typeof window !== 'undefined' ? ((localStorage.getItem('preferredLang') as LangCode) || 'en') : 'en')
 
   useEffect(() => {
     const c = getCookie('cookie_consent')
     if (c === 'accepted' || c === 'rejected') setConsent(c as 'accepted' | 'rejected')
+
+    const onPref = (e: any) => setLang(((e && e.detail) as LangCode) || ((localStorage.getItem('preferredLang') as LangCode) || 'en'))
+    window.addEventListener('preferredLangChange', onPref)
+    window.addEventListener('storage', onPref)
+    return () => {
+      window.removeEventListener('preferredLangChange', onPref)
+      window.removeEventListener('storage', onPref)
+    }
   }, [])
 
   const accept = () => {
@@ -80,7 +90,7 @@ export default function CookiesPage() {
           </div>
         ) : (
           <div className="mt-6">
-            <div className="inline-block px-4 py-2 rounded bg-muted text-foreground/90">Cookies: <strong className="ml-1">{consent}</strong></div>
+            <div className="inline-block px-4 py-2 rounded bg-muted text-foreground/90">{t('cookie.status', lang)} <strong className="ml-1">{consent ? t(`cookie.status.${consent}`, lang) : ''}</strong></div>
             <div className="mt-3">
               <button onClick={clearPreferences} className="px-3 py-2 ml-0 rounded border hover:bg-muted/50 transition">Change preferences</button>
             </div>

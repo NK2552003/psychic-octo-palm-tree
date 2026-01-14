@@ -202,6 +202,8 @@ export const extraTranslations: Record<string, Record<LangCode, string>> = {
   "cookie.accept": { en: "Accept Cookies", hi: "कुकीज़ स्वीकार करें", hinglish: "Accept Cookies" },
   "cookie.reject": { en: "Reject", hi: "अस्वीकार", hinglish: "Reject" },
   "cookie.status": { en: "Cookies:", hi: "कुकीज़:", hinglish: "Cookies:" },
+  "cookie.status.accepted": { en: "accepted", hi: "स्वीकृत", hinglish: "accepted" },
+  "cookie.status.rejected": { en: "rejected", hi: "अस्वीकृत", hinglish: "rejected" },
   "cookie.change": { en: "Change preferences", hi: "पसंद बदलें", hinglish: "Change preferences" },
   "cookie.accept.toast": {
     en: "Cookies accepted — thanks!",
