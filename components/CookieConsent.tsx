@@ -88,7 +88,7 @@ export default function CookieConsent() {
   if (!visible) return null
 
   return (
-    <div className="fixed inset-x-0 bottom-6 z-50 pointer-events-none flex justify-center px-4">
+    <div className="fixed inset-x-0 bottom-6 z-[9999] pointer-events-none flex justify-center px-4">
       <div className="w-[min(94%,44rem)] pointer-events-auto bg-background/95 border border-border rounded-xl shadow-lg p-3 lg:p-4 flex flex-col lg:flex-row items-center lg:items-start gap-3 lg:gap-4 text-foreground text-xs lg:text-sm backdrop-blur-md transition-opacity duration-300 cookie-toast">
         <div className="flex-1 text-center lg:text-left">
           <div className="font-semibold" data-i18n="cookie.accept.title">I use cookies</div>

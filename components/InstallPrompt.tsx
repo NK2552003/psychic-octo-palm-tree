@@ -67,7 +67,7 @@ export default function InstallPrompt({ deferredPrompt, setDeferredPrompt }: { d
   if (!visible) return null
 
   return (
-    <div className="fixed inset-x-0 bottom-6 z-50 pointer-events-none flex justify-center px-4">
+    <div className="fixed inset-x-0 bottom-6 z-[9999] pointer-events-none flex justify-center px-4">
       <div className="w-[min(94%,40rem)] pointer-events-auto bg-background/95 border border-border rounded-xl shadow-lg p-3 lg:p-4 flex flex-col lg:flex-row items-center lg:items-start gap-3 lg:gap-4 text-foreground text-xs lg:text-sm backdrop-blur-md transition-opacity duration-300 pwa-toast">
         <div className="flex-0 w-12 h-12 aspect-square rounded-xl flex items-center justify-center mx-auto lg:mx-0 mb-1 lg:mb-0" style={{ background: 'var(--btn-accent)' }}>
           <Smartphone className="w-6 h-6 mx-auto" style={{ color: 'var(--btn-accent-foreground)' }} aria-hidden />
