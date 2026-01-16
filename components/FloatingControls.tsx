@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import type { MouseEvent } from "react";
 import { createPortal } from "react-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import { translateDocument, t } from "@/lib/i18n";
 // Use inline outlined SVGs for language icons to avoid lucide-react HMR issues
 
@@ -346,32 +347,44 @@ export default function FloatingControls({
           </span>
         )}
 
-        {langMenuOpen && (
-          <div className="absolute bottom-full -right-1 pb-1 mb-2 flex flex-col gap-1 z-[9999]">
-            {langOptions.map(opt => (
-              <div key={opt.code} className="relative">
-                <button
-                  onClick={() => { setLang(opt.code); applyNow(opt.code as 'en'|'hi'|'hinglish'); setLangMenuOpen(false) }}
-                  onMouseEnter={() => { setHoverTarget(opt.code); setHoverText(opt.title) }}
-                  onMouseLeave={() => { setHoverTarget(null); setHoverText(null) }}
-                  onFocus={() => { setHoverTarget(opt.code); setHoverText(opt.title) }}
-                  onBlur={() => { setHoverTarget(null); setHoverText(null) }}
-                  className={`w-10 h-10 flex items-center justify-center rounded-xl transition-all duration-200 hover:scale-110 active:scale-95 text-sm font-medium border ${lang === opt.code ? "bg-white text-stone-900 border-stone-200 dark:bg-stone-900 dark:text-white dark:border-white/20 scale-105 ring-1" : "bg-white/30 dark:bg-white/5 border-stone-200 dark:border-white/10"}`}
-                  aria-label={`Select ${opt.title}`}
-                  title={opt.title}
-                >
-                  {opt.code === 'en' ? <span className="text-sm font-medium">E</span> : (opt.code === 'hi' ? <span className="tiro-hindi text-sm font-medium">ह</span> : <span className="text-sm font-medium">H</span>)}
-                </button>
+        <AnimatePresence>
+          {langMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 8 }}
+              transition={{ duration: 0.18 }}
+              className="absolute bottom-full -right-1 pb-1 mb-2 flex flex-col gap-2 z-[9999]"
+            >
+              {langOptions.map((opt, idx) => (
+                <div key={opt.code} className="relative">
+                  <motion.button
+                    initial={{ opacity: 0, x: 10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 10 }}
+                    transition={{ duration: 0.18, delay: idx * 0.04 }}
+                    onClick={() => { setLang(opt.code); applyNow(opt.code as 'en'|'hi'|'hinglish'); setLangMenuOpen(false) }}
+                    onMouseEnter={() => { setHoverTarget(opt.code); setHoverText(opt.title) }}
+                    onMouseLeave={() => { setHoverTarget(null); setHoverText(null) }}
+                    onFocus={() => { setHoverTarget(opt.code); setHoverText(opt.title) }}
+                    onBlur={() => { setHoverTarget(null); setHoverText(null) }}
+                    className={`w-10 h-10 flex items-center justify-center rounded-xl transition-all duration-200 hover:scale-110 active:scale-95 text-sm font-medium border ${lang === opt.code ? "bg-white text-stone-900 border-stone-200 dark:bg-stone-900 dark:text-white dark:border-white/20 scale-105 ring-1" : "bg-white/30 dark:bg-white/5 border-stone-200 dark:border-white/10"}`}
+                    aria-label={`Select ${opt.title}`}
+                    title={opt.title}
+                  >
+                    {opt.code === 'en' ? <span className="text-sm font-medium">E</span> : (opt.code === 'hi' ? <span className="tiro-hindi text-sm font-medium">ह</span> : <span className="text-sm font-medium">H</span>)}
+                  </motion.button>
 
-                {hoverTarget === opt.code && hoverText && (
-                  <span className="pointer-events-none absolute right-full top-1/2 -translate-y-1/2 mr-3 whitespace-nowrap px-3 py-1 rounded-md bg-stone-900 text-white text-xs shadow-md" aria-hidden>
-                    {hoverText}
-                  </span>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
+                  {hoverTarget === opt.code && hoverText && (
+                    <span className="pointer-events-none absolute right-full top-1/2 -translate-y-1/2 mr-3 whitespace-nowrap px-3 py-1 rounded-md bg-stone-900 text-white text-xs shadow-md" aria-hidden>
+                      {hoverText}
+                    </span>
+                  )}
+                </div>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* THEME TOGGLE */}
