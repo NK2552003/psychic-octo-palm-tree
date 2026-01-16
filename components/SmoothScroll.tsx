@@ -48,6 +48,10 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
 
     // tick via gsap.ticker for stable frame syncing
     const tick = () => {
+      // Ensure we don't overshoot a changed document height
+      const maxScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight)
+      if (target > maxScroll) target = maxScroll
+
       const diff = target - current
       const abs = Math.abs(diff)
 
@@ -65,6 +69,9 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
       // round small values to avoid subpixel jitter
       if (Math.abs(current) < 0.01) current = 0
 
+      // Clamp current to valid scroll range in case content shrank
+      if (current > maxScroll) current = maxScroll
+
       setY(-Math.round(current * 100) / 100)
 
       // update ScrollTrigger to keep transforms in sync
@@ -76,6 +83,17 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
     const onResize = () => setBodyHeight()
     window.addEventListener("resize", onResize)
 
+    // Recompute body height and reset GSAP state when language changes to avoid stuck animations
+    const onLangChange = () => {
+      setBodyHeight()
+      target = window.scrollY
+      current = target
+      setY(-Math.round(current * 100) / 100)
+      ScrollTrigger.refresh()
+    }
+
+    window.addEventListener('preferredLangChange', onLangChange as EventListener)
+
     ScrollTrigger.addEventListener("refreshInit", setBodyHeight)
     ScrollTrigger.refresh()
 
@@ -83,6 +101,7 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
       gsap.ticker.remove(tick)
       window.removeEventListener("scroll", onScroll)
       window.removeEventListener("resize", onResize)
+      window.removeEventListener('preferredLangChange', onLangChange as EventListener)
       ScrollTrigger.removeEventListener("refreshInit", setBodyHeight)
       document.body.style.height = ""
       ScrollTrigger.scrollerProxy(document.body, null as any)

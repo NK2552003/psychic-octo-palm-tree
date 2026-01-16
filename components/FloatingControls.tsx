@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import type { MouseEvent } from "react";
 import { createPortal } from "react-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import { translateDocument, t } from "@/lib/i18n";
 // Use inline outlined SVGs for language icons to avoid lucide-react HMR issues
 
@@ -15,6 +16,38 @@ export default function FloatingControls({
     if (typeof window === "undefined") return "en";
     return localStorage.getItem("preferredLang") || "en";
   });
+
+  // Mobile: state to control language menu
+  const [langMenuOpen, setLangMenuOpen] = useState(false);
+  const langMenuRef = useRef<HTMLDivElement | null>(null);
+
+  // Hover tooltip state (used to show hover tags like the left menu)
+  const [hoverTarget, setHoverTarget] = useState<string | null>(null);
+  const [hoverText, setHoverText] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    function onDocClick(e: Event) {
+      if (!langMenuRef.current) return
+      const target = (e.target as Node | null)
+      if (!target) return
+      if (!langMenuRef.current.contains(target)) setLangMenuOpen(false)
+    }
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Escape') setLangMenuOpen(false)
+    }
+    if (langMenuOpen) {
+      document.addEventListener('mousedown', onDocClick)
+      document.addEventListener('keydown', onKeyDown)
+    }
+    return () => {
+      document.removeEventListener('mousedown', onDocClick)
+      document.removeEventListener('keydown', onKeyDown)
+      // clear hover state when menu closes
+      setHoverTarget(null)
+      setHoverText(null)
+    }
+  }, [langMenuOpen])
 
   // Expose wrapping helpers so we can re-apply right away when the user clicks
   const unwrapDevanagari = () => {
@@ -265,11 +298,14 @@ export default function FloatingControls({
   }, [lang])
 
 
+  // current short label for active language (used for badge)
+  const currentLabel = langOptions.find(opt => opt.code === lang)?.label || lang.toUpperCase();
+
   const node = (
     <div
       className={`
         fixed bottom-4 right-4 md:bottom-5 md:right-5 z-50
-        flex items-center
+        flex flex-col items-center gap-2
         rounded-xl
         backdrop-blur-xl
         bg-white/40 dark:bg-black/40
@@ -278,25 +314,77 @@ export default function FloatingControls({
      px-2 py-2 shadow-md
       `}
     >
-      {/* LANGUAGE SELECTOR */}
-      <div className="flex items-center gap-1 px-1 z-100">
-        {langOptions.map(opt => (
-          <button
-            key={opt.code}
-            onClick={() => { setLang(opt.code); applyNow(opt.code as 'en'|'hi'|'hinglish') }}
-            className={`w-8 h-8 flex items-center justify-center rounded-xl transition-all duration-200 hover:scale-110 active:scale-95 text-sm font-medium border ${lang === opt.code ? "bg-white text-stone-900 border-stone-200 dark:bg-stone-900 dark:text-white dark:border-white/20 scale-105 ring-1" : "bg-white/30 dark:bg-white/5 border-stone-200 dark:border-white/10"}`}
-            aria-label={`Select ${opt.title}`}
-            title={opt.title}
-          >
-            {opt.code === 'en' ? (
-              <span className="text-sm font-medium">E</span>
-            ) : opt.code === 'hi' ? (
-              <span className="tiro-hindi text-sm font-medium">ह</span>
-            ) : (
-              <span className="text-sm font-medium">H</span>
-            )} 
-          </button>
-        ))}
+      {/* LANGUAGE SELECTOR (single menu button for all sizes) */}
+      <div className="relative" ref={langMenuRef}>
+        <button
+          onClick={() => setLangMenuOpen((s) => !s)}
+          onMouseEnter={() => { setHoverTarget('lang'); setHoverText(langOptions.find(o => o.code === lang)?.title || lang) }}
+          onMouseLeave={() => { setHoverTarget(null); setHoverText(null) }}
+          onFocus={() => { setHoverTarget('lang'); setHoverText(langOptions.find(o => o.code === lang)?.title || lang) }}
+          onBlur={() => { setHoverTarget(null); setHoverText(null) }}
+          aria-haspopup="true"
+          aria-expanded={langMenuOpen}
+          className="relative w-8 h-8 flex items-center justify-center rounded-xl transition-all duration-200 hover:scale-110 active:scale-95 text-sm font-medium border bg-white/30 dark:bg-white/5 border-stone-200 dark:border-white/10"
+          title={`Language: ${lang}`}
+        >
+          {/* Globe icon */}
+          <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+            <circle cx="12" cy="12" r="9" />
+            <path d="M2 12h20" />
+            <path d="M12 3v18" />
+            <path d="M4.93 4.93l14.14 14.14" />
+            <path d="M19.07 4.93L4.93 19.07" />
+          </svg>
+          <span className="sr-only">Language: {lang}</span>
+        </button>
+      {/* small badge with current lang label */}
+          <span className="absolute -top-1 -right-1 text-[10px] leading-none px-1 rounded-full bg-white/90 dark:bg-stone-900 text-stone-900 dark:text-white border border-stone-200 dark:border-white/20">
+            {currentLabel}
+          </span>
+        {hoverTarget === 'lang' && hoverText && (
+          <span className="pointer-events-none absolute right-full top-1/2 -translate-y-1/2 mr-3 whitespace-nowrap px-3 py-1 rounded-md bg-stone-900 text-white text-xs shadow-md" aria-hidden>
+            {hoverText}
+          </span>
+        )}
+
+        <AnimatePresence>
+          {langMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 8 }}
+              transition={{ duration: 0.18 }}
+              className="absolute bottom-full -right-1 pb-1 mb-2 flex flex-col gap-2 z-[9999]"
+            >
+              {langOptions.map((opt, idx) => (
+                <div key={opt.code} className="relative">
+                  <motion.button
+                    initial={{ opacity: 0, x: 10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 10 }}
+                    transition={{ duration: 0.18, delay: idx * 0.04 }}
+                    onClick={() => { setLang(opt.code); applyNow(opt.code as 'en'|'hi'|'hinglish'); setLangMenuOpen(false) }}
+                    onMouseEnter={() => { setHoverTarget(opt.code); setHoverText(opt.title) }}
+                    onMouseLeave={() => { setHoverTarget(null); setHoverText(null) }}
+                    onFocus={() => { setHoverTarget(opt.code); setHoverText(opt.title) }}
+                    onBlur={() => { setHoverTarget(null); setHoverText(null) }}
+                    className={`w-10 h-10 flex items-center justify-center rounded-xl transition-all duration-200 hover:scale-110 active:scale-95 text-sm font-medium border ${lang === opt.code ? "bg-white text-stone-900 border-stone-200 dark:bg-stone-900 dark:text-white dark:border-white/20 scale-105 ring-1" : "bg-white/30 dark:bg-white/5 border-stone-200 dark:border-white/10"}`}
+                    aria-label={`Select ${opt.title}`}
+                    title={opt.title}
+                  >
+                    {opt.code === 'en' ? <span className="text-sm font-medium">E</span> : (opt.code === 'hi' ? <span className="tiro-hindi text-sm font-medium">ह</span> : <span className="text-sm font-medium">H</span>)}
+                  </motion.button>
+
+                  {hoverTarget === opt.code && hoverText && (
+                    <span className="pointer-events-none absolute right-full top-1/2 -translate-y-1/2 mr-3 whitespace-nowrap px-3 py-1 rounded-md bg-stone-900 text-white text-xs shadow-md" aria-hidden>
+                      {hoverText}
+                    </span>
+                  )}
+                </div>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* THEME TOGGLE */}
