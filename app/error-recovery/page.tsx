@@ -1,11 +1,13 @@
 "use client"
 
 import React, { useState } from 'react'
-import Header from '@/components/Header'
+import { useRouter } from 'next/navigation'
+import Header from '@/components/Header' 
 
 export default function ErrorRecovery() {
   const [busy, setBusy] = useState(false)
   const [message, setMessage] = useState<string | null>(null)
+  const router = useRouter()
 
   const clearCookies = () => {
     try {
@@ -21,8 +23,10 @@ export default function ErrorRecovery() {
         }
       }
       setMessage('Cookies cleared (Note: HttpOnly cookies cannot be cleared by this page).')
+      setTimeout(() => router.push('/'), 700)
     } catch (e) {
       setMessage('Failed to clear cookies automatically. Please clear them via your browser settings.')
+      setTimeout(() => router.push('/'), 700)
     }
   }
 
@@ -53,10 +57,10 @@ export default function ErrorRecovery() {
       // try clear cookies as well
       clearCookies()
 
-      setMessage('Cache, storage, and non-HttpOnly cookies cleared. Reloading...')
+      setMessage('Cache, storage, and non-HttpOnly cookies cleared. Redirecting to home...')
 
-      // give the unregisters a moment then reload
-      setTimeout(() => window.location.reload(), 700)
+      // give the unregisters a moment then navigate to home
+      setTimeout(() => router.push('/'), 700)
     } catch (e) {
       setMessage('Automatic clear failed. Please clear cache and cookies manually from your browser and reload.')
     } finally {
@@ -67,9 +71,9 @@ export default function ErrorRecovery() {
   const forceReloadNoCache = () => {
     // Try fetch to bypass caches, then reload
     try {
-      fetch(window.location.href, { cache: 'no-store', mode: 'same-origin' }).finally(() => window.location.reload())
+      fetch(window.location.href, { cache: 'no-store', mode: 'same-origin' }).finally(() => router.push('/'))
     } catch (e) {
-      window.location.reload()
+      router.push('/')
     }
   }
 
