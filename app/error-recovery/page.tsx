@@ -77,32 +77,32 @@ export default function ErrorRecovery() {
     <section className="min-h-screen flex flex-col">
       <Header time={new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true })} />
       <main className="flex-1 flex items-center justify-center p-8">
-        <div className="max-w-2xl w-full bg-white dark:bg-stone-800 rounded-lg shadow-md p-8">
-          <h1 className="text-2xl font-semibold mb-4 text-stone-900 dark:text-teal-200">Client-side error detected</h1>
-          <p className="mb-4 text-stone-700 dark:text-stone-300">
+        <div className="max-w-2xl w-full bg-[var(--color-card)] text-[var(--color-card-foreground)] border border-[var(--color-border)] rounded-lg shadow-md p-8">
+          <h1 className="text-2xl font-semibold mb-4 text-[var(--color-card-foreground)]">Client-side error detected</h1>
+          <p className="mb-4 text-[var(--color-muted-foreground)]">
             The site encountered a client-side error while loading. This can happen when your browser serves an older/stale cached file or cookie that conflicts with the newly deployed code.
           </p>
 
           <div className="space-y-3 mb-4">
-            <p className="text-sm text-stone-600 dark:text-stone-400">Quick fixes (try them in order):</p>
+            <p className="text-sm text-[var(--color-muted-foreground)]">Quick fixes (try them in order):</p>
             <div className="flex gap-2">
               <button
                 onClick={clearCacheAndStorage}
                 disabled={busy}
-                className="px-4 py-2 rounded bg-teal-600 text-white hover:bg-teal-500 disabled:opacity-50"
+                className="px-4 py-2 rounded bg-[var(--btn-accent)] text-[var(--btn-accent-foreground)] hover:opacity-90 disabled:opacity-50"
               >
                 Clear cache & storage
               </button>
               <button
                 onClick={clearCookies}
                 disabled={busy}
-                className="px-4 py-2 rounded border border-stone-200 dark:border-stone-700 text-stone-800 dark:text-stone-200"
+                className="px-4 py-2 rounded border border-[var(--color-border)] text-[var(--color-foreground)]"
               >
                 Clear cookies
               </button>
               <button
                 onClick={forceReloadNoCache}
-                className="px-4 py-2 rounded border border-stone-200 dark:border-stone-700 text-stone-800 dark:text-stone-200"
+                className="px-4 py-2 rounded border border-[var(--color-border)] text-[var(--color-foreground)]"
               >
                 Reload (bypass cache)
               </button>
@@ -110,22 +110,22 @@ export default function ErrorRecovery() {
           </div>
 
           {message && (
-            <div className="mb-4 p-3 rounded bg-stone-100 dark:bg-stone-700 text-stone-800 dark:text-stone-200">
+            <div className="mb-4 p-3 rounded bg-[var(--color-muted)] text-[var(--color-muted-foreground)]">
               {message}
             </div>
           )}
 
-          <details className="text-sm text-stone-600 dark:text-stone-400">
+          <details className="text-sm text-[var(--color-muted-foreground)]">
             <summary className="cursor-pointer mb-2 font-medium">Manual instructions</summary>
             <ol className="pl-4 list-decimal space-y-1">
               <li>Open your browser settings → Privacy & Security → Clear browsing data.</li>
               <li>Select <strong>Cached images and files</strong> and <strong>Cookies and other site data</strong>, then clear.</li>
               <li>Reload this page.</li>
             </ol>
-            <p className="mt-2 text-xs text-stone-500">Note: If your site uses HttpOnly cookies, they must be cleared via browser settings (cannot be removed by JavaScript).</p>
+            <p className="mt-2 text-xs text-[var(--color-muted-foreground)]">Note: If your site uses HttpOnly cookies, they must be cleared via browser settings (cannot be removed by JavaScript).</p>
           </details>
 
-          <div className="mt-6 text-sm text-stone-600 dark:text-stone-400">
+          <div className="mt-6 text-sm text-[var(--color-muted-foreground)]">
             If the problem persists after clearing cache and cookies, try opening the site in an incognito window or contact support.
           </div>
         </div>

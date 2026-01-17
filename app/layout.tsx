@@ -192,6 +192,42 @@ export default function RootLayout({
         <meta name="twitter:creator" content="@nk2552003" />
 
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ldJson) }} />
+
+        {/* Early failure handlers: redirect to /error-recovery on client-side JS errors or unhandled rejections in production */}
+        <script dangerouslySetInnerHTML={{ __html: `(function(){
+  try {
+    function isResourceError(e){
+      try{
+        var t = e && e.target
+        if (!t) return false
+        var tag = (t.tagName || '').toUpperCase()
+        return ['IMG','SCRIPT','LINK','VIDEO','AUDIO','SOURCE','IFRAME'].indexOf(tag) !== -1
+      } catch (err) { return false }
+    }
+
+    function shouldRedirect(e){
+      try{
+        if (location.pathname === '/error-recovery') return false
+        if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') return false
+        if (isResourceError(e)) return false
+        return true
+      } catch (err) { return false }
+    }
+
+    window.addEventListener('error', function(e){
+      if (shouldRedirect(e)) {
+        try { location.replace('/error-recovery') } catch (err) {}
+      }
+    }, true)
+
+    window.addEventListener('unhandledrejection', function(e){
+      try {
+        if (location.pathname === '/error-recovery' || location.hostname === 'localhost' || location.hostname === '127.0.0.1') return
+        location.replace('/error-recovery')
+      } catch (err) {}
+    }, true)
+  } catch (err) {}
+})()` }} />
       </head>
       <body className="font-display antialiased relative">
         <AppInitializer>{children}</AppInitializer>
