@@ -1,4 +1,5 @@
-const CACHE_NAME = 'nitish-portfolio-v1';
+// Cache version — update this string on deploy to force a fresh cache
+const CACHE_NAME = 'nitish-portfolio-v2';
 const urlsToCache = [
   '/',
   '/favicon-32x32.png',
@@ -8,6 +9,8 @@ const urlsToCache = [
 ];
 
 self.addEventListener('install', (event) => {
+  // activate the new service worker immediately
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => cache.addAll(urlsToCache))
   );
@@ -20,12 +23,44 @@ self.addEventListener('activate', (event) => {
         if (key !== CACHE_NAME) return caches.delete(key)
         return Promise.resolve()
       })
-    ))
+    )).then(() => self.clients.claim())
   );
 });
 
 self.addEventListener('fetch', (event) => {
+  const req = event.request;
+  // For navigation requests, prefer network (get freshest HTML) and fall back to cache
+  if (req.mode === 'navigate' || (req.method === 'GET' && req.headers.get('accept') && req.headers.get('accept').includes('text/html'))) {
+    event.respondWith(
+      fetch(req)
+        .then((res) => {
+          // update the cache with latest HTML
+          const resClone = res.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(req, resClone));
+          return res;
+        })
+        .catch(() => caches.match(req).then((r) => r || caches.match('/')))
+    );
+    return;
+  }
+
+  // For other requests, try cache first then network and populate cache
   event.respondWith(
-    caches.match(event.request).then((response) => response || fetch(event.request))
+    caches.match(req).then((cacheRes) => {
+      if (cacheRes) return cacheRes;
+      return fetch(req)
+        .then((networkRes) => {
+          const clone = networkRes.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(req, clone));
+          return networkRes;
+        })
+        .catch(() => {})
+    })
   );
+});
+
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });

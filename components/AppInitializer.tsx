@@ -62,12 +62,38 @@ export default function AppInitializer({ children }: { children: React.ReactNode
   // register a basic service worker to enable offline caching for PWA
   useEffect(() => {
     if (!('serviceWorker' in navigator)) return
-    navigator.serviceWorker
-      .register('/sw.js')
+
+    let refreshing = false
+
+    navigator.serviceWorker.register('/sw.js')
+      .then((reg) => {
+        // If there's an updated worker waiting, ask it to activate immediately
+        if (reg.waiting) {
+          reg.waiting.postMessage({ type: 'SKIP_WAITING' })
+        }
+
+        reg.addEventListener('updatefound', () => {
+          const newWorker = reg.installing
+          if (!newWorker) return
+          newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              // Tell the waiting worker to skip waiting (activate) — the controllerchange handler will reload
+              if (reg.waiting) reg.waiting.postMessage({ type: 'SKIP_WAITING' })
+            }
+          })
+        })
+      })
       .catch((e) => {
         // ignore failures — optional
         // console.warn('SW registration failed', e)
       })
+
+    // When the new service worker takes control, reload the page to use fresh assets
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (refreshing) return
+      refreshing = true
+      window.location.reload()
+    })
   }, [])
 
   // keep deferred install prompt available even if `InstallPrompt` mounts later
