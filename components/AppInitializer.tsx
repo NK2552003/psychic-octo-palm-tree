@@ -96,6 +96,36 @@ export default function AppInitializer({ children }: { children: React.ReactNode
     })
   }, [])
 
+  // Listen for global errors/unhandled rejections and redirect to recovery page
+  useEffect(() => {
+    const onError = (e: ErrorEvent) => {
+      try {
+        if (typeof window === 'undefined') return
+        if (window.location.pathname === '/error-recovery') return
+        // avoid redirect during local development
+        if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') return
+        window.location.href = '/error-recovery'
+      } catch (err) {}
+    }
+
+    const onRejection = (e: PromiseRejectionEvent) => {
+      try {
+        if (typeof window === 'undefined') return
+        if (window.location.pathname === '/error-recovery') return
+        if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') return
+        window.location.href = '/error-recovery'
+      } catch (err) {}
+    }
+
+    window.addEventListener('error', onError)
+    window.addEventListener('unhandledrejection', onRejection)
+
+    return () => {
+      window.removeEventListener('error', onError)
+      window.removeEventListener('unhandledrejection', onRejection)
+    }
+  }, [])
+
   // keep deferred install prompt available even if `InstallPrompt` mounts later
   const [deferredPrompt, setDeferredPrompt] = useState<any | null>(null)
   useEffect(() => {
