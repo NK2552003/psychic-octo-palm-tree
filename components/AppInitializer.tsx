@@ -104,7 +104,7 @@ export default function AppInitializer({ children }: { children: React.ReactNode
         if (window.location.pathname === '/error-recovery') return
         // avoid redirect during local development
         if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') return
-        window.location.href = '/error-recovery'
+        window.location.replace('/error-recovery')
       } catch (err) {}
     }
 
@@ -113,7 +113,7 @@ export default function AppInitializer({ children }: { children: React.ReactNode
         if (typeof window === 'undefined') return
         if (window.location.pathname === '/error-recovery') return
         if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') return
-        window.location.href = '/error-recovery'
+        window.location.replace('/error-recovery')
       } catch (err) {}
     }
 
