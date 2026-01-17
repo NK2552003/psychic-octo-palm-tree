@@ -67,10 +67,11 @@ export default function AppInitializer({ children }: { children: React.ReactNode
 
     navigator.serviceWorker.register('/sw.js')
       .then((reg) => {
-        // If there's an updated worker waiting, ask it to activate immediately
-        if (reg.waiting) {
-          reg.waiting.postMessage({ type: 'SKIP_WAITING' })
-        }
+        // If there's an updated worker waiting, ask it to activate immediately — but only
+      // if we already had a controller (this indicates it's an update rather than the initial install)
+      if (reg.waiting && navigator.serviceWorker.controller) {
+        reg.waiting.postMessage({ type: 'SKIP_WAITING' })
+      }
 
         reg.addEventListener('updatefound', () => {
           const newWorker = reg.installing
@@ -88,8 +89,16 @@ export default function AppInitializer({ children }: { children: React.ReactNode
         // console.warn('SW registration failed', e)
       })
 
-    // When the new service worker takes control, reload the page to use fresh assets
+    // When the new service worker takes control, reload the page to use fresh assets.
+    // Only reload if there was an existing controller (i.e. this is an update), to avoid
+    // reloading during the initial install on first page load.
+    let hadController = !!navigator.serviceWorker.controller
     navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (!hadController) {
+        // First-time activation — avoid a disruptive reload
+        hadController = true
+        return
+      }
       if (refreshing) return
       refreshing = true
       window.location.reload()
