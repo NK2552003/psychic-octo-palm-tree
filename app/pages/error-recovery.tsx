@@ -1,0 +1,135 @@
+"use client"
+
+import React, { useState } from 'react'
+import Header from '@/components/Header'
+
+export default function ErrorRecovery() {
+  const [busy, setBusy] = useState(false)
+  const [message, setMessage] = useState<string | null>(null)
+
+  const clearCookies = () => {
+    try {
+      const cookies = document.cookie.split(';')
+      for (const cookie of cookies) {
+        const eqPos = cookie.indexOf('=')
+        const name = eqPos > -1 ? cookie.substr(0, eqPos).trim() : cookie.trim()
+        document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`
+        document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=${location.hostname}`
+        if (location.hostname.includes('.')) {
+          const hostParts = location.hostname.split('.').slice(-2).join('.')
+          document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=.${hostParts}`
+        }
+      }
+      setMessage('Cookies cleared (Note: HttpOnly cookies cannot be cleared by this page).')
+    } catch (e) {
+      setMessage('Failed to clear cookies automatically. Please clear them via your browser settings.')
+    }
+  }
+
+  const clearCacheAndStorage = async () => {
+    setBusy(true)
+    setMessage(null)
+    try {
+      // delete caches
+      if ('caches' in window) {
+        const keys = await caches.keys()
+        await Promise.all(keys.map((k) => caches.delete(k)))
+      }
+
+      // unregister service workers
+      if ('serviceWorker' in navigator) {
+        try {
+          const regs = await navigator.serviceWorker.getRegistrations()
+          await Promise.all(regs.map((r) => r.unregister()))
+        } catch (e) {
+          // ignore
+        }
+      }
+
+      // clear storage
+      try { localStorage.clear() } catch (e) {}
+      try { sessionStorage.clear() } catch (e) {}
+
+      // try clear cookies as well
+      clearCookies()
+
+      setMessage('Cache, storage, and non-HttpOnly cookies cleared. Reloading...')
+
+      // give the unregisters a moment then reload
+      setTimeout(() => window.location.reload(), 700)
+    } catch (e) {
+      setMessage('Automatic clear failed. Please clear cache and cookies manually from your browser and reload.')
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  const forceReloadNoCache = () => {
+    // Try fetch to bypass caches, then reload
+    try {
+      fetch(window.location.href, { cache: 'no-store', mode: 'same-origin' }).finally(() => window.location.reload())
+    } catch (e) {
+      window.location.reload()
+    }
+  }
+
+  return (
+    <section className="min-h-screen flex flex-col">
+      <Header time={new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true })} />
+      <main className="flex-1 flex items-center justify-center p-8">
+        <div className="max-w-2xl w-full bg-white dark:bg-stone-800 rounded-lg shadow-md p-8">
+          <h1 className="text-2xl font-semibold mb-4 text-stone-900 dark:text-teal-200">Client-side error detected</h1>
+          <p className="mb-4 text-stone-700 dark:text-stone-300">
+            The site encountered a client-side error while loading. This can happen when your browser serves an older/stale cached file or cookie that conflicts with the newly deployed code.
+          </p>
+
+          <div className="space-y-3 mb-4">
+            <p className="text-sm text-stone-600 dark:text-stone-400">Quick fixes (try them in order):</p>
+            <div className="flex gap-2">
+              <button
+                onClick={clearCacheAndStorage}
+                disabled={busy}
+                className="px-4 py-2 rounded bg-teal-600 text-white hover:bg-teal-500 disabled:opacity-50"
+              >
+                Clear cache & storage
+              </button>
+              <button
+                onClick={clearCookies}
+                disabled={busy}
+                className="px-4 py-2 rounded border border-stone-200 dark:border-stone-700 text-stone-800 dark:text-stone-200"
+              >
+                Clear cookies
+              </button>
+              <button
+                onClick={forceReloadNoCache}
+                className="px-4 py-2 rounded border border-stone-200 dark:border-stone-700 text-stone-800 dark:text-stone-200"
+              >
+                Reload (bypass cache)
+              </button>
+            </div>
+          </div>
+
+          {message && (
+            <div className="mb-4 p-3 rounded bg-stone-100 dark:bg-stone-700 text-stone-800 dark:text-stone-200">
+              {message}
+            </div>
+          )}
+
+          <details className="text-sm text-stone-600 dark:text-stone-400">
+            <summary className="cursor-pointer mb-2 font-medium">Manual instructions</summary>
+            <ol className="pl-4 list-decimal space-y-1">
+              <li>Open your browser settings → Privacy & Security → Clear browsing data.</li>
+              <li>Select <strong>Cached images and files</strong> and <strong>Cookies and other site data</strong>, then clear.</li>
+              <li>Reload this page.</li>
+            </ol>
+            <p className="mt-2 text-xs text-stone-500">Note: If your site uses HttpOnly cookies, they must be cleared via browser settings (cannot be removed by JavaScript).</p>
+          </details>
+
+          <div className="mt-6 text-sm text-stone-600 dark:text-stone-400">
+            If the problem persists after clearing cache and cookies, try opening the site in an incognito window or contact support.
+          </div>
+        </div>
+      </main>
+    </section>
+  )
+}
