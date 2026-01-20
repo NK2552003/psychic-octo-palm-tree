@@ -64,6 +64,24 @@ export default function Footer() {
           <p data-i18n="footer.copyright">© 2026 Nitish's Portfolio</p>
           <p data-i18n="footer.all_rights">All rights reserved.</p>
           <p><a href="/cookies" data-i18n="footer.cookie_policy" className="underline">Cookie Policy</a></p>
+          <p>
+            <a
+              href="https://wdawards.com/web/an-interactive-dev-portfolio"
+              onClick={(e) => {
+                e.preventDefault()
+                try { window.open('https://wdawards.com/web/an-interactive-dev-portfolio', '_blank', 'noopener') } catch (err) {}
+                try {
+                  toast(t('wdawards.toast.title'), {
+                    description: t('wdawards.toast.desc'),
+                    action: { label: t('wdawards.action'), onClick: () => { try { window.open('https://wdawards.com/web/an-interactive-dev-portfolio', '_blank', 'noopener') } catch (e) {} } }
+                  })
+                } catch (err) {}
+              }}
+              className="underline"
+            >
+              {t('footer.wdawards')}
+            </a>
+          </p>
         </div>
 
         {/* Center Social */}
