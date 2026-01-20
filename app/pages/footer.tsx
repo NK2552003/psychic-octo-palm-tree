@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react"
 import gsap from "gsap"
 import { MoveUpRight } from "lucide-react"
 import { t, type LangCode } from '@/lib/i18n'
+import { toast } from "sonner"
 const sections = [
   { id: "hero" },
   { id: "about" },
