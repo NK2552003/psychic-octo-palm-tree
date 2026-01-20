@@ -7,6 +7,8 @@ import InstallPrompt from "./InstallPrompt"
 import CookieConsent from "./CookieConsent"
 import DoodleOverlay from "./DoodleOverlay"
 import { ThemeProvider } from "./theme-provider"
+import { toast } from "sonner"
+import { t } from '@/lib/i18n'
 
 export default function AppInitializer({ children }: { children: React.ReactNode }) {
   const [themeDetected, setThemeDetected] = useState(false)
@@ -246,6 +248,27 @@ export default function AppInitializer({ children }: { children: React.ReactNode
       clearTimeout(finalAttempt)
     }
   }, [])
+
+  // show a WDAwards toast once when the splash has finished
+  useEffect(() => {
+    try {
+      if (!splashDone) return
+      const key = 'wdawardsToastShown'
+      if (typeof window !== 'undefined' && localStorage.getItem(key) === '1') return
+
+      toast(t('wdawards.toast.title'), {
+        description: t('wdawards.toast.desc'),
+        action: {
+          label: t('wdawards.action'),
+          onClick: () => {
+            try { window.open('https://wdawards.com/web/an-interactive-dev-portfolio', '_blank', 'noopener') } catch (e) {}
+          }
+        }
+      })
+
+      try { localStorage.setItem(key, '1') } catch (e) {}
+    } catch (e) {}
+  }, [splashDone])
 
   // don't mount or initialize anything until we know the system theme
   if (!themeDetected) return null

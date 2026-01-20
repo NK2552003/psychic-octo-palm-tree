@@ -246,6 +246,11 @@ export const extraTranslations: Record<string, Record<LangCode, string>> = {
   },
   "footer.all_rights": { en: "All rights reserved.", hi: "सर्वाधिकार सुरक्षित।", hinglish: "All rights reserved." },
   "footer.cookie_policy": { en: "Cookie Policy", hi: "कूकी नीति", hinglish: "Cookie Policy" },
+  "footer.wdawards": { en: "WDAwards nominee →", hi: "WDAwards नामांकित →", hinglish: "WDAwards nominee →" },
+
+  "wdawards.toast.title": { en: "WDAwards nominee", hi: "WDAwards नामांकित", hinglish: "WDAwards nominee" },
+  "wdawards.toast.desc": { en: "Recognised nominee — view entry", hi: "नामांकित — प्रविष्टि देखें", hinglish: "Recognised nominee — view entry" },
+  "wdawards.action": { en: "View", hi: "देखें", hinglish: "View" },
 
   // Projects
   "projects.badge": { en: "Projects", hi: "परियोजनाएँ", hinglish: "Projects" },
