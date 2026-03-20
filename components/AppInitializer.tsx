@@ -7,6 +7,7 @@ import InstallPrompt from "./InstallPrompt";
 import CookieConsent from "./CookieConsent";
 import DoodleOverlay from "./DoodleOverlay";
 import BigCursor from "./BigCursor";
+import ProgressScrollBar from "./ProgressScrollBar";
 import { ThemeProvider } from "./theme-provider"
 import LenisScroll from "./LenisScroll"
 import { toast } from "sonner"
@@ -278,6 +279,7 @@ export default function AppInitializer({ children }: { children: React.ReactNode
   return (
     <LenisScroll>
       <ThemeProvider attribute="class" defaultTheme={systemTheme}>
+        <ProgressScrollBar />
         {!splashDone && (
           <SplashScreen onLoaded={() => {
             setSplashDone(true)
