@@ -7,6 +7,7 @@ import InstallPrompt from "./InstallPrompt"
 import CookieConsent from "./CookieConsent"
 import DoodleOverlay from "./DoodleOverlay"
 import { ThemeProvider } from "./theme-provider"
+import LenisScroll from "./LenisScroll"
 import { toast } from "sonner"
 import { t } from '@/lib/i18n'
 
@@ -274,17 +275,19 @@ export default function AppInitializer({ children }: { children: React.ReactNode
   if (!themeDetected) return null
 
   return (
-    <ThemeProvider attribute="class" defaultTheme={systemTheme}>
-      {!splashDone && (
-        <SplashScreen onLoaded={() => {
-          setSplashDone(true)
-          try { sessionStorage.setItem('splashDone', '1') } catch (e) {}
-        }} />
-      )}
-      {splashDone && children}
-      {splashDone && <DoodleOverlay />}
-      {splashDone && <InstallPrompt deferredPrompt={deferredPrompt} setDeferredPrompt={setDeferredPrompt} />}
-      {splashDone && <CookieConsent />}
-    </ThemeProvider>
+    <LenisScroll>
+      <ThemeProvider attribute="class" defaultTheme={systemTheme}>
+        {!splashDone && (
+          <SplashScreen onLoaded={() => {
+            setSplashDone(true)
+            try { sessionStorage.setItem('splashDone', '1') } catch (e) {}
+          }} />
+        )}
+        {splashDone && children}
+        {splashDone && <DoodleOverlay />}
+        {splashDone && <InstallPrompt deferredPrompt={deferredPrompt} setDeferredPrompt={setDeferredPrompt} />}
+        {splashDone && <CookieConsent />}
+      </ThemeProvider>
+    </LenisScroll>
   )
 }

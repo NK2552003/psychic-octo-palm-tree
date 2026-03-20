@@ -49,6 +49,13 @@ export default function ProjectsPage() {
   const sectionsRef = useRef<(HTMLDivElement | null)[]>([])
   const cardsContainerRef = useRef<(HTMLDivElement | null)[]>([])
 
+  // Fetch GitHub repos and Dev.to articles on initial mount
+  useEffect(() => {
+    fetchGithubRepos();
+    fetchDevtoArticles();
+  }, [])
+
+  // Legacy: Keep this in case expandedSection changes are needed elsewhere
   useEffect(() => {
     if (expandedSection === 0 && githubRepos.length === 0) {
       fetchGithubRepos();

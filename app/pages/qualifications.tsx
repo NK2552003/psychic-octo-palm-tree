@@ -139,14 +139,14 @@ const QualificationCard: React.FC<{ qualification: Qualification; index: number;
         gsap.to(detailsRef.current, {
           height: 'auto',
           opacity: 1,
-          duration: 0.5,
+          duration: 0.3,
           ease: 'power2.out',
         });
       } else {
         gsap.to(detailsRef.current, {
           height: 0,
           opacity: 0,
-          duration: 0.4,
+          duration: 0.25,
           ease: 'power2.in',
         });
       }
@@ -298,7 +298,7 @@ export default function QualificationsSection() {
       gsap.fromTo(
         cards,
         { opacity: 0, y: 12 },
-        { opacity: 1, y: 0, duration: 0.6, stagger: 0.08, ease: 'power2.out', delay: 0.12 }
+        { opacity: 1, y: 0, duration: 0.4, stagger: 0.05, ease: 'power2.out', delay: 0.08 }
       );
     }
 
@@ -306,11 +306,11 @@ export default function QualificationsSection() {
     const ctx = gsap.context(() => {
       gsap.from('.my-letter', {
         opacity: 0,
-        y: 50,
-        rotation: 'random(-15, 15)',
-        duration: 1,
-        ease: 'elastic.out(1, 0.5)',
-        stagger: 0.08,
+        y: 30,
+        rotation: 0,
+        duration: 0.6,
+        ease: 'power2.out',
+        stagger: 0.04,
         scrollTrigger: {
           trigger: myRef.current,
           start: 'top 80%',
@@ -321,22 +321,22 @@ export default function QualificationsSection() {
 
       gsap.fromTo(
         '.journey-letter',
-        { opacity: 0, y: 80, scale: 0.9, rotation: 'random(-8, 8)' },
+        { opacity: 0, y: 40, scale: 0.95, rotation: 0 },
         {
           opacity: 1,
           y: 0,
           scale: 1,
           rotation: 0,
-          duration: 1.2,
-          ease: 'back.out(1.2)',
-          stagger: 0.06,
+          duration: 0.7,
+          ease: 'power2.out',
+          stagger: 0.04,
           scrollTrigger: {
             trigger: journeyRef.current,
             start: 'top 80%',
             toggleActions: 'play none none none',
             once: true,
           },
-          delay: 0.18,
+          delay: 0.1,
         }
       );
     });
