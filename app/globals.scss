@@ -8567,3 +8567,33 @@ select:focus-visible {
     }
   }
 }
+
+/* ================== PARALLAX EFFECT STYLES ================== */
+
+/* Enable parallax on elements with data-parallax attribute */
+[data-parallax] {
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Parallax letter animations - smooth staggered effect */
+.parallax-letter {
+  will-change: transform;
+  transform: translateZ(0);
+  transition: transform 0.3s cubic-bezier(0.33, 0.66, 0.66, 1);
+}
+
+/* Disable parallax on small screens for performance */
+@media (max-width: 768px) {
+  [data-parallax] {
+    transform: none !important;
+    will-change: auto !important;
+  }
+
+  .parallax-letter {
+    transform: none !important;
+    transition: none !important;
+  }
+}

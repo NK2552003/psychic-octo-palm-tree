@@ -1,6 +1,8 @@
 "use client";
 import { Patrick_Hand } from "next/font/google";
 import Signature from "./signature";
+import { useRef } from "react";
+import { useParallax, applyParallaxDepth } from "@/lib/useParallax";
 
 export const handwriting = Patrick_Hand({
   subsets: ["latin"],
@@ -16,14 +18,19 @@ const sections = [
   { label: "Contact", id: "contact", key: 'nav.contact' },
 ];
 export default function HeroRight() {
+  const heroRightRef = useRef<HTMLDivElement>(null);
+  
+  // Initialize parallax effect for hero-right
+  useParallax(heroRightRef, true);
   return (
-    <div className="flex flex-col gap-10">
+    <div ref={heroRightRef} className="flex flex-col gap-10">
       <div className="flex flex-col sm:flex-row gap-10 ">
       <div className="relative group overflow-hidden mx-auto sm:mx-0">
               <img
                 src="profile.jpg"
                 alt="Nitish Kumar"
                 className="image-animate w-[220px] sm:w-[280px] md:[300px] lg:w-[320px] object-cover hero-jelly border-16 sm:border-24 border-stone-700/30 dark:border-[#0c3a3a]"
+                data-parallax="0.6"
               />
   {/* OKLCH teal overlay (dark mode only) */}
   <div
@@ -37,21 +44,24 @@ export default function HeroRight() {
   />
               <p
                 className={`hero-jelly absolute bottom-12 right-3 text-sm sm:text-lg font-handwriting text-white dark:text-teal-200 ${handwriting.variable}`}
+                data-parallax="0.55"
               >
                 Code.
               </p>
               <p
                 className={`hero-jelly absolute bottom-8 right-3 text-sm sm:text-lg font-handwriting text-white dark:text-teal-200 ${handwriting.variable}`}
+                data-parallax="0.58"
               >
                 Build.
               </p>
               <p
                 className={`hero-jelly absolute bottom-4 right-3 text-sm sm:text-lg font-handwriting text-white dark:text-teal-200 ${handwriting.variable}`}
+                data-parallax="0.62"
               >
                 Capture.
               </p>
             </div>
-             <ul className="hidden md:block space-y-4 text-lg relative -left-6">
+             <ul className="hidden md:block space-y-4 text-lg relative -left-6" data-parallax="0.4">
           {sections.map(({ label, id }) => (
             <li key={id}>
               <a
@@ -129,9 +139,9 @@ export default function HeroRight() {
         </ul>
       </div>
 
-      <div className="relative max-w-md">
+      <div className="relative max-w-md" data-parallax="0.45">
        <Signature/>
-       <p data-i18n="hero.description" className="absolute top-16 hero-jelly hero-jelly-fast mt-2 text-sm leading-relaxed text-stone-900 dark:text-teal-300">
+       <p data-i18n="hero.description" className="absolute top-16 hero-jelly hero-jelly-fast mt-2 text-sm leading-relaxed text-stone-900 dark:text-teal-300" data-parallax="0.48">
               I’m an undergraduate engineering student who enjoys building
               real-world web applications, learning modern technologies, and
               expressing creativity through photography. I love turning ideas

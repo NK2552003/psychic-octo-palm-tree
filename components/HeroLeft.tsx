@@ -1,6 +1,11 @@
 import { useEffect, useState, useRef } from "react";
+import { useParallax, applyParallaxDepth } from "@/lib/useParallax";
 
 export default function HeroLeft() {
+  const heroContainerRef = useRef<HTMLDivElement>(null);
+  const debugWidthContainerRef = useRef<HTMLDivElement>(null);
+  const parallaxInitRef = useRef(false);
+  
   const [lang, setLang] = useState(() => {
     if (typeof window === 'undefined') return 'en'
     return (localStorage.getItem('preferredLang') as string) || 'en'
@@ -18,14 +23,13 @@ export default function HeroLeft() {
 
   const debugRef = useRef<HTMLSpanElement | null>(null)
   const drawRef = useRef<HTMLSpanElement | null>(null)
-  const containerRef = useRef<HTMLDivElement | null>(null)
 
   const updateDrawWidth = () => {
-    if (!containerRef.current) return
+    if (!debugWidthContainerRef.current) return
 
     // Find the current live elements inside the container (jellyText may replace nodes)
-    const currentDebug = containerRef.current.querySelector('[data-i18n="hero.left.3"]') as HTMLElement | null
-    const currentDraw = containerRef.current.querySelector('.draw-behind') as HTMLElement | null
+    const currentDebug = debugWidthContainerRef.current.querySelector('[data-i18n="hero.left.3"]') as HTMLElement | null
+    const currentDraw = debugWidthContainerRef.current.querySelector('.draw-behind') as HTMLElement | null
 
     if (!currentDebug || !currentDraw) return
 
@@ -34,7 +38,7 @@ export default function HeroLeft() {
 
     const pad = 10
     const textWidth = Math.ceil(currentDebug.getBoundingClientRect().width) + pad * 2
-    const maxWidth = Math.floor(containerRef.current.getBoundingClientRect().width)
+    const maxWidth = Math.floor(debugWidthContainerRef.current.getBoundingClientRect().width)
     const finalWidth = Math.min(textWidth, maxWidth)
     currentDraw.style.width = `${finalWidth}px`
   }
@@ -47,8 +51,15 @@ export default function HeroLeft() {
     window.addEventListener('resize', updateDrawWidth)
 
     // Observe changes inside the container (jellyText will replace nodes)
-    const mo = new MutationObserver(() => setTimeout(updateDrawWidth, 20))
-    if (containerRef.current) mo.observe(containerRef.current, { childList: true, subtree: true, characterData: true })
+    const mo = new MutationObserver(() => {
+      setTimeout(updateDrawWidth, 20)
+      // Apply parallax depth to newly created letter elements
+      if (!parallaxInitRef.current && heroContainerRef.current) {
+        applyParallaxDepth(heroContainerRef.current, 0.4, 0.2);
+        parallaxInitRef.current = true;
+      }
+    })
+    if (debugWidthContainerRef.current) mo.observe(debugWidthContainerRef.current, { childList: true, subtree: true, characterData: true })
 
     // initial sizing (delay to allow fonts/translations and jelly anim to apply)
     setTimeout(updateDrawWidth, 70)
@@ -61,13 +72,16 @@ export default function HeroLeft() {
     }
   }, [])
 
+  // Initialize parallax effect for hero-left
+  useParallax(heroContainerRef, true);
+
   return (
-    <div className=" pl-4 md:pl-0 relative pt-5 sm:-top-12">
+    <div ref={heroContainerRef} className=" pl-4 md:pl-0 relative pt-5 sm:-top-12">
       <h1 className="font-extrabold leading-[0.95] text-stone-900 dark:text-teal-200
                      text-[4rem] ms:text-[4.2rem] md:text-[5rem] lg:text-[6.5rem] ">
-        <div className="hero-jelly" data-i18n="hero.left.1">IMAGINE.</div>
-        <div className="hero-jelly" data-i18n="hero.left.2">SKETCH.</div>
-        <div ref={containerRef} className="hero-jelly relative overflow-hidden w-[15.5rem] md:w-[19.5rem] lg:w-[25.5rem]">
+        <div className="hero-jelly" data-i18n="hero.left.1" data-parallax="0.3">IMAGINE.</div>
+        <div className="hero-jelly" data-i18n="hero.left.2" data-parallax="0.35">SKETCH.</div>
+        <div ref={debugWidthContainerRef} className="hero-jelly relative overflow-hidden w-[15.5rem] md:w-[19.5rem] lg:w-[25.5rem]" data-parallax="0.4">
           <span
             ref={drawRef}
             className={`draw-behind absolute left-0 top-0 bottom-0 origin-left bg-blue-300/30 dark:bg-teal-700/30`}
@@ -75,11 +89,12 @@ export default function HeroLeft() {
           />
           <span ref={debugRef} className="relative z-10 inline-block px-1" data-i18n="hero.left.3">DEBUG.</span>
         </div>
-          <div className="hero-jelly" data-i18n="hero.left.4">WOW.</div>
+          <div className="hero-jelly" data-i18n="hero.left.4" data-parallax="0.45">WOW.</div>
       </h1>
 
       <a
         href="#projects"
+        data-parallax="0.5"
         className="group relative inline-block mt-8 cursor-pointer hover:text-teal-400"
         onClick={e => {
           e.preventDefault();
