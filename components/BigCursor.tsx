@@ -95,39 +95,28 @@ export default function BigCursor() {
       styleTag = document.createElement("style")
       styleTag.id = "curzr-style"
       styleTag.textContent = `
-        * {
+        html, body, * {
           cursor: none !important;
         }
-        body,
-        body *,
-        html,
-        html * {
-          cursor: none !important;
-        }
-        :root {
-          cursor: none !important;
-        }
-        .curzr-enabled,
-        .curzr-enabled * {
-          cursor: none !important;
-        }
-        .curzr-enabled input[type="text"],
-        .curzr-enabled input[type="email"],
-        .curzr-enabled input[type="password"],
-        .curzr-enabled textarea,
-        .curzr-enabled [contenteditable] {
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        textarea,
+        [contenteditable] {
           cursor: text !important;
         }
-        /* Ensure text selection doesn't show default cursor */
-        .curzr-enabled::selection {
+        ::selection {
           background-color: inherit;
         }
-        .curzr-enabled *::selection {
+        *::selection {
           background-color: inherit;
         }
-        /* Force no cursor on all interactive elements */
-        button, a, input, textarea, [role="button"] {
+        button, a, input, textarea, [role="button"], [role="link"], li, .icon-entry {
           cursor: none !important;
+        }
+        /* Force cursor none on all elements globally */
+        ::-webkit-scrollbar-thumb {
+          cursor: default;
         }
       `
       document.head.appendChild(styleTag)
@@ -262,13 +251,37 @@ export default function BigCursor() {
         ? getThemeProps(themePropsRef.current.shadowColor.includes("245") ? "dark" : "light", true)
         : themePropsRef.current
 
-      // Smooth scale animation for cursor
-      cursor.style.transform = `translate3d(${position.easedX - CURSOR_SIZE / 2}px, ${position.easedY - CURSOR_SIZE / 2}px, 0) rotate(${rotate}deg) scale(${scale})`
-      cursor.style.border = isInteractive ? props.hoverBorder : props.border
+      // Inverse circle styling for interactive elements
+      if (isInteractive) {
+        const bgColor = themePropsRef.current.shadowColor.includes("245") ? "dark" : "light"
+        const borderColor = themePropsRef.current.shadowColor.match(/rgba?\([^)]+\)/)?.[0] || "currentColor"
+        const inverseColor = borderColor.replace(/[\d.]+\)/, '0.3)')
+        
+        cursor.style.backgroundColor = "transparent"
+        cursor.style.border = `2px solid ${borderColor}`
+        cursor.style.width = "28px"
+        cursor.style.height = "28px"
+        cursor.style.boxShadow = `inset 0 0 0 3px ${inverseColor}`
+      } else {
+        const props = useReducedOpacity 
+          ? getThemeProps(themePropsRef.current.shadowColor.includes("245") ? "dark" : "light", true)
+          : themePropsRef.current
+          
+        cursor.style.width = "20px"
+        cursor.style.height = "20px"
+        cursor.style.backgroundColor = props.bg
+        cursor.style.border = props.border
+        
+        // Enhanced shadow with scroll effect
+        const shadowOffset = 15 + position.distance + (Math.abs(position.scrollVelocity) * 0.3)
+        cursor.style.boxShadow = `0 ${-shadowOffset}px 0 -8px ${props.shadowColor}, 0 0 0 1px ${props.shadowColor}`
+      }
+
+      // Calculate cursor offset based on size
+      const cursorOffset = isInteractive ? 14 : 10
       
-      // Enhanced shadow with scroll effect
-      const shadowOffset = 15 + position.distance + (Math.abs(position.scrollVelocity) * 0.3)
-      cursor.style.boxShadow = `0 ${-shadowOffset}px 0 -8px ${props.shadowColor}, 0 0 0 1px ${props.shadowColor}`
+      // Smooth scale animation for cursor
+      cursor.style.transform = `translate3d(${position.easedX - cursorOffset}px, ${position.easedY - cursorOffset}px, 0) rotate(${rotate}deg) scale(${scale})`
 
       // Update scroll arrow position and rotation
       if (isScrolling && Math.abs(position.scrollVelocity) > 0.5) {
@@ -334,6 +347,11 @@ export default function BigCursor() {
     const moveHandler = (event: MouseEvent) => {
       position.pointerX = event.pageX + root.getBoundingClientRect().x
       position.pointerY = event.pageY + root.getBoundingClientRect().y
+
+      // Immediately ensure cursor is visible and hidden globally
+      cursor.style.opacity = "1"
+      document.documentElement.style.cursor = "none !important"
+      root.style.cursor = "none !important"
 
       const target = event.target
       const hasHoverClass = target instanceof Element && target.classList.contains("curzr-hover")
@@ -408,17 +426,15 @@ export default function BigCursor() {
       if (cursor) cursor.style.opacity = "1"
     }
 
-    // Keep enforcing cursor: none
+    // Keep enforcing cursor: none with more aggressive interval
     const enforceNoCursor = setInterval(() => {
       document.documentElement.style.cursor = "none !important"
       root.style.cursor = "none !important"
-      // Also enforce on all elements
-      document.querySelectorAll("*").forEach((el) => {
-        if (el instanceof HTMLElement) {
-          el.style.cursor = "none !important"
-        }
-      })
-    }, 300)
+      // Ensure custom cursor stays visible
+      if (cursor && cursor.style.opacity !== "1") {
+        cursor.style.opacity = "1"
+      }
+    }, 50)
 
     const pointerHandler = (event: PointerEvent) => {
       document.documentElement.style.cursor = "none !important"
@@ -440,7 +456,9 @@ export default function BigCursor() {
       root.style.cursor = "none !important"
     }
 
-    window.addEventListener("mousemove", moveHandler)
+    // Use capture phase for mousemove to catch events before other handlers
+    window.addEventListener("mousemove", moveHandler, { capture: true })
+    document.addEventListener("mousemove", moveHandler, { capture: true })
     window.addEventListener("click", clickHandler)
     window.addEventListener("scroll", scrollHandler, { passive: true })
     window.addEventListener("visibilitychange", visibilityHandler)
@@ -461,7 +479,8 @@ export default function BigCursor() {
     rafId = requestAnimationFrame(motivationLoop)
 
     return () => {
-      window.removeEventListener("mousemove", moveHandler)
+      window.removeEventListener("mousemove", moveHandler, { capture: true } as any)
+      document.removeEventListener("mousemove", moveHandler, { capture: true } as any)
       window.removeEventListener("click", clickHandler)
       window.removeEventListener("scroll", scrollHandler)
       window.removeEventListener("visibilitychange", visibilityHandler)

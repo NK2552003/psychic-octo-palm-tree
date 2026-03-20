@@ -77,22 +77,22 @@ export default function Header({ time }: { time: string }) {
         {/* ICONS */}
         <div ref={iconsRef} className="flex gap-4 hero-jelly">
           <a href="mailto:nk2552003@gmail.com"
-             className="icon-entry group cursor-pointer hover:-translate-y-1 hover:text-white dark:hover:text-gray-950 transition-all duration-300 px-2 py-1.5 rounded-lg hover:bg-teal-500 dark:hover:bg-teal-400">
+             className="icon-entry group cursor-pointer hover:-translate-y-1 hover:text-teal-500 dark:hover:text-teal-400 transition-all duration-300">
             <MailIcon />
           </a>
 
           <a href="https://linkedin.com/in/nk2552003" target="_blank"
-             className="icon-entry group cursor-pointer hover:-translate-y-1 hover:text-white dark:hover:text-gray-950 transition-all duration-300 px-2 py-1.5 rounded-lg hover:bg-teal-500 dark:hover:bg-teal-400">
+             className="icon-entry group cursor-pointer hover:-translate-y-1 hover:text-teal-500 dark:hover:text-teal-400 transition-all duration-300">
             <LinkedInIcon />
           </a>
 
           <a href="https://github.com/nk2552003" target="_blank"
-             className="icon-entry group cursor-pointer hover:-translate-y-1 hover:text-white dark:hover:text-gray-950 transition-all duration-300 px-2 py-1.5 rounded-lg hover:bg-teal-500 dark:hover:bg-teal-400">
+             className="icon-entry group cursor-pointer hover:-translate-y-1 hover:text-teal-500 dark:hover:text-teal-400 transition-all duration-300">
             <GitHubIcon />
           </a>
 
           <a href="https://codepen.io/nk2552003" target="_blank"
-             className="icon-entry group cursor-pointer hover:-translate-y-1 hover:text-white dark:hover:text-gray-950 transition-all duration-300 px-2 py-1.5 rounded-lg hover:bg-teal-500 dark:hover:bg-teal-400">
+             className="icon-entry group cursor-pointer hover:-translate-y-1 hover:text-teal-500 dark:hover:text-teal-400 transition-all duration-300">
             <CodePenIcon />
           </a>
         </div>
