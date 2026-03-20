@@ -3,9 +3,10 @@
 import React, { useEffect, useState } from "react"
 import SplashScreen from "./SplashScreen"
 import Signature from "./signature"
-import InstallPrompt from "./InstallPrompt"
-import CookieConsent from "./CookieConsent"
-import DoodleOverlay from "./DoodleOverlay"
+import InstallPrompt from "./InstallPrompt";
+import CookieConsent from "./CookieConsent";
+import DoodleOverlay from "./DoodleOverlay";
+import BigCursor from "./BigCursor";
 import { ThemeProvider } from "./theme-provider"
 import LenisScroll from "./LenisScroll"
 import { toast } from "sonner"
@@ -284,6 +285,7 @@ export default function AppInitializer({ children }: { children: React.ReactNode
           }} />
         )}
         {splashDone && children}
+        {splashDone && <BigCursor />}
         {splashDone && <DoodleOverlay />}
         {splashDone && <InstallPrompt deferredPrompt={deferredPrompt} setDeferredPrompt={setDeferredPrompt} />}
         {splashDone && <CookieConsent />}

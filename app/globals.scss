@@ -318,6 +318,61 @@ a,
   will-change: transform, opacity;
 }
 
+/* Custom theme-aware cursor */
+html,
+body,
+#__next,
+.curzr-enabled,
+.curzr-enabled * {
+  cursor: none !important;
+}
+
+.curzr {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  z-index: 2147483647;
+  pointer-events: none;
+  user-select: none;
+  display: block;
+}
+
+.curzr .circle,
+.curzr .dot {
+  position: fixed;
+  pointer-events: none;
+  user-select: none;
+  will-change: transform;
+}
+
+.curzr .circle {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 2px solid rgba(0, 0, 0, 0.65);
+  background-color: rgba(0, 0, 0, 0.05);
+  transition: transform 100ms ease-out, background-color 180ms ease, border-color 180ms ease;
+}
+
+.curzr .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 1);
+  transition: transform 75ms ease-out, background-color 180ms ease;
+}
+
+.dark .curzr .circle {
+  border-color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.dark .curzr .dot {
+  background-color: rgba(255, 255, 255, 1);
+}
+
 .font-handwriting {
   font-family: var(--font-handwriting), cursive;
   letter-spacing: 0.08em;
