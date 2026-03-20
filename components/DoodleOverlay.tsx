@@ -85,9 +85,10 @@ function intersects(a: { x: number; y: number; w: number; h: number }, b: { x: n
   return !(a.x + a.w < b.x || b.x + b.w < a.x || a.y + a.h < b.y || b.y + b.h < a.y)
 }
 
-export default function DoodleOverlay() {
+function DoodleOverlayComponent() {
   const [items, setItems] = useState<Item[]>([])
   const containerRef = useRef<HTMLDivElement | null>(null)
+  const lastViewportSize = useRef({ width: 0, height: 0 })
 
   useEffect(() => {
     if (typeof window === "undefined") return
@@ -156,15 +157,22 @@ export default function DoodleOverlay() {
       t = setTimeout(() => generate(), 160)
     }
 
-    const ro = new ResizeObserver(scheduleGenerate)
-    ro.observe(document.body)
+    // Only trigger on actual viewport size changes, not on content layout shifts
+    const checkViewportSize = () => {
+      const vw = window.innerWidth
+      const vh = window.innerHeight
+      
+      if (vw !== lastViewportSize.current.width || vh !== lastViewportSize.current.height) {
+        lastViewportSize.current = { width: vw, height: vh }
+        scheduleGenerate()
+      }
+    }
 
-    window.addEventListener("resize", scheduleGenerate)
+    window.addEventListener("resize", checkViewportSize)
     window.addEventListener("orientationchange", scheduleGenerate)
 
     return () => {
-      ro.disconnect()
-      window.removeEventListener("resize", scheduleGenerate)
+      window.removeEventListener("resize", checkViewportSize)
       window.removeEventListener("orientationchange", scheduleGenerate)
     }
   }, [])
@@ -228,3 +236,5 @@ export default function DoodleOverlay() {
     </div>
   )
 }
+
+export default React.memo(DoodleOverlayComponent)

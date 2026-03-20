@@ -894,9 +894,14 @@ export default function ScrollAnimation() {
                     return (
                       <div
                         key={idx}
-                        className="flex items-center gap-1.5 text-xs sm:text-sm text-foreground/90 transition-colors hover:text-primary bg-background/60 backdrop-blur-sm px-2 py-1 rounded-md border border-border/30"
+                        className="flex items-center gap-1.5 text-xs sm:text-sm text-foreground/90 transition-all duration-300 cursor-pointer
+                          hover:text-white dark:hover:text-gray-950 hover:bg-teal-600 dark:hover:bg-teal-400 
+                          hover:scale-105 hover:shadow-lg active:scale-95
+                          bg-background/60 dark:bg-background/80 backdrop-blur-sm px-2 py-1 rounded-md 
+                          border border-border/30 dark:border-teal-500/20 
+                          hover:border-teal-500/70 dark:hover:border-teal-300/70"
                       >
-                        <Icon className="w-3 h-3 sm:w-4 sm:h-4" />
+                        <Icon className="w-3 h-3 sm:w-4 sm:h-4 transition-all duration-300 hover:scale-125 hover:-rotate-12" />
                         <span className="font-medium hero-jelly">{label}</span>
                       </div>
                     )
