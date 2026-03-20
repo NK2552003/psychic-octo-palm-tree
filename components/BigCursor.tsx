@@ -95,7 +95,19 @@ export default function BigCursor() {
       styleTag = document.createElement("style")
       styleTag.id = "curzr-style"
       styleTag.textContent = `
-        html, body, * {
+        * {
+          cursor: none !important;
+        }
+        *:hover {
+          cursor: none !important;
+        }
+        *:active {
+          cursor: none !important;
+        }
+        html {
+          cursor: none !important;
+        }
+        body {
           cursor: none !important;
         }
         input[type="text"],
@@ -114,9 +126,23 @@ export default function BigCursor() {
         button, a, input, textarea, [role="button"], [role="link"], li, .icon-entry {
           cursor: none !important;
         }
+        button:hover, a:hover {
+          cursor: none !important;
+        }
         /* Force cursor none on all elements globally */
         ::-webkit-scrollbar-thumb {
           cursor: default;
+        }
+        /* Ensure SVG and image elements never show cursor */
+        svg, img {
+          cursor: none !important;
+        }
+        svg:hover, img:hover {
+          cursor: none !important;
+        }
+        /* Ensure overlay and fixed elements don't show cursor */
+        .curzr, .curzr-scroll-arrow {
+          cursor: none !important;
         }
       `
       document.head.appendChild(styleTag)
@@ -348,10 +374,16 @@ export default function BigCursor() {
       position.pointerX = event.pageX + root.getBoundingClientRect().x
       position.pointerY = event.pageY + root.getBoundingClientRect().y
 
-      // Immediately ensure cursor is visible and hidden globally
+      // Immediately ensure cursor is visible and hidden globally - AGGRESSIVE
       cursor.style.opacity = "1"
       document.documentElement.style.cursor = "none !important"
       root.style.cursor = "none !important"
+      
+      // Force ALL elements to have no cursor on rapid movement
+      const allElements = document.querySelectorAll("*")
+      for (let i = 0; i < Math.min(allElements.length, 50); i++) {
+        (allElements[i] as HTMLElement).style.cursor = "none !important"
+      }
 
       const target = event.target
       const hasHoverClass = target instanceof Element && target.classList.contains("curzr-hover")
@@ -426,7 +458,7 @@ export default function BigCursor() {
       if (cursor) cursor.style.opacity = "1"
     }
 
-    // Keep enforcing cursor: none with more aggressive interval
+    // Keep enforcing cursor: none with very aggressive interval (16ms ~60fps)
     const enforceNoCursor = setInterval(() => {
       document.documentElement.style.cursor = "none !important"
       root.style.cursor = "none !important"
@@ -434,26 +466,37 @@ export default function BigCursor() {
       if (cursor && cursor.style.opacity !== "1") {
         cursor.style.opacity = "1"
       }
-    }, 50)
+    }, 16)
 
-    const pointerHandler = (event: PointerEvent) => {
+    // Helper function to enforce cursor hidden state
+    const enforceCursorHidden = (el?: HTMLElement) => {
       document.documentElement.style.cursor = "none !important"
       root.style.cursor = "none !important"
+      if (el) el.style.setProperty("cursor", "none", "important")
     }
 
-    const dragHandler = (event: DragEvent) => {
-      document.documentElement.style.cursor = "none !important"
-      root.style.cursor = "none !important"
+    const pointerHandler = (event: PointerEvent) => {
+      enforceCursorHidden(event.target as HTMLElement)
+    }
+
+    const dragHandler = () => {
+      enforceCursorHidden()
     }
 
     const mouseEnterHandler = () => {
-      document.documentElement.style.cursor = "none !important"
-      root.style.cursor = "none !important"
+      enforceCursorHidden()
     }
 
     const globalMouseHandler = () => {
-      document.documentElement.style.cursor = "none !important"
-      root.style.cursor = "none !important"
+      enforceCursorHidden()
+    }
+
+    const pointerOverHandler = (event: PointerEvent) => {
+      enforceCursorHidden(event.target as HTMLElement)
+    }
+
+    const mouseOverHandler = (event: MouseEvent) => {
+      enforceCursorHidden(event.target as HTMLElement)
     }
 
     // Use capture phase for mousemove to catch events before other handlers
@@ -466,14 +509,16 @@ export default function BigCursor() {
     window.addEventListener("pointerdown", pointerHandler)
     window.addEventListener("pointerup", pointerHandler)
     window.addEventListener("pointermove", pointerHandler)
+    window.addEventListener("pointerover", pointerOverHandler, { capture: true })
     window.addEventListener("dragstart", dragHandler)
     window.addEventListener("drag", dragHandler)
     window.addEventListener("dragend", dragHandler)
     window.addEventListener("mouseenter", mouseEnterHandler)
-    window.addEventListener("mouseover", globalMouseHandler)
-    document.addEventListener("mouseover", focusHandler)
+    window.addEventListener("mouseover", mouseOverHandler, { capture: true })
+    document.addEventListener("mouseover", mouseOverHandler, { capture: true })
     document.addEventListener("mouseenter", mouseEnterHandler)
     document.addEventListener("mousemove", globalMouseHandler, { capture: true })
+    document.addEventListener("pointerover", pointerOverHandler, { capture: true })
 
     // Start animation loop
     rafId = requestAnimationFrame(motivationLoop)
@@ -488,14 +533,16 @@ export default function BigCursor() {
       window.removeEventListener("pointerdown", pointerHandler)
       window.removeEventListener("pointerup", pointerHandler)
       window.removeEventListener("pointermove", pointerHandler)
+      window.removeEventListener("pointerover", pointerOverHandler, { capture: true } as any)
       window.removeEventListener("dragstart", dragHandler)
       window.removeEventListener("drag", dragHandler)
       window.removeEventListener("dragend", dragHandler)
       window.removeEventListener("mouseenter", mouseEnterHandler)
-      window.removeEventListener("mouseover", globalMouseHandler)
-      document.removeEventListener("mouseover", focusHandler)
+      window.removeEventListener("mouseover", mouseOverHandler, { capture: true } as any)
+      document.removeEventListener("mouseover", mouseOverHandler, { capture: true } as any)
       document.removeEventListener("mouseenter", mouseEnterHandler)
       document.removeEventListener("mousemove", globalMouseHandler, { capture: true } as any)
+      document.removeEventListener("pointerover", pointerOverHandler, { capture: true } as any)
       
       if (rafId) cancelAnimationFrame(rafId)
       if (scrollTimeout) clearTimeout(scrollTimeout)
