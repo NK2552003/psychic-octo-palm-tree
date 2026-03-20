@@ -3,6 +3,7 @@ import { Patrick_Hand } from "next/font/google";
 import Signature from "./signature";
 import { useRef } from "react";
 import { useParallax, applyParallaxDepth } from "@/lib/useParallax";
+import { isMobile } from "@/lib/deviceDetection";
 
 export const handwriting = Patrick_Hand({
   subsets: ["latin"],
@@ -20,8 +21,9 @@ const sections = [
 export default function HeroRight() {
   const heroRightRef = useRef<HTMLDivElement>(null);
   
-  // Initialize parallax effect for hero-right
-  useParallax(heroRightRef, true);
+  // Initialize parallax effect for hero-right (disabled on mobile)
+  const parallaxEnabled = typeof window !== 'undefined' ? !isMobile() : true
+  useParallax(heroRightRef, parallaxEnabled);
   return (
     <div ref={heroRightRef} className="flex flex-col gap-10">
       <div className="flex flex-col sm:flex-row gap-10 ">

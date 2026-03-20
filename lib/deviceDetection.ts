@@ -5,21 +5,59 @@ export function isAndroid(): boolean {
   return /Android/i.test(navigator.userAgent || "");
 }
 
+export function isWindows(): boolean {
+  if (typeof navigator === "undefined") return false;
+  return /Windows|Win32|Win64|WinCE/i.test(navigator.userAgent || "");
+}
+
+export function isMobile(): boolean {
+  if (typeof navigator === "undefined") return false;
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+    navigator.userAgent || ""
+  );
+}
+
+export type DeviceTier = 'low' | 'mid' | 'high';
+
+/**
+ * Detect device performance tier based on CPU cores and memory
+ */
+export function getDeviceTier(): DeviceTier {
+  if (typeof navigator === "undefined") return 'mid';
+
+  // Check CPU cores
+  const cpuCores = typeof navigator.hardwareConcurrency === "number" 
+    ? navigator.hardwareConcurrency 
+    : 4;
+
+  // Check device memory
+  const deviceMemory = typeof (navigator as any).deviceMemory === "number" 
+    ? (navigator as any).deviceMemory 
+    : 4;
+
+  // Low tier: ≤2 cores or ≤2GB RAM
+  if (cpuCores <= 2 || deviceMemory <= 2) {
+    return 'low';
+  }
+
+  // Mid tier: ≤4 cores or ≤4GB RAM
+  if (cpuCores <= 4 || deviceMemory <= 4) {
+    return 'mid';
+  }
+
+  return 'high';
+}
+
 export function isLowPerformanceDevice(): boolean {
   if (typeof navigator === "undefined") return false;
 
   // Mobile detection (safe access)
-  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-    navigator.userAgent || ""
-  );
+  const mobile = isMobile();
 
-  // Check CPU cores (ensure it's a number)
-  const lowCPU = typeof navigator.hardwareConcurrency === "number" ? navigator.hardwareConcurrency <= 4 : false;
+  // Check device tier
+  const tier = getDeviceTier();
 
-  // Check device memory API (may be undefined)
-  const lowMemory = typeof (navigator as any).deviceMemory === "number" ? (navigator as any).deviceMemory <= 4 : false;
-
-  return Boolean(isMobile || lowCPU || lowMemory);
+  return Boolean(mobile || tier === 'low');
 }
 
 export function shouldReduceAnimations(): boolean {
@@ -32,7 +70,37 @@ export function shouldReduceAnimations(): boolean {
 
   const isLowPerf = isLowPerformanceDevice();
 
-  return Boolean(prefersReducedMotion || isLowPerf || isAndroid());
+  return Boolean(prefersReducedMotion || isLowPerf);
+}
+
+export function shouldDisableParallax(): boolean {
+  if (typeof navigator === "undefined") return false;
+
+  // Disable parallax on mobile
+  if (isMobile()) return true;
+
+  // Disable parallax on Windows low and mid tier devices
+  if (isWindows()) {
+    const tier = getDeviceTier();
+    if (tier === 'low' || tier === 'mid') return true;
+  }
+
+  return false;
+}
+
+export function shouldDisableLenisScroll(): boolean {
+  if (typeof navigator === "undefined") return false;
+
+  // Disable Lenis on mobile
+  if (isMobile()) return true;
+
+  // Disable Lenis on Windows low and mid tier devices
+  if (isWindows()) {
+    const tier = getDeviceTier();
+    if (tier === 'low' || tier === 'mid') return true;
+  }
+
+  return false;
 }
 
 export function isTouchDevice(): boolean {

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
+import { shouldDisableParallax } from './deviceDetection';
 
 interface ParallaxElement {
   element: HTMLElement;
@@ -16,7 +17,10 @@ export const useParallax = (containerRef: React.RefObject<HTMLElement | null>, e
   const rafRef = useRef<number | null>(null);
 
   useEffect(() => {
-    if (!enabled || !containerRef.current) return;
+    // Disable parallax on low-performance or specific device types
+    const shouldDisable = shouldDisableParallax() || !enabled;
+    
+    if (shouldDisable || !containerRef.current) return;
 
     // Initialize parallax elements
     const initParallax = () => {

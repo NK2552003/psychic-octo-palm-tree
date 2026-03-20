@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { useParallax, applyParallaxDepth } from "@/lib/useParallax";
+import { isMobile } from "@/lib/deviceDetection";
 
 export default function HeroLeft() {
   const heroContainerRef = useRef<HTMLDivElement>(null);
@@ -72,8 +73,9 @@ export default function HeroLeft() {
     }
   }, [])
 
-  // Initialize parallax effect for hero-left
-  useParallax(heroContainerRef, true);
+  // Initialize parallax effect for hero-left (disabled on mobile)
+  const parallaxEnabled = typeof window !== 'undefined' ? !isMobile() : true
+  useParallax(heroContainerRef, parallaxEnabled);
 
   return (
     <div ref={heroContainerRef} className=" pl-4 md:pl-0 relative pt-5 sm:-top-12">

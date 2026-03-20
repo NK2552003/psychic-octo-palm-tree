@@ -2,19 +2,17 @@
 
 import { useEffect, useRef } from 'react'
 import Lenis from 'lenis'
-import { isLowPerformanceDevice } from '@/lib/deviceDetection'
+import { shouldDisableLenisScroll } from '@/lib/deviceDetection'
 
 export default function LenisScroll({ children }: { children: React.ReactNode }) {
   const lenisRef = useRef<Lenis | null>(null)
 
   useEffect(() => {
     // Check if we should skip Lenis on this device
-    const isWindowsChrome = typeof navigator !== 'undefined' && /Windows/.test(navigator.userAgent) && /Chrome/.test(navigator.userAgent)
-    const isMobile = typeof navigator !== 'undefined' && /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
-    const isLowPerf = isLowPerformanceDevice()
+    const shouldDisable = shouldDisableLenisScroll()
 
-    // Skip Lenis on Windows Chrome, mobile, or low-tier devices
-    if (isWindowsChrome || isMobile || isLowPerf) {
+    // Skip Lenis if detection says so
+    if (shouldDisable) {
       return
     }
 
@@ -22,28 +20,22 @@ export default function LenisScroll({ children }: { children: React.ReactNode })
     const lenis = new Lenis({
       duration: 1.2, // Scroll duration in seconds
       easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Custom easing for butter-smooth feel
-      direction: 'vertical',
-      gestureDirection: 'vertical',
-      smooth: true,
-      smoothTouch: false,
-      touchMultiplier: 2,
-      infinite: false,
-      syncMethod: 'raf', // Use requestAnimationFrame for best performance
-      overscroll: true,
-    })
+    } as any)
 
     lenisRef.current = lenis
 
     // RAF loop for animating scroll
+    let rafId: number
     const raf = (time: number) => {
       lenis.raf(time)
-      requestAnimationFrame(raf)
+      rafId = requestAnimationFrame(raf)
     }
 
-    requestAnimationFrame(raf)
+    rafId = requestAnimationFrame(raf)
 
     // Stop Lenis on page unload
     return () => {
+      cancelAnimationFrame(rafId)
       lenis.destroy()
     }
   }, [])

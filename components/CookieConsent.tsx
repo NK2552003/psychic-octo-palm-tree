@@ -2,6 +2,8 @@
 
 import React, { useEffect, useState } from "react"
 import { toast } from "sonner"
+import { gsap } from "gsap"
+import { isMobile, getDeviceTier } from "@/lib/deviceDetection"
 
 function getCookie(name: string) {
   const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'))
@@ -16,6 +18,8 @@ function setCookie(name: string, value: string, days = 365) {
 
 export default function CookieConsent() {
   const [visible, setVisible] = useState(false)
+  const [shouldAnimate, setShouldAnimate] = useState(false)
+  const animationTimeoutRef = React.useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
     const check = () => {
@@ -44,6 +48,54 @@ export default function CookieConsent() {
       window.removeEventListener("hashchange", check)
     }
   }, [])
+
+  // Handle visibility with 5-second delay
+  useEffect(() => {
+    if (!visible) {
+      setShouldAnimate(false)
+      if (animationTimeoutRef.current) {
+        clearTimeout(animationTimeoutRef.current)
+      }
+      return
+    }
+
+    // Set delay before showing and animating
+    animationTimeoutRef.current = setTimeout(() => {
+      setShouldAnimate(true)
+    }, 5000)
+
+    return () => {
+      if (animationTimeoutRef.current) {
+        clearTimeout(animationTimeoutRef.current)
+      }
+    }
+  }, [visible])
+
+  // Handle animation
+  useEffect(() => {
+    if (!shouldAnimate) return
+
+    const toastElement = document.querySelector('.cookie-toast')
+    if (!toastElement) return
+
+    // Kill any existing animations on this element
+    gsap.killTweensOf(toastElement)
+
+    // Animate card entrance based on device capability
+    const shouldReduceAnimations = isMobile() || getDeviceTier() === 'low'
+    const duration = shouldReduceAnimations ? 0.3 : 0.6
+
+    gsap.from(toastElement, {
+      opacity: 0,
+      y: 30,
+      duration,
+      ease: shouldReduceAnimations ? 'power1.out' : 'back.out(1.2)',
+    })
+
+    return () => {
+      gsap.killTweensOf(toastElement)
+    }
+  }, [shouldAnimate])
 
   const accept = () => {
     setCookie("cookie_consent", "accepted")
@@ -85,7 +137,7 @@ export default function CookieConsent() {
     } catch (e) { toast('You have rejected performance cookies') }
   }
 
-  if (!visible) return null
+  if (!visible || !shouldAnimate) return null
 
   return (
     <div className="fixed inset-x-0 bottom-6 z-[9999] pointer-events-none flex justify-center px-4">
