@@ -189,11 +189,15 @@ useEffect(() => {
         document.startViewTransition(() => {
           document.documentElement.classList.toggle("dark", next);
           localStorage.setItem("theme", next ? "dark" : "light");
+          // Dispatch custom event to notify cursor of theme change
+          window.dispatchEvent(new CustomEvent("theme-toggled", { detail: { isDark: next } }));
         });
       } else {
         // Fallback for browsers without View Transition API
         document.documentElement.classList.toggle("dark", next);
         localStorage.setItem("theme", next ? "dark" : "light");
+        // Dispatch custom event to notify cursor of theme change
+        window.dispatchEvent(new CustomEvent("theme-toggled", { detail: { isDark: next } }));
       }
       
       return next;
