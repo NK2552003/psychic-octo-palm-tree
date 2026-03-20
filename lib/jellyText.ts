@@ -56,24 +56,26 @@ export const applyJellyText = (
 
   const animateInline = (node: HTMLElement, indexForDelay?: number) => {
     const i = typeof indexForDelay === "number" ? indexForDelay : charIndex++;
-    node.style.opacity = node.style.opacity || "0";
-    node.style.transform = node.style.transform || "translateY(24px)";
-    gsap.to(node, {
-      opacity: 1,
-      y: 0,
-      duration: 0.5,
-      delay: baseDelay + i * letterDelay,
-      ease: "back.out(1.8)",
-      onComplete: () => {
-        gsap.to(node, {
-          y: -6,
-          duration: 0.6,
-          yoyo: true,
-          repeat: 1,
-          ease: "sine.inOut",
-        });
-      },
-    });
+    gsap.fromTo(
+      node,
+      { opacity: 0, y: 24 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.5,
+        delay: baseDelay + i * letterDelay,
+        ease: "back.out(1.8)",
+        onComplete: () => {
+          gsap.to(node, {
+            y: -6,
+            duration: 0.6,
+            yoyo: true,
+            repeat: 1,
+            ease: "sine.inOut",
+          });
+        },
+      }
+    );
   };
 
   const processTextNode = (text: string, parent: Node) => {
@@ -96,21 +98,22 @@ export const applyJellyText = (
         const span = document.createElement("span");
         span.textContent = char;
         span.className = "inline-block jelly-letter";
-        span.style.opacity = "0";
-        span.style.transform = "translateY(24px)";
         wordSpan.appendChild(span);
 
         const i = charIndex++;
-        gsap.to(span, {
-          opacity: 1,
-          y: 0,
-          duration: 0.5,
-          delay: baseDelay + i * letterDelay,
-          ease: "back.out(1.8)",
-          onComplete: () => {
-            gsap.to(span, {
-              y: -6,
-              duration: 0.6,
+        gsap.fromTo(
+          span,
+          { opacity: 0, y: 24 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.5,
+            delay: baseDelay + i * letterDelay,
+            ease: "back.out(1.8)",
+            onComplete: () => {
+              gsap.to(span, {
+                y: -6,
+                duration: 0.6,
               yoyo: true,
               repeat: 1,
               ease: "sine.inOut",

@@ -486,6 +486,23 @@ body {
   animation: debug-line-reveal 0.5s ease-out forwards;
   animation-delay: 0.45s; /* sync with jelly text */
 }
+
+/* Page entrance animation - smooth fade in from bottom */
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.page-enter {
+  animation: page-enter 0.8s ease-out forwards;
+}
+
 .hero-jelly {
   visibility: hidden;
 }
