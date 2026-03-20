@@ -55,6 +55,13 @@ export default function BigCursor() {
         cursorRef.current.style.border = props.border
         cursorRef.current.style.boxShadow = `0 -15px 0 -8px transparent, 0 0 0 1px ${props.shadowColor}`
       }
+      
+      // Update arrow color
+      const arrowPath = document.querySelector(".curzr-scroll-arrow path") as SVGPathElement | null
+      if (arrowPath) {
+        const strokeColor = themePropsRef.current.shadowColor.match(/rgba?\([^)]+\)/)?.[0] || "currentColor"
+        arrowPath.setAttribute("stroke", strokeColor)
+      }
     }
 
     window.addEventListener("theme-toggled", handleThemeToggle)
@@ -145,12 +152,47 @@ export default function BigCursor() {
       userSelect: "none",
       zIndex: "2147483647",
       opacity: "0",
-      transition: "transform 180ms cubic-bezier(0.18,0.89,0.32,1.28), border 180ms ease, box-shadow 160ms ease, opacity 150ms ease, width 140ms ease, height 140ms ease",
+      transition: "transform 240ms cubic-bezier(0.25, 0.46, 0.45, 0.94), border 180ms ease, box-shadow 160ms ease, opacity 150ms ease, width 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94), height 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94)",
       willChange: "transform, box-shadow, opacity, width, height",
       transform: "translate3d(-10px, -10px, 0)",
     })
 
+    // Create scroll direction indicator arrow
+    const scrollArrow = document.createElement("div")
+    scrollArrow.className = "curzr-scroll-arrow"
+    Object.assign(scrollArrow.style, {
+      position: "fixed",
+      width: "12px",
+      height: "12px",
+      pointerEvents: "none",
+      userSelect: "none",
+      zIndex: "2147483646",
+      opacity: "0",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      transition: "opacity 150ms ease, transform 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+      willChange: "opacity, transform",
+    })
+
+    // SVG Arrow
+    const arrowSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg")
+    arrowSvg.setAttribute("viewBox", "0 0 24 24")
+    arrowSvg.setAttribute("width", "12")
+    arrowSvg.setAttribute("height", "12")
+    arrowSvg.setAttribute("fill", "none")
+    arrowSvg.setAttribute("stroke", themePropsRef.current.shadowColor.match(/rgba?\([^)]+\)/)?.[0] || "currentColor")
+    arrowSvg.setAttribute("stroke-width", "2.5")
+    arrowSvg.setAttribute("stroke-linecap", "round")
+    arrowSvg.setAttribute("stroke-linejoin", "round")
+    
+    const arrowPath = document.createElementNS("http://www.w3.org/2000/svg", "path")
+    arrowPath.setAttribute("d", "M12 5v14m0 0l-7-7m7 7l7-7")
+    arrowSvg.appendChild(arrowPath)
+    scrollArrow.appendChild(arrowSvg)
+
     root.appendChild(cursor)
+    root.appendChild(scrollArrow)
 
     let position = {
       pointerX: 0,
@@ -164,6 +206,9 @@ export default function BigCursor() {
       distance: 0,
       scrollVelocity: 0,
       lastScrollY: 0,
+      scrollDirection: 0, // 1 for down, -1 for up
+      arrowScale: 0, // 0 to 1
+      easedArrowScale: 0,
     }
 
     let fading = false
@@ -202,10 +247,11 @@ export default function BigCursor() {
       const dx = position.prevX - position.easedX
       const dy = position.prevY - position.easedY
       
-      // Combine hover scale with scroll-based stretch
+      // Smoother zoom with elastic easing
       let scale = hoverScale
-      const scrollStretch = Math.min(Math.abs(position.scrollVelocity) * 0.08, 1.2)
-      scale *= (1 + scrollStretch)
+      const scrollMagnitude = Math.abs(position.scrollVelocity)
+      const smoothScrollStretch = Math.min(scrollMagnitude * 0.06, 1.0) // Reduced and smoother
+      scale *= (1 + smoothScrollStretch)
       
       const rotate = calcAngle(dx, dy)
       
@@ -216,12 +262,41 @@ export default function BigCursor() {
         ? getThemeProps(themePropsRef.current.shadowColor.includes("245") ? "dark" : "light", true)
         : themePropsRef.current
 
+      // Smooth scale animation for cursor
       cursor.style.transform = `translate3d(${position.easedX - CURSOR_SIZE / 2}px, ${position.easedY - CURSOR_SIZE / 2}px, 0) rotate(${rotate}deg) scale(${scale})`
       cursor.style.border = isInteractive ? props.hoverBorder : props.border
       
       // Enhanced shadow with scroll effect
       const shadowOffset = 15 + position.distance + (Math.abs(position.scrollVelocity) * 0.3)
       cursor.style.boxShadow = `0 ${-shadowOffset}px 0 -8px ${props.shadowColor}, 0 0 0 1px ${props.shadowColor}`
+
+      // Update scroll arrow position and rotation
+      if (isScrolling && Math.abs(position.scrollVelocity) > 0.5) {
+        // Smooth easing for arrow scale
+        position.easedArrowScale += (position.arrowScale - position.easedArrowScale) * 0.15
+        
+        const arrowOpacity = Math.min(position.easedArrowScale, 1)
+        scrollArrow.style.opacity = arrowOpacity.toString()
+        
+        // Position arrow above/below cursor based on scroll direction
+        const arrowDistance = 22 + (position.easedArrowScale * 8)
+        const arrowX = position.easedX - 6 // Center the 12px arrow
+        const arrowY = position.scrollVelocity > 0 
+          ? position.easedY + arrowDistance  // Scroll down - arrow below
+          : position.easedY - arrowDistance  // Scroll up - arrow above
+        
+        // Rotate arrow based on scroll direction
+        const arrowRotation = position.scrollVelocity > 0 ? 0 : 180
+        
+        // Scale arrow based on scroll velocity
+        const arrowScaleValue = 0.8 + Math.min(Math.abs(position.scrollVelocity) * 0.15, 0.6)
+        
+        scrollArrow.style.transform = `translate3d(${arrowX}px, ${arrowY}px, 0) rotate(${arrowRotation}deg) scale(${arrowScaleValue})`
+      } else {
+        // Fade out arrow
+        position.easedArrowScale += (0 - position.easedArrowScale) * 0.12
+        scrollArrow.style.opacity = Math.max(position.easedArrowScale, 0).toString()
+      }
 
       if (!fading && isScrolling) {
         fading = true
@@ -285,7 +360,18 @@ export default function BigCursor() {
       const newVelocity = currentScrollY - position.lastScrollY
       position.scrollVelocity = newVelocity
       position.lastScrollY = currentScrollY
+      
+      // Track scroll direction
+      if (newVelocity > 0) {
+        position.scrollDirection = 1 // Scrolling down
+      } else if (newVelocity < 0) {
+        position.scrollDirection = -1 // Scrolling up
+      }
+      
       isScrolling = true
+      
+      // Set arrow scale based on velocity magnitude
+      position.arrowScale = Math.min(Math.abs(newVelocity) * 0.3, 1)
 
       // Clear previous timeout
       if (scrollTimeout) clearTimeout(scrollTimeout)
@@ -294,7 +380,8 @@ export default function BigCursor() {
       scrollTimeout = setTimeout(() => {
         isScrolling = false
         position.scrollVelocity = 0
-      }, 100)
+        position.arrowScale = 0
+      }, 150)
     }
 
     const clickHandler = () => {
@@ -396,6 +483,7 @@ export default function BigCursor() {
       clearInterval(enforceNoCursor)
       
       cursor.remove()
+      scrollArrow.remove()
       document.documentElement.style.cursor = ""
       root.style.cursor = ""
       root.classList.remove("curzr-enabled")
