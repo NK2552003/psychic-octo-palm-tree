@@ -318,6 +318,61 @@ a,
   will-change: transform, opacity;
 }
 
+/* Custom theme-aware cursor */
+html,
+body,
+#__next,
+.curzr-enabled,
+.curzr-enabled * {
+  cursor: none !important;
+}
+
+.curzr {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  z-index: 2147483647;
+  pointer-events: none;
+  user-select: none;
+  display: block;
+}
+
+.curzr .circle,
+.curzr .dot {
+  position: fixed;
+  pointer-events: none;
+  user-select: none;
+  will-change: transform;
+}
+
+.curzr .circle {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 2px solid rgba(0, 0, 0, 0.65);
+  background-color: rgba(0, 0, 0, 0.05);
+  transition: transform 100ms ease-out, background-color 180ms ease, border-color 180ms ease;
+}
+
+.curzr .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 1);
+  transition: transform 75ms ease-out, background-color 180ms ease;
+}
+
+.dark .curzr .circle {
+  border-color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.dark .curzr .dot {
+  background-color: rgba(255, 255, 255, 1);
+}
+
 .font-handwriting {
   font-family: var(--font-handwriting), cursive;
   letter-spacing: 0.08em;
@@ -431,6 +486,23 @@ body {
   animation: debug-line-reveal 0.5s ease-out forwards;
   animation-delay: 0.45s; /* sync with jelly text */
 }
+
+/* Page entrance animation - smooth fade in from bottom */
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.page-enter {
+  animation: page-enter 0.8s ease-out forwards;
+}
+
 .hero-jelly {
   visibility: hidden;
 }
@@ -8493,5 +8565,35 @@ select:focus-visible {
       transform: translate(-50%, -50%) translateY(0);
       opacity: 1;
     }
+  }
+}
+
+/* ================== PARALLAX EFFECT STYLES ================== */
+
+/* Enable parallax on elements with data-parallax attribute */
+[data-parallax] {
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Parallax letter animations - smooth staggered effect */
+.parallax-letter {
+  will-change: transform;
+  transform: translateZ(0);
+  transition: transform 0.3s cubic-bezier(0.33, 0.66, 0.66, 1);
+}
+
+/* Disable parallax on small screens for performance */
+@media (max-width: 768px) {
+  [data-parallax] {
+    transform: none !important;
+    will-change: auto !important;
+  }
+
+  .parallax-letter {
+    transform: none !important;
+    transition: none !important;
   }
 }

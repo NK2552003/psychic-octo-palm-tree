@@ -2,11 +2,63 @@
 
 import React, { useEffect, useState } from "react"
 import { toast } from "sonner"
+import { gsap } from "gsap"
 import { Smartphone } from "lucide-react"
+import { isMobile, getDeviceTier } from "@/lib/deviceDetection"
 
 export default function InstallPrompt({ deferredPrompt, setDeferredPrompt }: { deferredPrompt: any | null, setDeferredPrompt: (v: any) => void }) {
   // show when we have a deferred prompt
   const visible = Boolean(deferredPrompt)
+  const [shouldAnimate, setShouldAnimate] = useState(false)
+  const animationTimeoutRef = React.useRef<NodeJS.Timeout | null>(null)
+
+  // Handle visibility with 5-second delay
+  useEffect(() => {
+    if (!visible) {
+      setShouldAnimate(false)
+      if (animationTimeoutRef.current) {
+        clearTimeout(animationTimeoutRef.current)
+      }
+      return
+    }
+
+    // Set delay before showing and animating
+    animationTimeoutRef.current = setTimeout(() => {
+      setShouldAnimate(true)
+    }, 5000)
+
+    return () => {
+      if (animationTimeoutRef.current) {
+        clearTimeout(animationTimeoutRef.current)
+      }
+    }
+  }, [visible])
+
+  // Handle animation
+  useEffect(() => {
+    if (!shouldAnimate) return
+
+    const toastElement = document.querySelector('.pwa-toast')
+    if (!toastElement) return
+
+    // Kill any existing animations on this element
+    gsap.killTweensOf(toastElement)
+
+    // Animate card entrance based on device capability
+    const shouldReduceAnimations = isMobile() || getDeviceTier() === 'low'
+    const duration = shouldReduceAnimations ? 0.3 : 0.6
+
+    gsap.from(toastElement, {
+      opacity: 0,
+      y: 30,
+      duration,
+      ease: shouldReduceAnimations ? 'power1.out' : 'back.out(1.2)',
+    })
+
+    return () => {
+      gsap.killTweensOf(toastElement)
+    }
+  }, [shouldAnimate])
 
   const install = async () => {
     if (!deferredPrompt) return
@@ -64,7 +116,7 @@ export default function InstallPrompt({ deferredPrompt, setDeferredPrompt }: { d
     }
   }
 
-  if (!visible) return null
+  if (!visible || !shouldAnimate) return null
 
   return (
     <div className="fixed inset-x-0 bottom-6 z-[9999] pointer-events-none flex justify-center px-4">

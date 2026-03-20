@@ -120,13 +120,16 @@ export function FloatingNav() {
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: index * 0.05 }}
-                      className={`w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-lg md:rounded-xl transition-all duration-150
-                        hover:bg-stone-100 dark:hover:bg-white/10
+                      className={`w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-lg md:rounded-xl transition-all duration-200
+                        hover:bg-stone-100 dark:hover:bg-teal-500/20 hover:scale-110 hover:[&>*]:scale-125 hover:[&>*]:-rotate-12 group
                         text-stone-800 dark:text-white
                         bg-white/95 dark:bg-[#031412]
-                        border border-stone-200/60 dark:border-white/20 shadow-sm`}
+                        border border-stone-200/60 dark:border-teal-500/40 shadow-sm hover:border-teal-500/60 dark:hover:border-teal-400`}
+                      whileHover={{ y: -2 }}
                     >
-                      {section.icon}
+                      <div className="transition-all duration-200">
+                        {section.icon}
+                      </div>
                     </motion.button>
 
                     <AnimatePresence>
@@ -171,13 +174,15 @@ export function FloatingNav() {
               onClick={() => setOpen((prev) => !prev)}
               aria-label={open ? "Close navigation" : "Open navigation"}
               className={`w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-lg md:rounded-xl backdrop-blur-xl transition-all duration-200
-                text-stone-800 dark:text-white
+                text-stone-800 dark:text-white hover:text-white dark:hover:text-gray-950
                 bg-white/90 dark:bg-[#031412]
-                hover:bg-stone-100 dark:hover:bg-white/10
-                border border-stone-200/60 dark:border-white/20
-                shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-300`}
+                hover:bg-stone-800 dark:hover:bg-teal-500 hover:scale-110 group
+                border border-stone-200/60 dark:border-teal-500/40 hover:border-teal-500/60 dark:hover:border-teal-400
+                shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-300 group-hover:[&>*]:scale-125 group-hover:[&>*]:-rotate-12`}
             >
-              <Menu className="w-4 h-4 md:w-5 md:h-5 text-stone-800 dark:text-white" />
+              <div className="transition-all duration-200">
+                <Menu className="w-4 h-4 md:w-5 md:h-5" />
+              </div>
             </button>
 
             <AnimatePresence>

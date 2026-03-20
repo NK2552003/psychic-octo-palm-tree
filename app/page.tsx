@@ -38,45 +38,50 @@ useEffect(() => {
     return;
   }
 
-  const elements = document.querySelectorAll<HTMLElement>(".hero-jelly");
+  // Add a small delay to let page entrance animation start
+  const delayTimer = setTimeout(() => {
+    const elements = document.querySelectorAll<HTMLElement>(".hero-jelly");
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
 
-        const el = entry.target as HTMLElement;
-        const isFast = el.classList.contains("hero-jelly-fast");
+          const el = entry.target as HTMLElement;
+          const isFast = el.classList.contains("hero-jelly-fast");
 
-        // 🔓 reveal
+          // 🔓 reveal
+          el.style.visibility = "visible";
+
+          applyJellyText(el, 0.2, isFast ? 0.012 : 0.035);
+
+          observer.unobserve(el);
+        });
+      },
+      {
+        threshold: 0.35,
+        rootMargin: "0px 0px -60px 0px",
+      }
+    );
+
+    // For elements already in the viewport, reveal immediately; otherwise hide and observe
+    elements.forEach((el) => {
+      const rect = el.getBoundingClientRect();
+      const inViewport = rect.top < window.innerHeight && rect.bottom > 0;
+      if (inViewport) {
         el.style.visibility = "visible";
+        const isFast = el.classList.contains("hero-jelly-fast");
+        applyJellyText(el, 0.2, isFast ? 0.012 : 0.035);
+      } else {
+        el.style.visibility = "hidden";
+        observer.observe(el);
+      }
+    });
 
-        applyJellyText(el, 0, isFast ? 0.012 : 0.035);
+    return () => observer.disconnect();
+  }, 100);
 
-        observer.unobserve(el);
-      });
-    },
-    {
-      threshold: 0.35,
-      rootMargin: "0px 0px -60px 0px",
-    }
-  );
-
-  // For elements already in the viewport, reveal immediately; otherwise hide and observe
-  elements.forEach((el) => {
-    const rect = el.getBoundingClientRect();
-    const inViewport = rect.top < window.innerHeight && rect.bottom > 0;
-    if (inViewport) {
-      el.style.visibility = "visible";
-      const isFast = el.classList.contains("hero-jelly-fast");
-      applyJellyText(el, 0, isFast ? 0.012 : 0.035);
-    } else {
-      el.style.visibility = "hidden";
-      observer.observe(el);
-    }
-  });
-
-  return () => observer.disconnect();
+  return () => clearTimeout(delayTimer);
 }, []);
 
   /* ======================================================
@@ -189,11 +194,15 @@ useEffect(() => {
         document.startViewTransition(() => {
           document.documentElement.classList.toggle("dark", next);
           localStorage.setItem("theme", next ? "dark" : "light");
+          // Dispatch custom event to notify cursor of theme change
+          window.dispatchEvent(new CustomEvent("theme-toggled", { detail: { isDark: next } }));
         });
       } else {
         // Fallback for browsers without View Transition API
         document.documentElement.classList.toggle("dark", next);
         localStorage.setItem("theme", next ? "dark" : "light");
+        // Dispatch custom event to notify cursor of theme change
+        window.dispatchEvent(new CustomEvent("theme-toggled", { detail: { isDark: next } }));
       }
       
       return next;

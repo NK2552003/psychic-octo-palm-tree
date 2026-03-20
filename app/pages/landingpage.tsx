@@ -3,11 +3,12 @@
 import Header from "@/components/Header"
 import HeroLeft from "@/components/HeroLeft"
 import HeroRight from "@/components/HeroRight"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 
 export default function LandingPage() {
   const [time, setTime] = useState("")
   const [showScrollCue, setShowScrollCue] = useState(true)
+  const sectionRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
     const updateTime = () => {
@@ -35,6 +36,15 @@ export default function LandingPage() {
     window.addEventListener("scroll", onScroll)
     return () => window.removeEventListener("scroll", onScroll)
   }, [])
+
+  // Trigger page entrance animation on mount
+  useEffect(() => {
+    if (sectionRef.current) {
+      // Add animation class after a tiny delay to ensure browser picks it up
+      sectionRef.current.classList.add("page-enter")
+    }
+  }, [])
+
   const scrollDown = () => {
     window.scrollTo({
       top: window.innerHeight * 0.6,
@@ -43,7 +53,7 @@ export default function LandingPage() {
   }
 
   return (
-    <section id="hero" className="relative md:h-[900px] mb-20 md:mb-0 flex flex-col overflow-hidden">
+    <section ref={sectionRef} id="hero" className="relative md:h-[900px] mb-20 md:mb-0 flex flex-col overflow-hidden">
       {/* HEADER */}
       <Header time={time} />
 
