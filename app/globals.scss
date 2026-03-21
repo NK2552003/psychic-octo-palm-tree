@@ -324,12 +324,45 @@ a,
   will-change: transform, opacity;
 }
 
-/* Custom theme-aware cursor */
+/* Custom theme-aware cursor - Maximum priority rules for macOS Chrome */
 html,
 body,
 #__next,
 .curzr-enabled,
 .curzr-enabled * {
+  cursor: none !important;
+}
+
+/* Ultra-aggressive cursor hiding for macOS Chrome rapid movement fix */
+* {
+  cursor: none !important;
+}
+
+*:hover {
+  cursor: none !important;
+}
+
+*:active {
+  cursor: none !important;
+}
+
+*:focus {
+  cursor: none !important;
+}
+
+/* Ensure even contenteditable and text inputs appear without cursor pointer */
+input[type="text"]::-webkit-outer-spin-button,
+input[type="text"]::-webkit-inner-spin-button,
+textarea {
+  cursor: text !important;
+}
+
+/* Scrollbar and other elements */
+::-webkit-resizer {
+  cursor: none !important;
+}
+
+::-webkit-selection {
   cursor: none !important;
 }
 
