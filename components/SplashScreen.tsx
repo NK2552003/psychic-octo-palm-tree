@@ -47,6 +47,18 @@ export default function SplashScreen({ onLoaded }: { onLoaded: () => void }) {
                 rotation: 0,
               });
 
+              // let the app mount children once the signature is tucked;
+              // the overlay is still covering the screen at this point, so
+              // GSAP's useEffect hooks in children run before the overlay
+              // fades away — eliminating any flash of unstyled content
+              tl.add(() => {
+                try {
+                  onLoaded();
+                } catch (e) {
+                  /* noop */
+                }
+              });
+
               // 2) fade the overlay out to reveal the app underneath
               tl.to(
                 overlayEl,
@@ -61,16 +73,6 @@ export default function SplashScreen({ onLoaded }: { onLoaded: () => void }) {
               // mark minimized (CSS fallback) and hide overlay after animation
               tl.add(() => setIsMinimized(true));
               tl.add(() => setIsVisible(false));
-
-              // notify parent AFTER the overlay has fully faded so content
-              // only becomes visible once the splash is completely gone
-              tl.add(() => {
-                try {
-                  onLoaded();
-                } catch (e) {
-                  /* noop */
-                }
-              });
             } else {
               // fallback: call onLoaded and hide overlay
               try {

@@ -48,11 +48,6 @@ export default function AppInitializer({ children }: { children: React.ReactNode
     }
   })
 
-  // Remember whether the splash was active on initial load so we can apply
-  // the fade-in entrance animation only when the splash was actually shown
-  // (not on return visits where the content should appear immediately).
-  const splashWasActiveRef = React.useRef(!splashDone)
-
   useEffect(() => {
     const mq = window.matchMedia("(prefers-color-scheme: dark)")
     const update = () => {
@@ -296,15 +291,7 @@ export default function AppInitializer({ children }: { children: React.ReactNode
             try { sessionStorage.setItem('splashDone', '1') } catch (e) {}
           }} />
         )}
-        {splashDone && (
-          // Apply a CSS fade-in animation to prevent FOUC: the content starts
-          // at opacity:0 (set by the keyframe before the first paint) and
-          // fades to opacity:1. Only applied when the splash was active this
-          // session; on return visits the content appears immediately.
-          <div {...(splashWasActiveRef.current ? { className: "page-content-enter" } : {})}>
-            {children}
-          </div>
-        )}
+        {splashDone && children}
         {splashDone && <BigCursor />}
         {splashDone && <DoodleOverlay />}
         {splashDone && !isUnsupportedBrowserPage && <InstallPrompt deferredPrompt={deferredPrompt} setDeferredPrompt={setDeferredPrompt} />}
