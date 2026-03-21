@@ -1,6 +1,7 @@
 "use client";
 import { Patrick_Hand } from "next/font/google";
 import Signature from "./signature";
+import Image from "next/image";
 import { useRef } from "react";
 import { useParallax, applyParallaxDepth } from "@/lib/useParallax";
 import { isMobile } from "@/lib/deviceDetection";
@@ -28,11 +29,16 @@ export default function HeroRight() {
     <div ref={heroRightRef} className="flex flex-col gap-10">
       <div className="flex flex-col sm:flex-row gap-10 ">
       <div className="relative group overflow-hidden mx-auto sm:mx-0">
-              <img
-                src="profile.jpg"
+              <Image
+                src="/profile.jpg"
                 alt="Nitish Kumar"
+                width={320}
+                height={320}
+                priority
+                fetchPriority="high"
                 className="image-animate w-[220px] sm:w-[280px] md:[300px] lg:w-[320px] object-cover hero-jelly border-16 sm:border-24 border-stone-700/30 dark:border-[#0c3a3a]"
                 data-parallax="0.6"
+                sizes="(max-width: 640px) 220px, (max-width: 768px) 280px, (max-width: 1024px) 300px, 320px"
               />
   {/* OKLCH teal overlay (dark mode only) */}
   <div

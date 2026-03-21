@@ -1,6 +1,27 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "**",
+      },
+    ],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    minimumCacheTTL: 60 * 60 * 24 * 365,
+  },
+  
+  // Performance optimizations for LCP
+  productionBrowserSourceMaps: false,
+  experimental: {
+    optimizePackageImports: [
+      "gsap",
+      "sonner",
+    ],
+  },
+  
   headers: async () => {
     return [
       // Cache static assets for long periods
@@ -15,7 +36,7 @@ const nextConfig: NextConfig = {
       },
       // Cache images optimized by Next.js for 1 year
       {
-        source: "/_next/image:path*",
+        source: "/_next/image/:path*",
         headers: [
           {
             key: "Cache-Control",
@@ -45,7 +66,16 @@ const nextConfig: NextConfig = {
       },
       // Cache XML files (sitemap, robots.txt) for 24 hours
       {
-        source: "/:path*.(xml|txt)",
+        source: "/:path*.xml",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=86400, stale-while-revalidate=604800",
+          },
+        ],
+      },
+      {
+        source: "/:path*.txt",
         headers: [
           {
             key: "Cache-Control",
