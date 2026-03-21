@@ -14,6 +14,7 @@ export default function WildlifePage() {
   const [currentPage, setCurrentPage] = useState<"gallery" | "detail">("gallery");
   const [selectedImage, setSelectedImage] = useState(0);
   const [currentGalleryIndex, setCurrentGalleryIndex] = useState(0);
+  const [containerWidth, setContainerWidth] = useState<number | null>(null);
   const pageRef = useRef<HTMLDivElement | null>(null);
   const detailRef = useRef<HTMLDivElement | null>(null);
   const galleryRef = useRef<HTMLDivElement | null>(null);
@@ -377,9 +378,82 @@ export default function WildlifePage() {
     return () => ctx.revert();
   }, []);
 
+  // Measure image width based on aspect ratio and fixed height
+  useEffect(() => {
+    const measureImageWidth = () => {
+      if (centerImageRef.current) {
+        const img = centerImageRef.current;
+        const naturalWidth = img.naturalWidth;
+        const naturalHeight = img.naturalHeight;
+        const displayHeight = img.offsetHeight;
+        
+        if (naturalWidth && naturalHeight && displayHeight) {
+          // Calculate width based on aspect ratio and current display height
+          const calculatedWidth = (naturalWidth / naturalHeight) * displayHeight;
+          setContainerWidth(calculatedWidth);
+        }
+      }
+    };
+
+    const img = centerImageRef.current;
+    if (img) {
+      if (img.complete && img.naturalWidth) {
+        measureImageWidth();
+      } else {
+        img.addEventListener('load', measureImageWidth);
+        return () => img.removeEventListener('load', measureImageWidth);
+      }
+    }
+  }, [currentGalleryIndex]);
+
   return (
     <div ref={pageRef} className="relative">
+      <style>{`
+        @keyframes clipMe {
+          0%, 100% { clip-path: inset(0px 0px calc(100% - 2px) 0px); }
+          25% { clip-path: inset(0px 0px 0px calc(100% - 2px)); }
+          50% { clip-path: inset(calc(100% - 2px) 0px 0px 0px); }
+          75% { clip-path: inset(0px calc(100% - 2px) 0px 0px); }
+        }
 
+        .animated-border-container {
+          position: relative;
+          display: inline-block;
+          transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+          overflow: hidden;
+        }
+
+        .animated-border-container::before,
+        .animated-border-container::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          border: 2px solid #69ca62;
+          pointer-events: none;
+          z-index: 10;
+          animation: clipMe 8s linear infinite;
+          background: transparent;
+        }
+
+        .dark .animated-border-container::before,
+        .dark .animated-border-container::after {
+          border: 2px solid var(--primary);
+        }
+
+        .animated-border-container::after {
+          animation-delay: -4s;
+        }
+
+        .image-wrapper {
+          width: auto;
+          height: auto;
+          display: block;
+          overflow: hidden;
+        }
+      `}</style>
 
       <div className="relative z-10">
         <div
@@ -499,23 +573,25 @@ export default function WildlifePage() {
                 [ PREV ]
               </button>
 
-              <div
-                className="relative cursor-pointer group"
-                onClick={handleCenterImageClick}
-              >
-                <img
-                  ref={centerImageRef}
-                  src={
-                    images[currentGalleryIndex].image || "/placeholder.svg"
-                  }
-                  alt={t(`photography.title.${currentGalleryIndex}`, lang)}
-                  className="h-48 w-40 sm:h-64 sm:w-52 md:h-80 md:w-64 lg:h-96 lg:w-80 object-cover grayscale shadow-2xl transition-all duration-500 group-hover:scale-105 group-hover:grayscale-0"
-                />
-                <div className="pointer-events-none absolute inset-0 hidden dark:block mix-blend-color bg-teal-600/30" />
-                <div className="absolute w-full h-full inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-500 flex items-center justify-center">
-                  <span className="text-white/70 text-xl md:text-2xl font-bold opacity-0 group-hover:opacity-100 transition-opacity duration-500 pl-4">
-                    VIEW
-                  </span>
+              <div className="animated-border-container" style={{ width: containerWidth ? `${containerWidth}px` : 'auto' }}>
+                <div
+                  className="relative cursor-pointer group image-wrapper"
+                  onClick={handleCenterImageClick}
+                >
+                  <img
+                    ref={centerImageRef}
+                    src={
+                      images[currentGalleryIndex].image || "/placeholder.svg"
+                    }
+                    alt={t(`photography.title.${currentGalleryIndex}`, lang)}
+                    className="h-[200px] sm:h-[240px] md:h-[280px] lg:h-[320px] xl:h-[360px] w-auto object-cover grayscale shadow-2xl transition-all duration-500 group-hover:scale-105 group-hover:grayscale-0"
+                  />
+                  <div className="pointer-events-none absolute inset-0 hidden dark:block mix-blend-color bg-teal-600/30" />
+                  <div className="absolute w-full h-full inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-500 flex items-center justify-center">
+                    <span className="text-white/70 text-xl md:text-2xl font-bold opacity-0 group-hover:opacity-100 transition-opacity duration-500 pl-4">
+                      VIEW
+                    </span>
+                  </div>
                 </div>
               </div>
 
@@ -529,28 +605,24 @@ export default function WildlifePage() {
             </div>
 
             {/* Top Section - Image Gallery */}
-            <div className="flex-1 flex items-start pt-4 md:pt-8">
-              <div className="w-full overflow-hidden">
-                <div className="flex gap-2 md:gap-4 lg:gap-6">
-                  {images.map((img, index) => (
-                    <div
-                      key={img.id}
-                      onClick={() => handleImageClick(index)}
-                      className={`flex-shrink-0 cursor-pointer transition-all duration-300 hover:scale-105 ${
-                        index < 5 ? "md:block" : "md:hidden"
-                      } ${index < 7 ? "xl:block" : "xl:hidden"}`}
-                    >
-                      <div className="relative">
-                        <img
-                          src={img.image || "/placeholder.svg"}
-                          alt={t(`photography.title.${index}`, lang)}
-                          className="h-32 w-24 sm:h-40 sm:w-32 md:h-48 md:w-40 lg:h-56 lg:w-44 object-cover grayscale transition-all duration-500"
-                        />
-                        <div className="pointer-events-none absolute inset-0 hidden dark:block mix-blend-color bg-teal-600/30" />
-                      </div>
+            <div className="flex-1 flex items-center justify-center pt-4 md:pt-8 w-full overflow-x-auto">
+              <div className="flex gap-2 sm:gap-3 md:gap-4 lg:gap-5 justify-center px-2 sm:px-3 md:px-4 py-2 flex-shrink-0">
+                {images.map((img, index) => (
+                  <div
+                    key={img.id}
+                    onClick={() => handleImageClick(index)}
+                    className="flex-shrink-0 cursor-pointer transition-all duration-300 hover:scale-105"
+                  >
+                    <div className="relative h-[200px] sm:h-[240px] md:h-[280px] lg:h-[320px] xl:h-[360px] w-auto">
+                      <img
+                        src={img.image || "/placeholder.svg"}
+                        alt={t(`photography.title.${index}`, lang)}
+                        className="h-full w-auto object-cover grayscale transition-all duration-500"
+                      />
+                      <div className="pointer-events-none absolute inset-0 hidden dark:block mix-blend-color bg-teal-600/30" />
                     </div>
-                  ))}
-                </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
