@@ -40,7 +40,7 @@ export default function SplashScreen({ onLoaded }: { onLoaded: () => void }) {
 
               // 1) scale the signature down (zoom out) from its center
               tl.to(sigEl, {
-                duration: 0.9,
+                duration: 0.4,
                 scale: 0,
                 transformOrigin: "50% 50%",
                 opacity: 0.95,
@@ -60,7 +60,7 @@ export default function SplashScreen({ onLoaded }: { onLoaded: () => void }) {
               tl.to(
                 overlayEl,
                 {
-                  duration: 0.8,
+                  duration: 0.3,
                   opacity: 0,
                   ease: "power2.out",
                 },
@@ -88,7 +88,7 @@ export default function SplashScreen({ onLoaded }: { onLoaded: () => void }) {
             }
             setIsVisible(false);
           }
-        }, 400);
+        }, 200);
       }
     };
 
