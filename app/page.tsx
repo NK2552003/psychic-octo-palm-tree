@@ -50,7 +50,7 @@ useEffect(() => {
           const el = entry.target as HTMLElement;
           const isFast = el.classList.contains("hero-jelly-fast");
 
-          // 🔓 reveal
+          // reveal
           el.style.visibility = "visible";
 
           applyJellyText(el, 0.2, isFast ? 0.012 : 0.035);

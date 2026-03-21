@@ -324,12 +324,45 @@ a,
   will-change: transform, opacity;
 }
 
-/* Custom theme-aware cursor */
+/* Custom theme-aware cursor - Maximum priority rules for macOS Chrome */
 html,
 body,
 #__next,
 .curzr-enabled,
 .curzr-enabled * {
+  cursor: none !important;
+}
+
+/* Ultra-aggressive cursor hiding for macOS Chrome rapid movement fix */
+* {
+  cursor: none !important;
+}
+
+*:hover {
+  cursor: none !important;
+}
+
+*:active {
+  cursor: none !important;
+}
+
+*:focus {
+  cursor: none !important;
+}
+
+/* Ensure even contenteditable and text inputs appear without cursor pointer */
+input[type="text"]::-webkit-outer-spin-button,
+input[type="text"]::-webkit-inner-spin-button,
+textarea {
+  cursor: text !important;
+}
+
+/* Scrollbar and other elements */
+::-webkit-resizer {
+  cursor: none !important;
+}
+
+::-webkit-selection {
   cursor: none !important;
 }
 
@@ -607,18 +640,18 @@ body {
 }
 
 /* stagger per letter/path to resemble handwriting */
-.signature-path:nth-of-type(1)  { animation-delay: 0.06s; }
-.signature-path:nth-of-type(2)  { animation-delay: 0.18s; }
-.signature-path:nth-of-type(3)  { animation-delay: 0.30s; }
-.signature-path:nth-of-type(4)  { animation-delay: 0.40s; }
-.signature-path:nth-of-type(5)  { animation-delay: 0.52s; }
-.signature-path:nth-of-type(6)  { animation-delay: 0.64s; }
-.signature-path:nth-of-type(7)  { animation-delay: 0.76s; }
-.signature-path:nth-of-type(8)  { animation-delay: 0.88s; }
-.signature-path:nth-of-type(9)  { animation-delay: 1.00s; }
-.signature-path:nth-of-type(10) { animation-delay: 1.12s; }
-.signature-path:nth-of-type(11) { animation-delay: 1.24s; }
-.signature-path:nth-of-type(12) { animation-delay: 1.36s; }
+.signature-path:nth-of-type(1)  { animation-delay: 0.03s; }
+.signature-path:nth-of-type(2)  { animation-delay: 0.09s; }
+.signature-path:nth-of-type(3)  { animation-delay: 0.15s; }
+.signature-path:nth-of-type(4)  { animation-delay: 0.20s; }
+.signature-path:nth-of-type(5)  { animation-delay: 0.26s; }
+.signature-path:nth-of-type(6)  { animation-delay: 0.32s; }
+.signature-path:nth-of-type(7)  { animation-delay: 0.38s; }
+.signature-path:nth-of-type(8)  { animation-delay: 0.44s; }
+.signature-path:nth-of-type(9)  { animation-delay: 0.50s; }
+.signature-path:nth-of-type(10) { animation-delay: 0.56s; }
+.signature-path:nth-of-type(11) { animation-delay: 0.62s; }
+.signature-path:nth-of-type(12) { animation-delay: 0.68s; }
 
 @keyframes draw {
 	to {

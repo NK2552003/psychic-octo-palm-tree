@@ -370,19 +370,37 @@ export default function BigCursor() {
       rafId = requestAnimationFrame(motivationLoop)
     }
 
+    let lastMoveTime = Date.now()
+    let lastMoveX = 0
+    let lastMoveY = 0
+    
     const moveHandler = (event: MouseEvent) => {
       position.pointerX = event.pageX + root.getBoundingClientRect().x
       position.pointerY = event.pageY + root.getBoundingClientRect().y
 
-      // Immediately ensure cursor is visible and hidden globally - AGGRESSIVE
+      // Calculate movement velocity for aggressive cursor hiding
+      const currentTime = Date.now()
+      const timeDelta = Math.max(currentTime - lastMoveTime, 1)
+      const distanceX = Math.abs(event.clientX - lastMoveX)
+      const distanceY = Math.abs(event.clientY - lastMoveY)
+      const velocity = (distanceX + distanceY) / timeDelta
+
+      lastMoveTime = currentTime
+      lastMoveX = event.clientX
+      lastMoveY = event.clientY
+
+      // Immediately ensure cursor is visible and hidden globally - ULTRA AGGRESSIVE
       cursor.style.opacity = "1"
       document.documentElement.style.cursor = "none !important"
+      document.body.style.cursor = "none !important"
       root.style.cursor = "none !important"
       
-      // Force ALL elements to have no cursor on rapid movement
-      const allElements = document.querySelectorAll("*")
-      for (let i = 0; i < Math.min(allElements.length, 50); i++) {
-        (allElements[i] as HTMLElement).style.cursor = "none !important"
+      // During rapid movements (>1.5px/ms or circular motion), force cursor hidden on all elements
+      if (velocity > 1.5) {
+        const allElements = document.querySelectorAll("*")
+        for (let i = 0; i < Math.min(allElements.length, 100); i++) {
+          (allElements[i] as HTMLElement).style.setProperty("cursor", "none", "important")
+        }
       }
 
       const target = event.target
@@ -458,7 +476,7 @@ export default function BigCursor() {
       if (cursor) cursor.style.opacity = "1"
     }
 
-    // Keep enforcing cursor: none with very aggressive interval (16ms ~60fps)
+    // Keep enforcing cursor: none with very aggressive interval (8ms for ultra-responsive coverage)
     const enforceNoCursor = setInterval(() => {
       document.documentElement.style.cursor = "none !important"
       root.style.cursor = "none !important"
@@ -466,7 +484,43 @@ export default function BigCursor() {
       if (cursor && cursor.style.opacity !== "1") {
         cursor.style.opacity = "1"
       }
-    }, 16)
+      // Additional enforcement for edge cases during rapid movements
+      if (document.body.style.cursor !== "none") {
+        document.body.style.cursor = "none !important"
+      }
+    }, 8)
+
+    // Add MutationObserver to catch any DOM changes that reset cursor
+    const cursorStyleObserver = new MutationObserver(() => {
+      document.documentElement.style.cursor = "none !important"
+      document.body.style.cursor = "none !important"
+      root.style.cursor = "none !important"
+    })
+
+    cursorStyleObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["style"],
+      subtree: false,
+    })
+
+    // Add ultra-aggressive mousemove enforcement specific to prevent cursor flashing
+    let lastEnforcedX = 0
+    let lastEnforcedY = 0
+    const aggressiveMouseMoveHandler = (event: MouseEvent) => {
+      const dx = Math.abs(event.clientX - lastEnforcedX)
+      const dy = Math.abs(event.clientY - lastEnforcedY)
+      lastEnforcedX = event.clientX
+      lastEnforcedY = event.clientY
+
+      // Especially aggressive enforcement during rapid movements
+      if (dx > 5 || dy > 5) {
+        document.documentElement.style.cursor = "none !important"
+        root.style.cursor = "none !important"
+        document.body.style.cursor = "none !important"
+      }
+    }
+
+    document.addEventListener("mousemove", aggressiveMouseMoveHandler, { capture: true, passive: true })
 
     // Helper function to enforce cursor hidden state
     const enforceCursorHidden = (el?: HTMLElement) => {
@@ -547,6 +601,8 @@ export default function BigCursor() {
       if (rafId) cancelAnimationFrame(rafId)
       if (scrollTimeout) clearTimeout(scrollTimeout)
       clearInterval(enforceNoCursor)
+      cursorStyleObserver.disconnect()
+      document.removeEventListener("mousemove", aggressiveMouseMoveHandler, { capture: true } as any)
       
       cursor.remove()
       scrollArrow.remove()
