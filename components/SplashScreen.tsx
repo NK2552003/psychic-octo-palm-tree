@@ -47,15 +47,6 @@ export default function SplashScreen({ onLoaded }: { onLoaded: () => void }) {
                 rotation: 0,
               });
 
-              // let the app mount children once the signature is tucked
-              tl.add(() => {
-                try {
-                  onLoaded();
-                } catch (e) {
-                  /* noop */
-                }
-              });
-
               // 2) fade the overlay out to reveal the app underneath
               tl.to(
                 overlayEl,
@@ -70,6 +61,16 @@ export default function SplashScreen({ onLoaded }: { onLoaded: () => void }) {
               // mark minimized (CSS fallback) and hide overlay after animation
               tl.add(() => setIsMinimized(true));
               tl.add(() => setIsVisible(false));
+
+              // notify parent AFTER the overlay has fully faded so content
+              // only becomes visible once the splash is completely gone
+              tl.add(() => {
+                try {
+                  onLoaded();
+                } catch (e) {
+                  /* noop */
+                }
+              });
             } else {
               // fallback: call onLoaded and hide overlay
               try {
@@ -102,9 +103,9 @@ export default function SplashScreen({ onLoaded }: { onLoaded: () => void }) {
   return (
     <div
       ref={overlayRef}
-      className={`fixed inset-0 transition-opacity duration-500 ${
+      className={`fixed inset-0 bg-background transition-opacity duration-500 ${
         isVisible ? "opacity-100" : "opacity-0 pointer-events-none"
-      } z-50`}
+      } z-[200]`}
     >
       <div
         ref={signatureRef}

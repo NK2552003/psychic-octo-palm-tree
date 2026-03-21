@@ -197,6 +197,23 @@
   }
 }
 
+/* Page content entrance animation – prevents FOUC after splash screen.
+   The keyframe starts at opacity:0 so the very first paint is invisible,
+   eliminating the flash of unstyled content before GSAP animations run.
+   Only applied when the splash was active (not on return visits). */
+@keyframes page-enter {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.page-content-enter {
+  animation: page-enter 0.45s ease-out forwards;
+}
+
 /* Enhanced smooth transitions and removed jiggling animations */
 button,
 a,
