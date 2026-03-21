@@ -4,26 +4,31 @@ import { Playfair_Display, Inter, Space_Grotesk } from "next/font/google"
 import "./globals.scss"
 import AppInitializer from "../components/AppInitializer"
 import { Toaster } from "sonner"
+import { preconnect } from "next/dist/build/templates/app-page"
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
   variable: "--font-display",
   display: "swap",
+  preload: true,
 })
 
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
   display: "swap",
+  preload: true,
 })
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
   variable: "--font-mono",
   display: "swap",
+  preload: true,
 })
 
-export const metadata: Metadata = {
+export async function generateMetadata(): Promise<Metadata> {
+  return {
   metadataBase: new URL("https://nitishkr.fun"),
   title: {
     default: "Nitish - Developer & Photographer",
@@ -112,6 +117,7 @@ export const metadata: Metadata = {
       follow: true,
     },
   },
+  }
 }
 
 export default function RootLayout({
@@ -161,7 +167,13 @@ export default function RootLayout({
         <link rel="alternate" hrefLang="en-US" href="https://nitishkr.fun/" />
         <link rel="alternate" hrefLang="en" href="https://nitishkr.fun/" />
         <link rel="manifest" href="/site.webmanifest" />
+        
+        {/* LCP Optimization: Preload critical resources */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+        <link rel="preload" href="/profile.jpg" as="image" type="image/jpeg" />
+        <link rel="preload" href="/public/fonts/tiro-devanagari-hindi.css" as="style" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
