@@ -186,27 +186,38 @@ useEffect(() => {
   }, []);
 
   const toggleTheme = (event?: React.MouseEvent) => {
-    setIsDark((prev) => {
-      const next = !prev;
-      
-      // Use View Transition API for smooth theme change
-      if (document.startViewTransition) {
-        document.startViewTransition(() => {
-          document.documentElement.classList.toggle("dark", next);
-          localStorage.setItem("theme", next ? "dark" : "light");
-          // Dispatch custom event to notify cursor of theme change
-          window.dispatchEvent(new CustomEvent("theme-toggled", { detail: { isDark: next } }));
-        });
-      } else {
-        // Fallback for browsers without View Transition API
-        document.documentElement.classList.toggle("dark", next);
+    if (!document.documentElement) return;
+    
+    const currentIsDark = document.documentElement.classList.contains("dark");
+    const next = !currentIsDark;
+
+    // Use View Transition API for smooth theme change
+    if (document.startViewTransition) {
+      document.startViewTransition(() => {
+        // Toggle the dark class on the root element
+        if (next) {
+          document.documentElement.classList.add("dark");
+        } else {
+          document.documentElement.classList.remove("dark");
+        }
+        
+        // Update storage and dispatch event
         localStorage.setItem("theme", next ? "dark" : "light");
-        // Dispatch custom event to notify cursor of theme change
         window.dispatchEvent(new CustomEvent("theme-toggled", { detail: { isDark: next } }));
+      });
+    } else {
+      // Fallback for browsers without View Transition API
+      if (next) {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
       }
-      
-      return next;
-    });
+      localStorage.setItem("theme", next ? "dark" : "light");
+      window.dispatchEvent(new CustomEvent("theme-toggled", { detail: { isDark: next } }));
+    }
+    
+    // Update state after DOM changes are in transition
+    setIsDark(next);
   };
 
   /* ======================================================

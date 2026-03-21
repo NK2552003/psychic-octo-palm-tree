@@ -166,8 +166,8 @@
 /* View Transition API for smooth theme transitions */
 ::view-transition-old(root),
 ::view-transition-new(root) {
-  animation-duration: 0.3s;
-  animation-timing-function: ease-out;
+  animation-duration: 0.4s;
+  animation-timing-function: ease-in-out;
 }
 
 /* Crossfade between themes */
@@ -180,6 +180,9 @@
 }
 
 @keyframes fade-out {
+  0% {
+    opacity: 1;
+  }
   to {
     opacity: 0;
   }
@@ -188,6 +191,9 @@
 @keyframes fade-in {
   from {
     opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
 
