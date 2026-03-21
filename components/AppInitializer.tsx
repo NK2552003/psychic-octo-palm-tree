@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useEffect, useState } from "react"
+import { usePathname } from "next/navigation"
 import SplashScreen from "./SplashScreen"
 import Signature from "./signature"
 import InstallPrompt from "./InstallPrompt";
@@ -10,10 +11,13 @@ import BigCursor from "./BigCursor";
 import ProgressScrollBar from "./ProgressScrollBar";
 import { ThemeProvider } from "./theme-provider"
 import LenisScroll from "./LenisScroll"
+import BrowserSupport from "./BrowserSupport"
 import { toast } from "sonner"
 import { t } from '@/lib/i18n'
 
 export default function AppInitializer({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname()
+  const isUnsupportedBrowserPage = pathname === '/unsupported-browser'
   const [themeDetected, setThemeDetected] = useState(false)
   const [systemTheme, setSystemTheme] = useState<"light" | "dark">("light")
   const [splashDone, setSplashDone] = useState<boolean>(() => {
@@ -279,6 +283,7 @@ export default function AppInitializer({ children }: { children: React.ReactNode
   return (
     <LenisScroll>
       <ThemeProvider attribute="class" defaultTheme={systemTheme}>
+        <BrowserSupport />
         <ProgressScrollBar />
         {!splashDone && (
           <SplashScreen onLoaded={() => {
@@ -289,8 +294,8 @@ export default function AppInitializer({ children }: { children: React.ReactNode
         {splashDone && children}
         {splashDone && <BigCursor />}
         {splashDone && <DoodleOverlay />}
-        {splashDone && <InstallPrompt deferredPrompt={deferredPrompt} setDeferredPrompt={setDeferredPrompt} />}
-        {splashDone && <CookieConsent />}
+        {splashDone && !isUnsupportedBrowserPage && <InstallPrompt deferredPrompt={deferredPrompt} setDeferredPrompt={setDeferredPrompt} />}
+        {splashDone && !isUnsupportedBrowserPage && <CookieConsent />}
       </ThemeProvider>
     </LenisScroll>
   )

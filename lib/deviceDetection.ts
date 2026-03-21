@@ -17,6 +17,17 @@ export function isMobile(): boolean {
   );
 }
 
+export function isSafari(): boolean {
+  if (typeof navigator === "undefined") return false;
+  const ua = navigator.userAgent || "";
+  return /Safari/i.test(ua) && !/Chrome|Edge|Opera|Firefox/i.test(ua);
+}
+
+export function isMacOS(): boolean {
+  if (typeof navigator === "undefined") return false;
+  return /Macintosh|MacPPC|MacIntel|Mac_PowerPC|Macintosh/i.test(navigator.userAgent || "");
+}
+
 export type DeviceTier = 'low' | 'mid' | 'high';
 
 /**
