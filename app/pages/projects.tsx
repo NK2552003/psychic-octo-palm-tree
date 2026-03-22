@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react"
 import gsap from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
+import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import {
@@ -43,11 +44,20 @@ export default function ProjectsPage() {
   const [githubRepos, setGithubRepos] = useState<GitHubRepo[]>([])
   const [devtoArticles, setDevtoArticles] = useState<DevToArticle[]>([])
   const [loading, setLoading] = useState(false)
+  const hasShownRepoToastsRef = useRef(false)
+  const repoToastTimeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([])
 
   const containerRef = useRef<HTMLDivElement>(null)
   const doodlesRef = useRef<HTMLDivElement>(null)
   const sectionsRef = useRef<(HTMLDivElement | null)[]>([])
   const cardsContainerRef = useRef<(HTMLDivElement | null)[]>([])
+
+  useEffect(() => {
+    return () => {
+      repoToastTimeoutsRef.current.forEach((timeoutId) => clearTimeout(timeoutId))
+      repoToastTimeoutsRef.current = []
+    }
+  }, [])
 
   // Fetch GitHub repos and Dev.to articles on initial mount
   useEffect(() => {
@@ -256,6 +266,55 @@ export default function ProjectsPage() {
       const res = await fetch("https://api.github.com/users/nk2552003/repos?per_page=100")
       let data = await res.json()
       if (Array.isArray(data)) {
+        if (!hasShownRepoToastsRef.current && data.length > 0) {
+          const mostStarred = data.reduce((top: GitHubRepo, repo: GitHubRepo) =>
+            repo.stargazers_count > top.stargazers_count ? repo : top,
+          data[0])
+
+          const reposWithDate = data.filter((repo: GitHubRepo) => Boolean(repo.created_at))
+          const mostRecent = (reposWithDate.length > 0 ? reposWithDate : data).reduce((latest: GitHubRepo, repo: GitHubRepo) => {
+            const latestTime = latest.created_at ? new Date(latest.created_at).getTime() : 0
+            const repoTime = repo.created_at ? new Date(repo.created_at).getTime() : 0
+            return repoTime > latestTime ? repo : latest
+          }, reposWithDate.length > 0 ? reposWithDate[0] : data[0])
+
+          const showRepoToast = (label: string, repo: GitHubRepo) => {
+            const heading = repo.name.replace(/-/g, " ")
+            toast.custom(
+              () => (
+                <button
+                  type="button"
+                  onClick={() => {
+                    try {
+                      window.open(repo.html_url, "_blank", "noopener")
+                    } catch (e) {}
+                  }}
+                  className="w-full max-w-[356px] bg-background p-4 text-left transition hover:bg-muted/40"
+                >
+                  <p className="text-xs font-medium uppercase tracking-wide text-foreground/85">{label}</p>
+                  <h4 className="mt-1 line-clamp-1 text-sm font-semibold">{heading}</h4>
+                  <p className="mt-1 line-clamp-2 text-sm text-foreground/80">
+                    {repo.description || "No description available"}
+                  </p>
+                </button>
+              ),
+              { duration: 7000, className: "!rounded-xl !p-0 overflow-hidden" },
+            )
+          }
+
+          const firstToastTimeout = setTimeout(() => {
+            showRepoToast("Most Starred", mostStarred)
+          }, 1200)
+
+          const secondToastTimeout = setTimeout(() => {
+            showRepoToast("Most Recent", mostRecent)
+          }, 2600)
+
+          repoToastTimeoutsRef.current.push(firstToastTimeout, secondToastTimeout)
+
+          hasShownRepoToastsRef.current = true
+        }
+
         data = data.sort((a, b) => b.stargazers_count - a.stargazers_count)
         setGithubRepos(data)
       } else {
