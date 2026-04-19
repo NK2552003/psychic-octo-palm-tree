@@ -64,7 +64,35 @@ const nextConfig: NextConfig = {
           },
         ],
       },
-      // Cache XML files (sitemap, robots.txt) for 24 hours
+      // Sitemap with proper MIME type
+      {
+        source: "/sitemap.xml",
+        headers: [
+          {
+            key: "Content-Type",
+            value: "application/xml; charset=utf-8",
+          },
+          {
+            key: "Cache-Control",
+            value: "public, max-age=86400, stale-while-revalidate=604800",
+          },
+        ],
+      },
+      // Robots.txt with proper MIME type
+      {
+        source: "/robots.txt",
+        headers: [
+          {
+            key: "Content-Type",
+            value: "text/plain; charset=utf-8",
+          },
+          {
+            key: "Cache-Control",
+            value: "public, max-age=86400, stale-while-revalidate=604800",
+          },
+        ],
+      },
+      // Cache XML files for 24 hours
       {
         source: "/:path*.xml",
         headers: [
@@ -74,6 +102,7 @@ const nextConfig: NextConfig = {
           },
         ],
       },
+      // Cache text files for 24 hours
       {
         source: "/:path*.txt",
         headers: [
