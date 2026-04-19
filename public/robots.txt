@@ -27,4 +27,3 @@ Allow: /
 
 # Sitemap location
 Sitemap: https://nitishkr.fun/sitemap.xml
-Sitemap: https://nitishkr.fun/robots.txt
