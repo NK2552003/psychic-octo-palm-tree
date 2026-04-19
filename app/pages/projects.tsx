@@ -515,7 +515,7 @@ export default function ProjectsPage() {
                       variant="default"
                       size="lg"
                       className="hidden md:inline-flex bg-transparent transition-transform duration-300 "
-                      aria-hidden
+                      aria-label={expandedSection === index ? "Collapse section" : "Expand section"}
                       onClick={(e) => {
                         e.stopPropagation()
                         toggleSection(index)
@@ -544,6 +544,7 @@ export default function ProjectsPage() {
                         scroll("left", index)
                       }}
                       className="rounded-full"
+                      aria-label="Scroll left"
                     >
                       <ChevronLeft className="h-4 w-4" />
                     </Button>
@@ -555,6 +556,7 @@ export default function ProjectsPage() {
                         scroll("right", index)
                       }}
                       className="rounded-full"
+                      aria-label="Scroll right"
                     >
                       <ChevronRight className="h-4 w-4" />
                     </Button>

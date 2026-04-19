@@ -77,21 +77,28 @@ export default function Header({ time }: { time: string }) {
         {/* ICONS */}
         <div ref={iconsRef} className="flex gap-4 hero-jelly">
           <a href="mailto:nk2552003@gmail.com"
+             aria-label="Send email"
              className="icon-entry group cursor-pointer hover:-translate-y-1 hover:text-teal-500 dark:hover:text-teal-400 transition-all duration-300">
             <MailIcon />
           </a>
 
           <a href="https://linkedin.com/in/nk2552003" target="_blank"
+             aria-label="Visit LinkedIn profile"
+             rel="noopener noreferrer"
              className="icon-entry group cursor-pointer hover:-translate-y-1 hover:text-teal-500 dark:hover:text-teal-400 transition-all duration-300">
             <LinkedInIcon />
           </a>
 
           <a href="https://github.com/nk2552003" target="_blank"
+             aria-label="Visit GitHub profile"
+             rel="noopener noreferrer"
              className="icon-entry group cursor-pointer hover:-translate-y-1 hover:text-teal-500 dark:hover:text-teal-400 transition-all duration-300">
             <GitHubIcon />
           </a>
 
           <a href="https://codepen.io/nk2552003" target="_blank"
+             aria-label="Visit CodePen profile"
+             rel="noopener noreferrer"
              className="icon-entry group cursor-pointer hover:-translate-y-1 hover:text-teal-500 dark:hover:text-teal-400 transition-all duration-300">
             <CodePenIcon />
           </a>

@@ -122,6 +122,7 @@ export default function UnsupportedBrowserPage() {
               href={browser.url}
               target="_blank"
               rel="noopener noreferrer"
+              aria-label={`Download ${browser.name}`}
               className="group relative overflow-hidden rounded-xl transition-all duration-300 hover:scale-105 active:scale-95"
               style={{
                 border: "2px solid var(--foreground)",
