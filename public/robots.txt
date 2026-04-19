@@ -1,29 +1,27 @@
-# Allow all search engines to crawl the site
+# Robots.txt for nitishkr.fun
+# Allow all search engines by default
 User-agent: *
 Allow: /
 
-# Block specific directories from crawling
+# Block private and system directories
 Disallow: /api/private
 Disallow: /api/admin
 Disallow: /.next
 Disallow: /node_modules
 
-# Disallow some bot types that may impact performance
+# Block specific bot types that impact performance
 User-agent: AhrefsBot
+Disallow: /
+
 User-agent: SemrushBot
+Disallow: /
+
 User-agent: DotBot
 Disallow: /
 
-# Crawl delay for generic crawlers (in seconds)
+# Crawl delay for generic crawlers (1 second)
 User-agent: *
 Crawl-delay: 1
-
-# Allow specific crawlers with no restrictions
-User-agent: Googlebot
-Allow: /
-
-User-agent: Bingbot
-Allow: /
 
 # Sitemap location
 Sitemap: https://nitishkr.fun/sitemap.xml
