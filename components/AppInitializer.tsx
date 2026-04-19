@@ -12,7 +12,6 @@ import ProgressScrollBar from "./ProgressScrollBar";
 import { ThemeProvider } from "./theme-provider"
 import LenisScroll from "./LenisScroll"
 import BrowserSupport from "./BrowserSupport"
-import { WebVitalsDebug } from "./WebVitalsDisplay"
 import { toast } from "sonner"
 import { t } from '@/lib/i18n'
 
@@ -303,7 +302,6 @@ export default function AppInitializer({ children }: { children: React.ReactNode
       <ThemeProvider attribute="class" defaultTheme={systemTheme}>
         <BrowserSupport />
         <ProgressScrollBar />
-        <WebVitalsDebug />
         {!splashDone && (
           <SplashScreen onLoaded={() => {
             setSplashDone(true)

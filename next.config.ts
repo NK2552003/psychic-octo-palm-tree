@@ -29,12 +29,6 @@ const nextConfig: NextConfig = {
     ],
   },
   
-  // Reduce bundle size
-  webpack: (config, { isServer }) => {
-    config.optimization.usedExports = true;
-    return config;
-  },
-  
   headers: async () => {
     return [
       // Cache static assets for long periods
