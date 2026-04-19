@@ -14,7 +14,7 @@ const nextConfig: NextConfig = {
   },
   
   // Performance optimizations for LCP
-  productionBrowserSourceMaps: false,
+  productionBrowserSourceMaps: true,
   experimental: {
     optimizePackageImports: [
       "gsap",
