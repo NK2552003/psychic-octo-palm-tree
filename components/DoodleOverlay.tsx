@@ -87,6 +87,7 @@ function intersects(a: { x: number; y: number; w: number; h: number }, b: { x: n
 
 function DoodleOverlayComponent() {
   const [items, setItems] = useState<Item[]>([])
+  const [isVisible, setIsVisible] = useState(false)
   const containerRef = useRef<HTMLDivElement | null>(null)
   const lastViewportSize = useRef({ width: 0, height: 0 })
 
@@ -146,7 +147,17 @@ function DoodleOverlayComponent() {
         }
       }
 
-      setItems(newItems)
+      // Defer rendering doodles until after LCP to avoid blocking main thread
+      const renderDoodles = () => {
+        setItems(newItems)
+        setIsVisible(true)
+      }
+
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(renderDoodles, { timeout: 5000 })
+      } else {
+        setTimeout(renderDoodles, 2000)
+      }
     }
 
     // generate initially and on resize/content changes (debounced)
@@ -183,8 +194,9 @@ function DoodleOverlayComponent() {
       ref={containerRef}
       className="hidden lg:block absolute inset-0 -z-10 pointer-events-none"
       aria-hidden
+      style={{ opacity: isVisible ? 1 : 0 }}
     >
-      {items.map((it) => {
+      {isVisible && items.map((it) => {
         if (it.type === "icon") {
           const ic = it as IconItem
           const Icon = ic.Icon

@@ -38,8 +38,9 @@ useEffect(() => {
     return;
   }
 
-  // Add a small delay to let page entrance animation start
-  const delayTimer = setTimeout(() => {
+  // Defer jelly text animations until AFTER LCP (using requestIdleCallback or setTimeout with large delay)
+  // This prevents animations from blocking the main thread during critical rendering
+  const scheduleJellyAnimations = () => {
     const elements = document.querySelectorAll<HTMLElement>(".hero-jelly");
 
     const observer = new IntersectionObserver(
@@ -53,7 +54,13 @@ useEffect(() => {
           // reveal
           el.style.visibility = "visible";
 
-          applyJellyText(el, 0.2, isFast ? 0.012 : 0.035);
+          // Defer animation execution to avoid blocking critical rendering
+          requestIdleCallback?.(() => {
+            applyJellyText(el, 0.2, isFast ? 0.012 : 0.035);
+          }, { timeout: 2000 }) || 
+          setTimeout(() => {
+            applyJellyText(el, 0.2, isFast ? 0.012 : 0.035);
+          }, 1000);
 
           observer.unobserve(el);
         });
@@ -70,8 +77,14 @@ useEffect(() => {
       const inViewport = rect.top < window.innerHeight && rect.bottom > 0;
       if (inViewport) {
         el.style.visibility = "visible";
+        // Defer animation to avoid blocking
         const isFast = el.classList.contains("hero-jelly-fast");
-        applyJellyText(el, 0.2, isFast ? 0.012 : 0.035);
+        requestIdleCallback?.(() => {
+          applyJellyText(el, 0.2, isFast ? 0.012 : 0.035);
+        }, { timeout: 2000 }) || 
+        setTimeout(() => {
+          applyJellyText(el, 0.2, isFast ? 0.012 : 0.035);
+        }, 1000);
       } else {
         el.style.visibility = "hidden";
         observer.observe(el);
@@ -79,9 +92,14 @@ useEffect(() => {
     });
 
     return () => observer.disconnect();
-  }, 100);
+  };
 
-  return () => clearTimeout(delayTimer);
+  // Schedule after initial paint
+  if ('requestIdleCallback' in window) {
+    requestIdleCallback(scheduleJellyAnimations, { timeout: 3000 });
+  } else {
+    setTimeout(scheduleJellyAnimations, 1500);
+  }
 }, []);
 
   /* ======================================================

@@ -12,6 +12,7 @@ import ProgressScrollBar from "./ProgressScrollBar";
 import { ThemeProvider } from "./theme-provider"
 import LenisScroll from "./LenisScroll"
 import BrowserSupport from "./BrowserSupport"
+import { WebVitalsDebug } from "./WebVitalsDisplay"
 import { toast } from "sonner"
 import { t } from '@/lib/i18n'
 
@@ -47,6 +48,7 @@ export default function AppInitializer({ children }: { children: React.ReactNode
       return false
     }
   })
+  const [renderEnhancements, setRenderEnhancements] = useState(false)
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-color-scheme: dark)")
@@ -256,6 +258,22 @@ export default function AppInitializer({ children }: { children: React.ReactNode
     }
   }, [])
 
+  // Defer rendering of heavy UI enhancements (BigCursor, DoodleOverlay, InstallPrompt) until after LCP
+  // This prevents them from blocking the critical rendering path
+  useEffect(() => {
+    if (!splashDone) return
+
+    const scheduleEnhancements = () => {
+      setRenderEnhancements(true)
+    }
+
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(scheduleEnhancements, { timeout: 3000 })
+    } else {
+      setTimeout(scheduleEnhancements, 1500)
+    }
+  }, [splashDone])
+
   // show a WDAwards toast once when the splash has finished
   useEffect(() => {
     try {
@@ -285,6 +303,7 @@ export default function AppInitializer({ children }: { children: React.ReactNode
       <ThemeProvider attribute="class" defaultTheme={systemTheme}>
         <BrowserSupport />
         <ProgressScrollBar />
+        <WebVitalsDebug />
         {!splashDone && (
           <SplashScreen onLoaded={() => {
             setSplashDone(true)
@@ -292,9 +311,9 @@ export default function AppInitializer({ children }: { children: React.ReactNode
           }} />
         )}
         {splashDone && children}
-        {splashDone && <BigCursor />}
-        {splashDone && <DoodleOverlay />}
-        {splashDone && !isUnsupportedBrowserPage && <InstallPrompt deferredPrompt={deferredPrompt} setDeferredPrompt={setDeferredPrompt} />}
+        {splashDone && renderEnhancements && <BigCursor />}
+        {splashDone && renderEnhancements && <DoodleOverlay />}
+        {splashDone && renderEnhancements && !isUnsupportedBrowserPage && <InstallPrompt deferredPrompt={deferredPrompt} setDeferredPrompt={setDeferredPrompt} />}
         {splashDone && !isUnsupportedBrowserPage && <CookieConsent />}
       </ThemeProvider>
     </LenisScroll>
