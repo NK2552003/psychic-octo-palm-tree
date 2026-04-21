@@ -1,5 +1,7 @@
-// Cache version — update this string on deploy to force a fresh cache
-const CACHE_NAME = 'nitish-portfolio-v2';
+// THIS IS A TEMPLATE — the build step will replace nitish-portfolio-02408dd with a versioned cache name.
+// Do NOT edit the generated `public/sw.js` directly; edit this template instead.
+
+const CACHE_NAME = 'nitish-portfolio-02408dd';
 const urlsToCache = [
   '/',
   '/favicon-32x32.png',
