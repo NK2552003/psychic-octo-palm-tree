@@ -2,6 +2,14 @@
 # General rules for all crawlers
 User-agent: *
 Allow: /
+Allow: /pricing
+Allow: /contact
+Allow: /process
+Allow: /privacy
+Allow: /cookies
+Allow: /security/thanks
+Allow: /error-recovery
+Allow: /unsupported-browser
 Disallow: /api/private
 Disallow: /api/admin
 Disallow: /.next
@@ -20,3 +28,6 @@ Disallow: /
 
 # Sitemap location
 Sitemap: https://nitishkr.fun/sitemap.xml
+
+# Security disclosure policy
+Security: https://nitishkr.fun/.well-known/security.txt

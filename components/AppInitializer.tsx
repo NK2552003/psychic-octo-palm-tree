@@ -17,6 +17,7 @@ import { t } from '@/lib/i18n'
 
 export default function AppInitializer({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
+  const isHomePage = pathname === '/'
   const isUnsupportedBrowserPage = pathname === '/unsupported-browser'
   const [themeDetected, setThemeDetected] = useState(false)
   const [systemTheme, setSystemTheme] = useState<"light" | "dark">("light")
@@ -310,7 +311,7 @@ export default function AppInitializer({ children }: { children: React.ReactNode
         )}
         {splashDone && children}
         {splashDone && renderEnhancements && <BigCursor />}
-        {splashDone && renderEnhancements && <DoodleOverlay />}
+        {splashDone && renderEnhancements && isHomePage && <DoodleOverlay />}
         {splashDone && renderEnhancements && !isUnsupportedBrowserPage && <InstallPrompt deferredPrompt={deferredPrompt} setDeferredPrompt={setDeferredPrompt} />}
         {splashDone && !isUnsupportedBrowserPage && <CookieConsent />}
       </ThemeProvider>

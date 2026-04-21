@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from "next"
 import { Playfair_Display, Inter, Space_Grotesk } from "next/font/google"
 import "./globals.scss"
 import AppInitializer from "../components/AppInitializer"
+import Footer from "./pages/footer"
 import { Toaster } from "sonner"
 import { preconnect } from "next/dist/build/templates/app-page"
 
@@ -245,7 +246,10 @@ export default function RootLayout({
 })()` }} />
       </head>
       <body className="font-display antialiased relative">
-        <AppInitializer>{children}</AppInitializer>
+        <AppInitializer>
+          {children}
+          <Footer />
+        </AppInitializer>
         <Toaster 
           position="top-right" 
           richColors

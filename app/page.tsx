@@ -16,7 +16,6 @@ import ScrollAnimation from "./pages/skillsSection";
 import SkillsPage from "./pages/skills";
 import ProjectsPage from "./pages/projects";
 import WildlifePage from "./pages/photography";
-import Footer from "./pages/footer";
 import ContactSection from "./pages/contact";
 import QualificationsSection from "./pages/qualifications";
 import { FloatingNav } from "@/components/floatingNav";
@@ -304,7 +303,6 @@ useEffect(() => {
       <QualificationsSection/>
       <WildlifePage/>
       <ContactSection/>
-      <Footer/>
       <FloatingControls
         isDark={isDark}
         toggleTheme={toggleTheme}

@@ -1,4 +1,5 @@
 -----BEGIN PGP PUBLIC KEY BLOCK-----
+Comment: Public key for security reports - https://nitishkr.fun/.well-known/security.txt
 
 mDMEaeXNSBYJKwYBBAHaRw8BAQdAuu/cp2YbU06dFFgf8D+3xD2V42+O0dVFW3xs
 VSmwCfS0HE5pdGlzaCA8bmsyNTUyMDAzQGdtYWlsLmNvbT6ItQQTFgoAXRYhBOTo
