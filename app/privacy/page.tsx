@@ -103,9 +103,18 @@ export default function PrivacyPage() {
   const heroTitleRef = useRef<HTMLHeadingElement>(null)
   const heroEyebrowRef = useRef<HTMLParagraphElement>(null)
   const heroBgRef = useRef<HTMLDivElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLElement>(null)
   const ctaRef = useRef<HTMLElement>(null)
   const [activeSection, setActiveSection] = useState<string>("01")
+
+  // Trigger page entrance animation on mount
+  useEffect(() => {
+    if (containerRef.current) {
+      // Add animation class after a tiny delay to ensure browser picks it up
+      containerRef.current.classList.add("page-enter")
+    }
+  }, [])
 
   useEffect(() => {
     const resetLayoutSizing = () => {
@@ -239,7 +248,7 @@ export default function PrivacyPage() {
   }, [])
 
   return (
-    <div className="relative overflow-x-hidden text-[#2a2a2a] dark:text-[#d6cfc7] min-h-screen">
+    <div ref={containerRef} className="relative overflow-x-hidden text-[#2a2a2a] dark:text-[#d6cfc7] min-h-screen">
       {/* Grain overlay */}
       <div
         className="pointer-events-none fixed inset-0 z-[999] opacity-[0.35]"

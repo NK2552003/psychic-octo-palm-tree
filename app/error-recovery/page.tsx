@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Header from '@/components/Header' 
 
@@ -8,7 +8,14 @@ export default function ErrorRecovery() {
   const [busy, setBusy] = useState(false)
   const [message, setMessage] = useState<string | null>(null)
   const router = useRouter()
-
+  const containerRef = useRef<HTMLDivElement>(null)
+    // Trigger page entrance animation on mount
+    useEffect(() => {
+      if (containerRef.current) {
+        // Add animation class after a tiny delay to ensure browser picks it up
+        containerRef.current.classList.add("page-enter")
+      }
+    }, [])
   const clearCookies = () => {
     try {
       const cookies = document.cookie.split(';')
@@ -78,7 +85,7 @@ export default function ErrorRecovery() {
   }
 
   return (
-    <section className="min-h-screen flex flex-col">
+    <section ref={containerRef} className="min-h-screen flex flex-col">
       <Header time={new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true })} />
       <main className="flex-1 flex items-center justify-center p-8">
         <div className="max-w-2xl w-full bg-[var(--color-card)] text-[var(--color-card-foreground)] border border-[var(--color-border)] rounded-lg shadow-md p-8">

@@ -46,14 +46,21 @@ export default function ContactPage() {
   const [selectedPlan, setSelectedPlan] = useState(planOptions[0].value)
   const [selectedPrice, setSelectedPrice] = useState("")
   const [loading, setLoading] = useState(false)
-
+  const containerRef = useRef<HTMLDivElement>(null)
   const heroRef = useRef<HTMLElement>(null)
   const heroTitleRef = useRef<HTMLHeadingElement>(null)
   const heroEyebrowRef = useRef<HTMLParagraphElement>(null)
   const heroBgRef = useRef<HTMLDivElement>(null)
   const sidebarRef = useRef<HTMLElement>(null)
   const formRef = useRef<HTMLFormElement>(null)
-
+  
+      // Trigger page entrance animation on mount
+    useEffect(() => {
+      if (containerRef.current) {
+        // Add animation class after a tiny delay to ensure browser picks it up
+        containerRef.current.classList.add("page-enter")
+      }
+    }, [])
   useEffect(() => {
     const resetToTop = () => {
       window.scrollTo({ top: 0, left: 0, behavior: "auto" })
@@ -299,7 +306,7 @@ export default function ContactPage() {
     "w-full rounded-[0.6rem] border border-[rgba(6,95,82,0.25)] dark:border-[rgba(79,209,184,0.18)] bg-[#f0f0f0] dark:bg-[#030a08] px-[0.9rem] py-[0.7rem] text-[0.9rem] font-normal text-black dark:text-[#ede9e3] outline-none transition-all duration-200 placeholder:text-[rgba(42,42,42,0.4)] dark:placeholder:text-[rgba(214,207,199,0.35)] focus:border-[#065f52] dark:focus:border-[#4fd1b8] focus:bg-white dark:focus:bg-[#0a1f1c] appearance-none"
 
   return (
-    <div className="relative overflow-x-hidden text-[#1a1a1a] dark:text-[#d6cfc7] min-h-screen">
+    <div ref={containerRef} className="relative overflow-x-hidden text-[#1a1a1a] dark:text-[#d6cfc7] min-h-screen">
 
       {/* Grain overlay */}
       <div

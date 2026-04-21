@@ -205,6 +205,7 @@ const faqs = [
 
 export default function PricingPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
   const heroRef = useRef<HTMLElement>(null)
   const heroTitleRef = useRef<HTMLHeadingElement>(null)
   const heroEyebrowRef = useRef<HTMLParagraphElement>(null)
@@ -228,6 +229,14 @@ export default function PricingPage() {
     return () => {
       cancelAnimationFrame(rafId)
       resetLayoutSizing()
+    }
+  }, [])
+
+  // Trigger page entrance animation on mount
+  useEffect(() => {
+    if (containerRef.current) {
+      // Add animation class after a tiny delay to ensure browser picks it up
+      containerRef.current.classList.add("page-enter")
     }
   }, [])
 
@@ -644,7 +653,7 @@ export default function PricingPage() {
   }, [])
 
   return (
-<div className="relative overflow-x-hidden text-[#2a2a2a] dark:text-[#d6cfc7] min-h-screen">
+<div ref={containerRef} className="relative overflow-x-hidden text-[#2a2a2a] dark:text-[#d6cfc7] min-h-screen">
   {/* Grain overlay */}
   <div
     className="pointer-events-none fixed inset-0 z-[999] opacity-[0.35]"

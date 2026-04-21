@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 import { ArrowLeft } from 'lucide-react'
 import { t, type LangCode } from '@/lib/i18n'
@@ -19,7 +19,15 @@ function getCookie(name: string) {
 export default function CookiesPage() {
   const [consent, setConsent] = useState<'accepted' | 'rejected' | null>(null)
   const [lang, setLang] = useState<LangCode>(typeof window !== 'undefined' ? ((localStorage.getItem('preferredLang') as LangCode) || 'en') : 'en')
+  const containerRef = useRef<HTMLDivElement>(null)
 
+    // Trigger page entrance animation on mount
+  useEffect(() => {
+    if (containerRef.current) {
+      // Add animation class after a tiny delay to ensure browser picks it up
+      containerRef.current.classList.add("page-enter")
+    }
+  }, [])
   useEffect(() => {
     const c = getCookie('cookie_consent')
     if (c === 'accepted' || c === 'rejected') setConsent(c as 'accepted' | 'rejected')
@@ -65,7 +73,7 @@ export default function CookiesPage() {
   }
 
   return (
-    <main className="min-h-screen flex items-center justify-center p-6 relative">
+    <main ref={containerRef} className="min-h-screen flex items-center justify-center p-6 relative">
       <a href="/" data-i18n-attr="aria-label" data-i18n="cookie.back" aria-label="Back to site" className="fixed top-6 left-4 sm:left-6 z-50 inline-flex items-center gap-2 px-3 py-2 rounded-md border border-border bg-background/80 text-foreground text-sm hover:bg-muted/70 transition">
         <ArrowLeft className="w-4 h-4" />
         <span data-i18n="cookie.back">Back to site</span>
