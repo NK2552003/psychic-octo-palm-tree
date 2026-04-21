@@ -1,11 +1,20 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 export default function UnsupportedBrowserPage() {
   const [mounted, setMounted] = useState(false);
   const [theme, setTheme] = useState<"light" | "dark">("light");
+  const containerRef = useRef<HTMLDivElement>(null);
 
+    // Trigger page entrance animation on mount
+  useEffect(() => {
+    if (containerRef.current) {
+      // Add animation class after a tiny delay to ensure browser picks it up
+      containerRef.current.classList.add("page-enter")
+    }
+  }, [])
+  
   useEffect(() => {
     // Detect theme
     const isDark =
@@ -63,9 +72,7 @@ export default function UnsupportedBrowserPage() {
   if (!mounted) return null;
 
   return (
-    <div
-      className="min-h-screen w-full flex flex-col items-center justify-center px-4 py-12"
-    >
+    <div ref={containerRef} className="min-h-screen w-full flex flex-col items-center justify-center px-4 py-12">
       {/* Main Container */}
       <div className="w-full max-w-4xl mx-auto">
         {/* Header Section */}

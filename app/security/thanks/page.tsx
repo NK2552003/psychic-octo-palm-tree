@@ -1,9 +1,10 @@
 import type { Metadata } from "next"
 import Link from "next/link"
+import { useEffect, useRef } from "react"
 
 export const metadata: Metadata = {
   title: "Security Acknowledgments",
-  description: "Public acknowledgments for responsible security disclosures on nitishkr.fun.",
+  description: "Public acknowledgments for responsible security disclosures on nitish.world.",
   alternates: {
     canonical: "https://nitishkr.fun/security/thanks",
   },
@@ -14,8 +15,16 @@ export const metadata: Metadata = {
 }
 
 export default function SecurityThanksPage() {
+  const containerRef = useRef<HTMLDivElement>(null)
+    // Trigger page entrance animation on mount
+    useEffect(() => {
+      if (containerRef.current) {
+        // Add animation class after a tiny delay to ensure browser picks it up
+        containerRef.current.classList.add("page-enter")
+      }
+    }, [])
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-4xl flex-col px-4 pb-16 pt-24 sm:px-6 sm:pb-20 sm:pt-28 md:px-8 md:pt-32 lg:px-10">
+    <main ref={containerRef} className="mx-auto flex min-h-screen w-full max-w-4xl flex-col px-4 pb-16 pt-24 sm:px-6 sm:pb-20 sm:pt-28 md:px-8 md:pt-32 lg:px-10">
       <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl md:text-4xl">Security Acknowledgments</h1>
 
       <p className="mt-4 max-w-prose text-sm leading-7 text-[var(--color-muted-foreground)] sm:text-base">
