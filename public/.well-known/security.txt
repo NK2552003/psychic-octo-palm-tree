@@ -1,8 +1,7 @@
 Contact: mailto:nk2552003@gmail.com
-Contact: https://nitishkr.fun/contact
-Encryption: https://nitishkr.fun/.well-known/pgp-key.txt
-Acknowledgments: https://nitishkr.fun/security/thanks
-Expires: 2027-04-20T00:00:00.000Z
-Preferred-Languages: en, hi
+Expires: 2027-04-20T00:00:00Z
+Encryption: https://keys.openpgp.org/vks/v1/by-fingerprint/E4E8F393295FB7965CF71F6D2FA2001C2FDCE375
+Acknowledgements: https://nitishkr.fun/security/thanks
 Canonical: https://nitishkr.fun/.well-known/security.txt
 Policy: https://nitishkr.fun/contact
+Preferred-Languages: en,hi
