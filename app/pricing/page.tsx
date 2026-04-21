@@ -2,7 +2,7 @@
 import Link from "next/link"
 import { useEffect, useState, useRef } from "react"
 import PageDoodles from "@/components/PageDoodles"
-
+import { ArrowLeft, ArrowUpRight } from "lucide-react";
 const pricingCatalog = [
   {
     title: "UI/UX Design",
@@ -644,296 +644,296 @@ export default function PricingPage() {
   }, [])
 
   return (
-    <div className="relative overflow-x-hidden text-[#2a2a2a] dark:text-[#d6cfc7] min-h-screen">
-      {/* Grain overlay */}
-      <div
-        className="pointer-events-none fixed inset-0 z-[999] opacity-[0.35]"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E")`,
-        }}
+<div className="relative overflow-x-hidden text-[#2a2a2a] dark:text-[#d6cfc7] min-h-screen">
+  {/* Grain overlay */}
+  <div
+    className="pointer-events-none fixed inset-0 z-[999] opacity-[0.35]"
+    style={{
+      backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E")`,
+    }}
+  />
+
+  <PageDoodles iconCount={25} dotCount={15} />
+
+  {/* ── HERO ── */}
+  <section
+    ref={heroRef}
+    className="relative flex flex-col items-center overflow-hidden border-b border-[rgba(120,113,108,0.25)] px-4 pb-16 pt-20 text-center dark:border-[rgba(79,209,184,0.18)] sm:pb-20 sm:pt-24"
+  >
+    {/* Parallax BG orb */}
+    <div
+      ref={heroBgRef}
+      className="pointer-events-none absolute -right-20 -top-32 h-[520px] w-[520px] rounded-full"
+      style={{
+        background: "radial-gradient(circle, rgba(79,209,184,0.07) 0%, transparent 70%)",
+      }}
+    />
+
+    <div className="relative z-10 w-full max-w-[1360px] mx-auto">
+      {/* Back link — left aligned */}
+      <div className="mb-9 flex justify-start sm:mb-11">
+        <Link
+          href="/"
+          className="inline-flex items-center gap-2 text-[0.75rem] tracking-[0.28em] text-stone-700 dark:text-[#4fd1b8] opacity-80 hover:opacity-100 transition-opacity no-underline"
+        >
+          <ArrowLeft className="h-3 w-3" />
+          <span>BACK TO HOME</span>
+        </Link>
+      </div>
+
+      <p
+        ref={heroEyebrowRef}
+        className="mb-4 text-[0.8rem] tracking-[0.32em] text-stone-700 dark:text-[#4fd1b8] opacity-0 translate-y-6"
       />
 
-      <PageDoodles iconCount={25} dotCount={15} />
-
-      {/* ── HERO ── */}
-      <section
-        ref={heroRef}
-        className="relative flex flex-col items-center overflow-hidden border-b border-[rgba(120,113,108,0.25)] px-4 pb-16 pt-20 text-center dark:border-[rgba(79,209,184,0.18)] sm:pb-20 sm:pt-24"
+      <h1
+        ref={heroTitleRef}
+        className="font-display text-[clamp(2.55rem,14vw,9.5rem)] leading-[0.93] tracking-[0.03em] text-stone-700 dark:text-[#80e8d4] opacity-0 translate-y-6"
       >
-        {/* Parallax BG orb */}
-        <div
-          ref={heroBgRef}
-          className="pointer-events-none absolute -right-20 -top-32 h-[520px] w-[520px] rounded-full"
-          style={{
-            background: "radial-gradient(circle, rgba(79,209,184,0.07) 0%, transparent 70%)",
-          }}
-        />
+        CLEAR{" "}
+        <span className="font-['Playfair_Display'] italic text-[0.9em] text-black dark:text-[#ede9e3]">
+          pricing.
+        </span>
+        <br />
+        NO SURPRISES.
+      </h1>
+    </div>
+  </section>
 
-        <div className="relative z-10 w-full max-w-[1360px] mx-auto">
-          {/* Back link — left aligned */}
-          <div className="mb-9 flex justify-start sm:mb-11">
-            <Link
-              href="/"
-              className="inline-flex items-center gap-2 text-[0.75rem] tracking-[0.28em] text-stone-700 dark:text-[#4fd1b8] opacity-80 hover:opacity-100 transition-opacity no-underline"
-            >
-              <span>←</span>
-              <span>BACK TO HOME</span>
-            </Link>
+  {/* ── PRICING SERVICES ── */}
+  {pricingCatalog.map((svc, svcIdx) => (
+    <section
+      key={svc.slug}
+      ref={(el) => { svcRefs.current[svcIdx] = el }}
+      className="parallax-section border-b border-[rgba(120,113,108,0.25)] px-4 py-12 dark:border-[rgba(79,209,184,0.18)] sm:py-[4.5rem]"
+    >
+      <div className="max-w-[1360px] mx-auto">
+        {/* Header row */}
+        <div className="mb-9 flex flex-wrap items-start justify-between gap-6 sm:mb-11 md:items-end">
+          <div>
+            <p className="mb-2 text-[0.75rem] tracking-[0.28em] text-stone-700 dark:text-[#4fd1b8] opacity-70">
+              {svc.number} / 04
+            </p>
+            <h2 className="svc-title-anim opacity-0 translate-y-6 font-display text-[clamp(2.2rem,8vw,5rem)] leading-none tracking-[0.04em] text-black dark:text-[#ede9e3]">
+              {svc.title.toUpperCase()}
+            </h2>
           </div>
-
-          <p
-            ref={heroEyebrowRef}
-            className="mb-4 text-[0.8rem] tracking-[0.32em] text-stone-700 dark:text-[#4fd1b8] opacity-0 translate-y-6"
-          />
-
-          <h1
-            ref={heroTitleRef}
-            className="font-display text-[clamp(2.55rem,14vw,9.5rem)] leading-[0.93] tracking-[0.03em] text-stone-700 dark:text-[#80e8d4] opacity-0 translate-y-6"
-          >
-            CLEAR{" "}
-            <span className="font-['Playfair_Display'] italic text-[0.9em] text-black dark:text-[#ede9e3]">
-              pricing.
-            </span>
-            <br />
-            NO SURPRISES.
-          </h1>
+          <p className="w-full text-left text-[0.95rem] font-light leading-[1.65] text-[#3a3a3a] dark:text-[rgba(214,207,199,0.78)] md:max-w-[380px] md:text-right">
+            {svc.description}
+          </p>
         </div>
-      </section>
 
-      {/* ── PRICING SERVICES ── */}
-      {pricingCatalog.map((svc, svcIdx) => (
-        <section
-          key={svc.slug}
-          ref={(el) => { svcRefs.current[svcIdx] = el }}
-          className="parallax-section border-b border-[rgba(120,113,108,0.25)] px-4 py-12 dark:border-[rgba(79,209,184,0.18)] sm:py-[4.5rem]"
-        >
-          <div className="max-w-[1360px] mx-auto">
-            {/* Header row */}
-            <div className="mb-9 flex flex-wrap items-start justify-between gap-6 sm:mb-11 md:items-end">
-              <div>
-                <p className="mb-2 text-[0.75rem] tracking-[0.28em] text-stone-700 dark:text-[#4fd1b8] opacity-70">
-                  {svc.number} / 04
-                </p>
-                <h2 className="svc-title-anim opacity-0 translate-y-6 font-display text-[clamp(2.2rem,8vw,5rem)] leading-none tracking-[0.04em] text-black dark:text-[#ede9e3]">
-                  {svc.title.toUpperCase()}
-                </h2>
-              </div>
-              <p className="w-full text-left text-[0.95rem] font-light leading-[1.65] text-[#3a3a3a] dark:text-[rgba(214,207,199,0.78)] md:max-w-[380px] md:text-right">
-                {svc.description}
+        {/* Plan cards */}
+        <div className="cards-container-anim cards-border-anim mb-5 grid grid-cols-1 gap-px overflow-hidden rounded-[1.5rem] border border-[rgba(120,113,108,0.25)] dark:border-[rgba(79,209,184,0.18)] md:grid-cols-3">
+          {svc.plans.map((plan) => (
+            <div
+              key={plan.key}
+              className={`plan-card-anim relative flex translate-y-6 flex-col p-6 opacity-0 transition-colors duration-200 sm:p-8 lg:p-9 ${
+                plan.featured
+                  ? "bg-[#e8f5f3] dark:bg-[#081e1b] hover:bg-[#dbdbdb] dark:hover:bg-[#0d2320]"
+                  : "bg-[#f8f8f8] dark:bg-[#050f0d] hover:bg-[#efefef] dark:hover:bg-[#0a1e1b]"
+              }`}
+            >
+              {plan.featured && (
+                <span className="absolute right-4 top-4 rounded-full border border-[rgba(120,113,108,0.3)] px-[0.5rem] py-[0.16rem] text-[0.58rem] tracking-[0.16em] text-stone-700 dark:border-[rgba(79,209,184,0.18)] dark:text-[#4fd1b8] sm:right-5 sm:top-5 sm:text-[0.65rem] sm:tracking-[0.2em]">
+                  MOST POPULAR
+                </span>
+              )}
+              <p className="mb-2 text-[0.75rem] tracking-[0.22em] text-stone-700 dark:text-[#4fd1b8]">
+                {plan.name.toUpperCase()}
               </p>
+              <p className="mb-1 font-display text-[clamp(2.1rem,9vw,3rem)] leading-none tracking-[0.02em] text-black dark:text-[#ede9e3]">
+                {plan.price}
+              </p>
+              <p className="mb-1 text-[0.82rem] text-stone-700 dark:text-[#4fd1b8] opacity-85">
+                {plan.screens}
+              </p>
+              <p className="mb-7 text-[0.82rem] font-light text-[#444444] dark:text-[rgba(214,207,199,0.78)]">
+                {plan.turnaround} delivery
+              </p>
+              <hr className="mb-7 border-[rgba(120,113,108,0.25)] dark:border-[rgba(79,209,184,0.18)]" />
+              <ul className="mb-auto flex flex-col gap-[0.65rem]">
+                {plan.items.map((item) => (
+                  <li key={item} className="flex items-start gap-[0.6rem] text-[0.9rem] leading-[1.55] text-[#1a1a1a] dark:text-[#d6cfc7]">
+                    <span className="mt-[6px] h-[5px] w-[5px] shrink-0 rounded-full bg-stone-700 dark:bg-[#4fd1b8] opacity-80" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+              <Link
+                href={{ pathname: "/contact", query: { service: svc.slug, plan: plan.key, price: plan.price } }}
+                className={`mt-8 inline-flex w-full items-center justify-center gap-[0.4rem] rounded-full border px-[1.35rem] py-[0.65rem] text-[0.73rem] font-medium tracking-[0.1em] no-underline transition-all duration-200 sm:w-auto ${
+                  plan.featured
+                    ? "border-stone-800 dark:border-[#4fd1b8] bg-stone-800 dark:bg-[#4fd1b8] text-stone-100 dark:text-[#030a08] font-semibold hover:bg-stone-900 dark:hover:bg-[#80e8d4] hover:border-stone-900 dark:hover:border-[#80e8d4]"
+                    : "border-[rgba(120,113,108,0.35)] dark:border-[rgba(79,209,184,0.18)] text-stone-800 dark:text-[#4fd1b8] hover:bg-stone-800 dark:hover:bg-[#4fd1b8] hover:text-stone-100 dark:hover:text-[#030a08]"
+                }`}
+              >
+                Select {plan.name} <ArrowUpRight className="h-3 w-3" />
+              </Link>
             </div>
+          ))}
+        </div>
 
-            {/* Plan cards */}
-            <div className="cards-container-anim cards-border-anim mb-5 grid grid-cols-1 gap-px overflow-hidden rounded-[1.5rem] border border-[rgba(120,113,108,0.25)] dark:border-[rgba(79,209,184,0.18)] md:grid-cols-3">
-              {svc.plans.map((plan) => (
+        {/* Scale tiers */}
+        {svc.scaleItems.length > 0 && (
+          <>
+            <p className="mb-3 text-[0.75rem] tracking-[0.28em] text-stone-700 dark:text-[#4fd1b8] opacity-80">
+              LARGE-SCALE PROJECTS
+            </p>
+            <div className="projects-container-anim projects-border-anim grid grid-cols-1 gap-px overflow-hidden rounded-[1.1rem] border border-[rgba(120,113,108,0.25)] dark:border-[rgba(79,209,184,0.18)] md:grid-cols-3">
+              {svc.scaleItems.map((s) => (
                 <div
-                  key={plan.key}
-                  className={`plan-card-anim relative flex translate-y-6 flex-col p-6 opacity-0 transition-colors duration-200 sm:p-8 lg:p-9 ${
-                    plan.featured
-                      ? "bg-[#e8f5f3] dark:bg-[#081e1b] hover:bg-[#dbdbdb] dark:hover:bg-[#0d2320]"
-                      : "bg-[#f8f8f8] dark:bg-[#050f0d] hover:bg-[#efefef] dark:hover:bg-[#0a1e1b]"
-                  }`}
+                  key={s.key}
+                  className="scale-card-anim flex translate-y-6 flex-col gap-[0.35rem] bg-[#f0f0f0] p-6 opacity-0 transition-colors duration-200 hover:bg-[#e4e4e4] dark:bg-[#030a08] dark:hover:bg-[#0d2320] sm:p-7"
                 >
-                  {plan.featured && (
-                    <span className="absolute right-4 top-4 rounded-full border border-[rgba(120,113,108,0.3)] px-[0.5rem] py-[0.16rem] text-[0.58rem] tracking-[0.16em] text-stone-700 dark:border-[rgba(79,209,184,0.18)] dark:text-[#4fd1b8] sm:right-5 sm:top-5 sm:text-[0.65rem] sm:tracking-[0.2em]">
-                      MOST POPULAR
-                    </span>
-                  )}
-                  <p className="mb-2 text-[0.75rem] tracking-[0.22em] text-stone-700 dark:text-[#4fd1b8]">
-                    {plan.name.toUpperCase()}
+                  <p className="text-[0.78rem] tracking-[0.18em] text-stone-700 dark:text-[#4fd1b8] opacity-85">
+                    {s.screens.toUpperCase()}
                   </p>
-                  <p className="mb-1 font-display text-[clamp(2.1rem,9vw,3rem)] leading-none tracking-[0.02em] text-black dark:text-[#ede9e3]">
-                    {plan.price}
+                  <p className="font-display text-[2.25rem] leading-none tracking-[0.02em] text-black dark:text-[#ede9e3]">
+                    {s.price}
                   </p>
-                  <p className="mb-1 text-[0.82rem] text-stone-700 dark:text-[#4fd1b8] opacity-85">
-                    {plan.screens}
+                  <p className="text-[0.8rem] font-light text-[#444444] dark:text-[rgba(214,207,199,0.78)]">
+                    {s.turnaround} estimated
                   </p>
-                  <p className="mb-7 text-[0.82rem] font-light text-[#444444] dark:text-[rgba(214,207,199,0.78)]">
-                    {plan.turnaround} delivery
-                  </p>
-                  <hr className="mb-7 border-[rgba(120,113,108,0.25)] dark:border-[rgba(79,209,184,0.18)]" />
-                  <ul className="mb-auto flex flex-col gap-[0.65rem]">
-                    {plan.items.map((item) => (
-                      <li key={item} className="flex items-start gap-[0.6rem] text-[0.9rem] leading-[1.55] text-[#1a1a1a] dark:text-[#d6cfc7]">
-                        <span className="mt-[6px] h-[5px] w-[5px] shrink-0 rounded-full bg-stone-700 dark:bg-[#4fd1b8] opacity-80" />
-                        <span>{item}</span>
-                      </li>
-                    ))}
-                  </ul>
                   <Link
-                    href={{ pathname: "/contact", query: { service: svc.slug, plan: plan.key, price: plan.price } }}
-                    className={`mt-8 inline-flex w-full items-center justify-center gap-[0.4rem] rounded-full border px-[1.35rem] py-[0.65rem] text-[0.73rem] font-medium tracking-[0.1em] no-underline transition-all duration-200 sm:w-auto ${
-                      plan.featured
-                        ? "border-stone-800 dark:border-[#4fd1b8] bg-stone-800 dark:bg-[#4fd1b8] text-stone-100 dark:text-[#030a08] font-semibold hover:bg-stone-900 dark:hover:bg-[#80e8d4] hover:border-stone-900 dark:hover:border-[#80e8d4]"
-                        : "border-[rgba(120,113,108,0.35)] dark:border-[rgba(79,209,184,0.18)] text-stone-800 dark:text-[#4fd1b8] hover:bg-stone-800 dark:hover:bg-[#4fd1b8] hover:text-stone-100 dark:hover:text-[#030a08]"
-                    }`}
+                    href={{ pathname: "/contact", query: { service: svc.slug, plan: s.key, price: s.price } }}
+                    className="mt-[0.6rem] inline-flex items-center gap-[0.3rem] text-[0.78rem] tracking-[0.14em] text-stone-700 dark:text-[#4fd1b8] opacity-80 no-underline transition-opacity hover:opacity-100"
                   >
-                    Select {plan.name} ↗
+                    Get a custom quote <ArrowUpRight className="h-3 w-3" />
                   </Link>
                 </div>
               ))}
             </div>
+          </>
+        )}
+      </div>
+    </section>
+  ))}
 
-            {/* Scale tiers */}
-            {svc.scaleItems.length > 0 && (
-              <>
-                <p className="mb-3 text-[0.75rem] tracking-[0.28em] text-stone-700 dark:text-[#4fd1b8] opacity-80">
-                  LARGE-SCALE PROJECTS
-                </p>
-                <div className="projects-container-anim projects-border-anim grid grid-cols-1 gap-px overflow-hidden rounded-[1.1rem] border border-[rgba(120,113,108,0.25)] dark:border-[rgba(79,209,184,0.18)] md:grid-cols-3">
-                  {svc.scaleItems.map((s) => (
-                    <div
-                      key={s.key}
-                      className="scale-card-anim flex translate-y-6 flex-col gap-[0.35rem] bg-[#f0f0f0] p-6 opacity-0 transition-colors duration-200 hover:bg-[#e4e4e4] dark:bg-[#030a08] dark:hover:bg-[#0d2320] sm:p-7"
-                    >
-                      <p className="text-[0.78rem] tracking-[0.18em] text-stone-700 dark:text-[#4fd1b8] opacity-85">
-                        {s.screens.toUpperCase()}
-                      </p>
-                      <p className="font-display text-[2.25rem] leading-none tracking-[0.02em] text-black dark:text-[#ede9e3]">
-                        {s.price}
-                      </p>
-                      <p className="text-[0.8rem] font-light text-[#444444] dark:text-[rgba(214,207,199,0.78)]">
-                        {s.turnaround} estimated
-                      </p>
-                      <Link
-                        href={{ pathname: "/contact", query: { service: svc.slug, plan: s.key, price: s.price } }}
-                        className="mt-[0.6rem] inline-flex items-center gap-[0.3rem] text-[0.78rem] tracking-[0.14em] text-stone-700 dark:text-[#4fd1b8] opacity-80 no-underline transition-opacity hover:opacity-100"
-                      >
-                        Get a custom quote ↗
-                      </Link>
-                    </div>
-                  ))}
-                </div>
-              </>
-            )}
-          </div>
-        </section>
-      ))}
-
-      {/* ── INCLUDED / NOT INCLUDED ── */}
-      <section
-        ref={inclRef}
-        className="border-b border-[rgba(120,113,108,0.25)] px-4 py-12 dark:border-[rgba(79,209,184,0.18)] sm:py-[4.5rem]"
-      >
-        <div className="max-w-[1360px] mx-auto">
-          <p className="mb-3 text-[0.75rem] tracking-[0.3em] text-stone-700 dark:text-[#4fd1b8] opacity-90">
-            EVERY PLAN
+  {/* ── INCLUDED / NOT INCLUDED ── */}
+  <section
+    ref={inclRef}
+    className="border-b border-[rgba(120,113,108,0.25)] px-4 py-12 dark:border-[rgba(79,209,184,0.18)] sm:py-[4.5rem]"
+  >
+    <div className="max-w-[1360px] mx-auto">
+      <p className="mb-3 text-[0.75rem] tracking-[0.3em] text-stone-700 dark:text-[#4fd1b8] opacity-90">
+        EVERY PLAN
+      </p>
+      <h2 className="mb-12 font-display text-[clamp(2.5rem,5vw,4.5rem)] leading-[0.93] tracking-[0.04em] text-black dark:text-[#ede9e3]">
+        WHAT&apos;S{" "}
+        <span className="font-['Playfair_Display'] italic">in</span> AND{" "}
+        <span className="font-['Playfair_Display'] italic">out</span>
+      </h2>
+      <div className="incl-container-anim incl-border-anim grid grid-cols-1 gap-px overflow-hidden rounded-[1.5rem] border border-[rgba(120,113,108,0.25)] dark:border-[rgba(79,209,184,0.18)] md:grid-cols-2">
+        <div className="incl-col-anim translate-y-6 bg-[#f8f8f8] p-6 opacity-0 dark:bg-[#050f0d] sm:p-9">
+          <p className="mb-7 flex items-center gap-2 text-[0.75rem] tracking-[0.22em] text-stone-700 dark:text-[#4fd1b8] font-medium">
+            ✓ &nbsp;INCLUDED IN EVERY PLAN
           </p>
-          <h2 className="mb-12 font-display text-[clamp(2.5rem,5vw,4.5rem)] leading-[0.93] tracking-[0.04em] text-black dark:text-[#ede9e3]">
-            WHAT&apos;S{" "}
-            <span className="font-['Playfair_Display'] italic">in</span> AND{" "}
-            <span className="font-['Playfair_Display'] italic">out</span>
-          </h2>
-          <div className="incl-container-anim incl-border-anim grid grid-cols-1 gap-px overflow-hidden rounded-[1.5rem] border border-[rgba(120,113,108,0.25)] dark:border-[rgba(79,209,184,0.18)] md:grid-cols-2">
-            <div className="incl-col-anim translate-y-6 bg-[#f8f8f8] p-6 opacity-0 dark:bg-[#050f0d] sm:p-9">
-              <p className="mb-7 flex items-center gap-2 text-[0.75rem] tracking-[0.22em] text-stone-700 dark:text-[#4fd1b8] font-medium">
-                ✓ &nbsp;INCLUDED IN EVERY PLAN
-              </p>
-              <ul className="flex flex-col gap-[1.1rem]">
-                {includedItems.map((item) => (
-                  <li key={item} className="flex items-start gap-3 text-[0.92rem] font-light leading-[1.6] text-[#1a1a1a] dark:text-[rgba(214,207,199,0.78)]">
-                    <span className="mt-[2px] shrink-0 text-[0.8rem] text-stone-700 dark:text-[#4fd1b8]">✓</span>
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="incl-col-anim border-t border-[rgba(120,113,108,0.25)] bg-[#f8f8f8] p-6 dark:border-[rgba(79,209,184,0.18)] dark:bg-[#050f0d] md:border-l md:border-t-0 sm:p-9">
-              <p className="mb-7 flex items-center gap-2 text-[0.75rem] tracking-[0.22em] text-[#c54545] dark:text-[#e07070] font-medium">
-                ✕ &nbsp;NOT INCLUDED
-              </p>
-              <ul className="flex flex-col gap-[1.1rem]">
-                {notIncludedItems.map((item) => (
-                  <li key={item} className="flex items-start gap-3 text-[0.92rem] font-light leading-[1.6] text-[#1a1a1a] dark:text-[rgba(214,207,199,0.78)]">
-                    <span className="mt-[2px] shrink-0 text-[0.8rem] text-[#c54545] dark:text-[#e07070] opacity-90">✕</span>
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── FAQ ── */}
-      <section
-        ref={faqRef}
-        className="border-b border-[rgba(120,113,108,0.25)] dark:border-[rgba(79,209,184,0.18)] px-4 py-[4.5rem]"
-      >
-        <div className="max-w-[1360px] mx-auto">
-          <p className="mb-3 text-[0.75rem] tracking-[0.3em] text-stone-700 dark:text-[#4fd1b8] opacity-90">
-            COMMON QUESTIONS
-          </p>
-          <h2 className="mb-11 font-display text-[clamp(2.5rem,5vw,4.5rem)] leading-[0.93] tracking-[0.04em] text-black dark:text-[#ede9e3]">
-            FREQUENTLY <span className="font-['Playfair_Display'] italic">asked</span>
-          </h2>
-          <div className="faq-container-anim faq-border-anim flex flex-col gap-px rounded-[1.5rem] overflow-hidden border border-[rgba(120,113,108,0.25)] dark:border-[rgba(79,209,184,0.18)]">
-            {faqs.map((faq, i) => (
-              <div
-                key={i}
-                className={`faq-item-anim opacity-0 cursor-pointer transition-colors duration-200 ${
-                  openFaq === i
-                    ? "bg-stone-100 dark:bg-[#081e1b]"
-                    : "bg-[#f8f8f8] dark:bg-[#050f0d] hover:bg-stone-50 dark:hover:bg-[#0a1e1b]"
-                }`}
-                onClick={() => setOpenFaq(openFaq === i ? null : i)}
-              >
-                <div className="flex items-center justify-between gap-8 px-8 py-[1.65rem]">
-                  <span className="text-[1rem] font-medium leading-[1.45] text-black dark:text-[#ede9e3]">
-                    {faq.q}
-                  </span>
-                  <span
-                    className={`flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-full border text-[1.15rem] transition-all duration-[250ms] ${
-                      openFaq === i
-                        ? "rotate-45 border-stone-800 dark:border-[#4fd1b8] bg-stone-800 dark:bg-[#4fd1b8] text-stone-100 dark:text-[#030a08]"
-                        : "border-[rgba(120,113,108,0.35)] dark:border-[rgba(79,209,184,0.18)] text-stone-700 dark:text-[#4fd1b8]"
-                    }`}
-                  >
-                    +
-                  </span>
-                </div>
-                <div
-                  className="overflow-hidden transition-[max-height] duration-[380ms] ease-[cubic-bezier(0.4,0,0.2,1)]"
-                  style={{ maxHeight: openFaq === i ? "220px" : "0px" }}
-                >
-                  <div className="border-t border-[rgba(120,113,108,0.15)] dark:border-[rgba(79,209,184,0.18)] px-8 pb-[1.65rem] pt-[1.35rem] text-[0.92rem] font-light leading-[1.8] text-[#333333] dark:text-[rgba(214,207,199,0.78)]">
-                    {faq.a}
-                  </div>
-                </div>
-              </div>
+          <ul className="flex flex-col gap-[1.1rem]">
+            {includedItems.map((item) => (
+              <li key={item} className="flex items-start gap-3 text-[0.92rem] font-light leading-[1.6] text-[#1a1a1a] dark:text-[rgba(214,207,199,0.78)]">
+                <span className="mt-[2px] shrink-0 text-[0.8rem] text-stone-700 dark:text-[#4fd1b8]">✓</span>
+                <span>{item}</span>
+              </li>
             ))}
-          </div>
+          </ul>
         </div>
-      </section>
-
-      {/* ── CTA STRIP ── */}
-      <section ref={ctaRef} className="px-4 pb-20 pt-14 sm:pb-24 sm:pt-16">
-        <div className="max-w-[1360px] mx-auto">
-          <div className="cta-inner-anim relative flex translate-y-6 flex-wrap items-start justify-between gap-6 overflow-hidden rounded-[1.5rem] border border-[rgba(120,113,108,0.25)] bg-[#f8f8f8] p-6 opacity-0 dark:border-[rgba(79,209,184,0.18)] dark:bg-[#050f0d] sm:gap-8 sm:p-10 md:items-center">
-            {/* Background orb */}
-            <div
-              className="pointer-events-none absolute -bottom-24 -right-24 h-[380px] w-[380px] rounded-full"
-              style={{
-                background: "radial-gradient(circle, rgba(79,209,184,0.06) 0%, transparent 70%)",
-              }}
-            />
-            <div className="relative z-10">
-              <h3 className="mb-2 font-display text-[clamp(1.5rem,3vw,2.25rem)] leading-none tracking-[0.04em] text-black dark:text-[#ede9e3]">
-                SOMETHING UNIQUE? LET&apos;S TALK.
-              </h3>
-              <p className="max-w-[500px] text-[0.95rem] font-light leading-[1.65] text-[#333333] dark:text-[rgba(214,207,199,0.78)]">
-                Your project doesn&apos;t have to fit a box. Describe what you need in the contact form and receive a fully custom, scoped quote within 24 hours — no pressure.
-              </p>
-            </div>
-            <Link
-              href="/contact"
-              className="relative z-10 inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-full bg-stone-800 px-9 py-[0.9rem] text-[0.82rem] font-bold tracking-[0.12em] text-stone-100 no-underline transition-colors hover:bg-stone-900 dark:bg-[#4fd1b8] dark:text-[#030a08] dark:hover:bg-[#80e8d4] sm:w-auto"
-            >
-              GET A CUSTOM QUOTE ↗
-            </Link>
-          </div>
+        <div className="incl-col-anim border-t border-[rgba(120,113,108,0.25)] bg-[#f8f8f8] p-6 dark:border-[rgba(79,209,184,0.18)] dark:bg-[#050f0d] md:border-l md:border-t-0 sm:p-9">
+          <p className="mb-7 flex items-center gap-2 text-[0.75rem] tracking-[0.22em] text-[#c54545] dark:text-[#e07070] font-medium">
+            ✕ &nbsp;NOT INCLUDED
+          </p>
+          <ul className="flex flex-col gap-[1.1rem]">
+            {notIncludedItems.map((item) => (
+              <li key={item} className="flex items-start gap-3 text-[0.92rem] font-light leading-[1.6] text-[#1a1a1a] dark:text-[rgba(214,207,199,0.78)]">
+                <span className="mt-[2px] shrink-0 text-[0.8rem] text-[#c54545] dark:text-[#e07070] opacity-90">✕</span>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
         </div>
-      </section>
+      </div>
     </div>
+  </section>
+
+  {/* ── FAQ ── */}
+  <section
+    ref={faqRef}
+    className="border-b border-[rgba(120,113,108,0.25)] dark:border-[rgba(79,209,184,0.18)] px-4 py-[4.5rem]"
+  >
+    <div className="max-w-[1360px] mx-auto">
+      <p className="mb-3 text-[0.75rem] tracking-[0.3em] text-stone-700 dark:text-[#4fd1b8] opacity-90">
+        COMMON QUESTIONS
+      </p>
+      <h2 className="mb-11 font-display text-[clamp(2.5rem,5vw,4.5rem)] leading-[0.93] tracking-[0.04em] text-black dark:text-[#ede9e3]">
+        FREQUENTLY <span className="font-['Playfair_Display'] italic">asked</span>
+      </h2>
+      <div className="faq-container-anim faq-border-anim flex flex-col gap-px rounded-[1.5rem] overflow-hidden border border-[rgba(120,113,108,0.25)] dark:border-[rgba(79,209,184,0.18)]">
+        {faqs.map((faq, i) => (
+          <div
+            key={i}
+            className={`faq-item-anim opacity-0 cursor-pointer transition-colors duration-200 ${
+              openFaq === i
+                ? "bg-stone-100 dark:bg-[#081e1b]"
+                : "bg-[#f8f8f8] dark:bg-[#050f0d] hover:bg-stone-50 dark:hover:bg-[#0a1e1b]"
+            }`}
+            onClick={() => setOpenFaq(openFaq === i ? null : i)}
+          >
+            <div className="flex items-center justify-between gap-8 px-8 py-[1.65rem]">
+              <span className="text-[1rem] font-medium leading-[1.45] text-black dark:text-[#ede9e3]">
+                {faq.q}
+              </span>
+              <span
+                className={`flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-full border text-[1.15rem] transition-all duration-[250ms] ${
+                  openFaq === i
+                    ? "rotate-45 border-stone-800 dark:border-[#4fd1b8] bg-stone-800 dark:bg-[#4fd1b8] text-stone-100 dark:text-[#030a08]"
+                    : "border-[rgba(120,113,108,0.35)] dark:border-[rgba(79,209,184,0.18)] text-stone-700 dark:text-[#4fd1b8]"
+                }`}
+              >
+                +
+              </span>
+            </div>
+            <div
+              className="overflow-hidden transition-[max-height] duration-[380ms] ease-[cubic-bezier(0.4,0,0.2,1)]"
+              style={{ maxHeight: openFaq === i ? "220px" : "0px" }}
+            >
+              <div className="border-t border-[rgba(120,113,108,0.15)] dark:border-[rgba(79,209,184,0.18)] px-8 pb-[1.65rem] pt-[1.35rem] text-[0.92rem] font-light leading-[1.8] text-[#333333] dark:text-[rgba(214,207,199,0.78)]">
+                {faq.a}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* ── CTA STRIP ── */}
+  <section ref={ctaRef} className="px-4 pb-20 pt-14 sm:pb-24 sm:pt-16">
+    <div className="max-w-[1360px] mx-auto">
+      <div className="cta-inner-anim relative flex translate-y-6 flex-wrap items-start justify-between gap-6 overflow-hidden rounded-[1.5rem] border border-[rgba(120,113,108,0.25)] bg-[#f8f8f8] p-6 opacity-0 dark:border-[rgba(79,209,184,0.18)] dark:bg-[#050f0d] sm:gap-8 sm:p-10 md:items-center">
+        {/* Background orb */}
+        <div
+          className="pointer-events-none absolute -bottom-24 -right-24 h-[380px] w-[380px] rounded-full"
+          style={{
+            background: "radial-gradient(circle, rgba(79,209,184,0.06) 0%, transparent 70%)",
+          }}
+        />
+        <div className="relative z-10">
+          <h3 className="mb-2 font-display text-[clamp(1.5rem,3vw,2.25rem)] leading-none tracking-[0.04em] text-black dark:text-[#ede9e3]">
+            SOMETHING UNIQUE? LET&apos;S TALK.
+          </h3>
+          <p className="max-w-[500px] text-[0.95rem] font-light leading-[1.65] text-[#333333] dark:text-[rgba(214,207,199,0.78)]">
+            Your project doesn&apos;t have to fit a box. Describe what you need in the contact form and receive a fully custom, scoped quote within 24 hours — no pressure.
+          </p>
+        </div>
+        <Link
+          href="/contact"
+          className="relative z-10 inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-full bg-stone-800 px-9 py-[0.9rem] text-[0.82rem] font-bold tracking-[0.12em] text-stone-100 no-underline transition-colors hover:bg-stone-900 dark:bg-[#4fd1b8] dark:text-[#030a08] dark:hover:bg-[#80e8d4] sm:w-auto"
+        >
+          GET A CUSTOM QUOTE <ArrowUpRight className="h-4 w-4" />
+        </Link>
+      </div>
+    </div>
+  </section>
+</div>
   )
 }

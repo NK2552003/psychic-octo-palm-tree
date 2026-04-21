@@ -5,6 +5,7 @@ import { FormEvent, useEffect, useMemo, useRef, useState } from "react"
 import { useSearchParams } from "next/navigation"
 import emailjs from "emailjs-com"
 import { toast } from "sonner"
+import { ArrowLeft, ArrowUpRight } from "lucide-react"
 import PageDoodles from "@/components/PageDoodles"
 
 const serviceOptions = [
@@ -329,7 +330,7 @@ export default function ContactPage() {
               href="/pricing"
               className="inline-flex items-center gap-2 text-[0.75rem] tracking-[0.28em] text-[#065f52] dark:text-[#4fd1b8] opacity-80 hover:opacity-100 transition-opacity no-underline"
             >
-              <span>←</span>
+              <ArrowLeft size={12} strokeWidth={2} />
               <span>BACK TO PRICING</span>
             </Link>
           </div>
@@ -569,14 +570,16 @@ export default function ContactPage() {
                       Sending...
                     </>
                   ) : (
-                    "Send Inquiry ↗"
+                    <>
+                      Send Inquiry <ArrowUpRight size={14} strokeWidth={2} />
+                    </>
                   )}
                 </button>
                 <Link
                   href="/pricing"
                   className="text-center text-[0.82rem] tracking-[0.05em] text-[#065f52] opacity-70 no-underline transition-opacity hover:opacity-100 dark:text-[#4fd1b8] sm:text-left"
                 >
-                  ← Change selected option
+                  <ArrowLeft size={12} strokeWidth={2} className="inline-block mr-1" /> Change selected option
                 </Link>
               </div>
             </form>

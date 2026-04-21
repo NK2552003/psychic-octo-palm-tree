@@ -1,6 +1,7 @@
 "use client"
 import Link from "next/link"
 import { useEffect, useRef } from "react"
+import { ArrowLeft, ArrowUpRight } from "lucide-react"
 import PageDoodles from "@/components/PageDoodles"
 
 const phases = [
@@ -343,7 +344,7 @@ export default function ProcessPage() {
       <div
         className="pointer-events-none fixed inset-0 z-[999] opacity-[0.35]"
         style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E")`,
+          backgroundImage: `url("image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E")`,
         }}
       />
 
@@ -368,7 +369,7 @@ export default function ProcessPage() {
               href="/"
               className="inline-flex items-center gap-2 text-[0.75rem] tracking-[0.28em] text-stone-700 dark:text-[#4fd1b8] opacity-80 hover:opacity-100 transition-opacity no-underline"
             >
-              <span>←</span>
+              <ArrowLeft className="w-3 h-3" />
               <span>BACK TO HOME</span>
             </Link>
           </div>
@@ -614,13 +615,13 @@ export default function ProcessPage() {
                 href="/pricing"
                 className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full border border-[rgba(120,113,108,0.35)] dark:border-[rgba(79,209,184,0.18)] px-7 sm:px-8 py-[0.85rem] sm:py-[0.9rem] text-[0.82rem] font-bold tracking-[0.12em] text-stone-800 dark:text-[#4fd1b8] no-underline transition-colors hover:bg-stone-100 dark:hover:bg-[#081e1b]"
               >
-                SEE PRICING ↗
+                SEE PRICING <ArrowUpRight className="w-3 h-3" />
               </Link>
               <Link
                 href="/contact"
                 className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-stone-800 dark:bg-[#4fd1b8] px-7 sm:px-9 py-[0.85rem] sm:py-[0.9rem] text-[0.82rem] font-bold tracking-[0.12em] text-stone-100 dark:text-[#030a08] no-underline transition-colors hover:bg-stone-900 dark:hover:bg-[#80e8d4]"
               >
-                START A PROJECT ↗
+                START A PROJECT <ArrowUpRight className="w-3 h-3" />
               </Link>
             </div>
           </div>
