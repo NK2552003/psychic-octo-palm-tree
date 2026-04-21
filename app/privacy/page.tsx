@@ -1,6 +1,7 @@
 "use client"
 import Link from "next/link"
 import { useEffect, useRef, useState } from "react"
+import { ArrowLeft, ArrowUpRight } from "lucide-react"
 import PageDoodles from "@/components/PageDoodles"
 
 const lastUpdated = "April 2026"
@@ -265,7 +266,7 @@ export default function PrivacyPage() {
               href="/"
               className="inline-flex items-center gap-2 text-[0.75rem] tracking-[0.28em] text-stone-700 dark:text-[#4fd1b8] opacity-80 hover:opacity-100 transition-opacity no-underline"
             >
-              <span>←</span>
+              <ArrowLeft className="w-3 h-3" />
               <span>BACK TO HOME</span>
             </Link>
           </div>
@@ -417,7 +418,7 @@ export default function PrivacyPage() {
               href="/contact"
               className="relative z-10 inline-flex shrink-0 items-center gap-2 rounded-full bg-stone-800 dark:bg-[#4fd1b8] px-9 py-[0.9rem] text-[0.82rem] font-bold tracking-[0.12em] text-stone-100 dark:text-[#030a08] no-underline transition-colors hover:bg-stone-900 dark:hover:bg-[#80e8d4]"
             >
-              GET IN TOUCH ↗
+              GET IN TOUCH <ArrowUpRight className="w-3 h-3" />
             </Link>
           </div>
         </div>
