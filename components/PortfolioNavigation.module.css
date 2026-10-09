@@ -1,0 +1,11 @@
+.navigation { position:fixed; right:20px; bottom:20px; z-index:60; color:var(--foreground); font-family:var(--font-sans),sans-serif; font-size:12px; }
+.controls { display:flex; justify-content:flex-end; gap:6px; }
+.controls button, .menu { border:1px solid var(--border); border-radius:7px; background:var(--background); box-shadow:0 4px 20px #0001; }
+.controls button { padding:10px 14px; min-height:42px; cursor:pointer !important; }
+.controls button *, .menu a * { cursor:pointer !important; }
+.menu { margin-bottom:8px; padding:8px; width:220px; }
+.menu a { display:flex; justify-content:space-between; padding:9px 10px; border-radius:4px; cursor:pointer !important; }
+.menu a:hover, .menu a[aria-current] { background:var(--muted); }
+.navigation :focus-visible { outline:2px solid var(--primary); outline-offset:3px; }
+@media(max-width:600px){.navigation{right:12px;bottom:12px;}}
+@media print{.navigation{display:none;}}

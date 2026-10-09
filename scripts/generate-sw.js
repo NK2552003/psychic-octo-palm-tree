@@ -14,7 +14,7 @@ function getGitHash() {
 function main() {
   const repoHash = getGitHash()
   const timestamp = Date.now().toString(36)
-  const version = repoHash ? repoHash : timestamp
+  const version = repoHash ? `${repoHash}-${timestamp}` : timestamp
   const cacheName = `nitish-portfolio-${version}`
 
   const templatePath = path.join(__dirname, 'sw.js.template')

@@ -9,7 +9,7 @@ Allow: /privacy
 Allow: /cookies
 Allow: /security/thanks
 Allow: /error-recovery
-Allow: /unsupported-browser
+Allow: /simple
 Disallow: /api/private
 Disallow: /api/admin
 Disallow: /.next

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTheme } from "next-themes";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -22,7 +23,8 @@ import { FloatingNav } from "@/components/floatingNav";
 
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [isDark, setIsDark] = useState(false);
+  const { resolvedTheme, setTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
 
   /* ======================================================
      JELLY TEXT — SCROLL REVEAL (VIEWPORT ONLY)
@@ -192,52 +194,10 @@ useEffect(() => {
     });
   }, [menuOpen]);
 
-  /* ======================================================
-     THEME INIT
-  ====================================================== */
-  useEffect(() => {
-    const saved = localStorage.getItem("theme");
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-
-    if (saved === "dark" || (!saved && prefersDark)) {
-      setIsDark(true);
-      document.documentElement.classList.add("dark");
-    }
-  }, []);
-
-  const toggleTheme = (event?: React.MouseEvent) => {
-    if (!document.documentElement) return;
-    
-    const currentIsDark = document.documentElement.classList.contains("dark");
-    const next = !currentIsDark;
-
-    // Use View Transition API for smooth theme change
-    if (document.startViewTransition) {
-      document.startViewTransition(() => {
-        // Toggle the dark class on the root element
-        if (next) {
-          document.documentElement.classList.add("dark");
-        } else {
-          document.documentElement.classList.remove("dark");
-        }
-        
-        // Update storage and dispatch event
-        localStorage.setItem("theme", next ? "dark" : "light");
-        window.dispatchEvent(new CustomEvent("theme-toggled", { detail: { isDark: next } }));
-      });
-    } else {
-      // Fallback for browsers without View Transition API
-      if (next) {
-        document.documentElement.classList.add("dark");
-      } else {
-        document.documentElement.classList.remove("dark");
-      }
-      localStorage.setItem("theme", next ? "dark" : "light");
-      window.dispatchEvent(new CustomEvent("theme-toggled", { detail: { isDark: next } }));
-    }
-    
-    // Update state after DOM changes are in transition
-    setIsDark(next);
+  const toggleTheme = () => {
+    const next = document.documentElement.classList.contains("dark") ? "light" : "dark";
+    setTheme(next);
+    window.dispatchEvent(new CustomEvent("theme-toggled", { detail: { isDark: next === "dark" } }));
   };
 
   /* ======================================================

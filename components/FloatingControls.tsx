@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import type { MouseEvent } from "react";
 import { createPortal } from "react-dom";
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { translateDocument, t } from "@/lib/i18n";
 // Use inline outlined SVGs for language icons to avoid lucide-react HMR issues
@@ -314,6 +315,18 @@ export default function FloatingControls({
      px-2 py-2 shadow-md
       `}
     >
+      <Link
+        href="/simple"
+        aria-label="View simple portfolio"
+        title="Simple portfolio"
+        className="group relative w-8 h-8 flex items-center justify-center rounded-xl border border-stone-200 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-4"
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" aria-hidden="true">
+          <rect x="4" y="3" width="16" height="18" rx="2" />
+          <path d="M8 8h8M8 12h8M8 16h5" />
+        </svg>
+        <span className="simple-view-cue" aria-hidden="true">Prefer it simple? <span className="simple-view-arrow">→</span></span>
+      </Link>
       {/* LANGUAGE SELECTOR (single menu button for all sizes) */}
       <div className="relative" ref={langMenuRef}>
         <button

@@ -355,6 +355,7 @@ export default function Footer() {
             </div>
 
             <div className="space-y-1 text-xs text-stone-500 dark:text-white/80">
+              <Link href="/simple" className="block hover:text-stone-700 dark:hover:text-white transition-colors duration-150">Simple portfolio</Link>
               <Link href="/cookies" className="block hover:text-stone-700 dark:hover:text-white transition-colors duration-150">
                 Cookie Policy
               </Link>

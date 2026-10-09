@@ -40,7 +40,13 @@ type I18nWindow = Window & {
   __i18n?: Pick<typeof import('@/lib/i18n'), 'translateDocument'>
 }
 
-export default function AppInitializer({ children }: { children: React.ReactNode }) {
+export default function AppInitializer({ children, footer }: { children: React.ReactNode; footer?: React.ReactNode }) {
+  const pathname = usePathname()
+  if (pathname === '/simple' || pathname === '/simple/' || pathname === '/unsupported-browser') return <>{children}</>
+  return <EnhancedApp>{children}{footer}</EnhancedApp>
+}
+
+function EnhancedApp({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const isHomePage = pathname === '/'
   const isUnsupportedBrowserPage = pathname === '/unsupported-browser'
@@ -69,7 +75,7 @@ export default function AppInitializer({ children }: { children: React.ReactNode
 
   // register a basic service worker to enable offline caching for PWA
   useEffect(() => {
-    if (!('serviceWorker' in navigator)) return
+    if (process.env.NODE_ENV !== 'production' || !('serviceWorker' in navigator)) return
 
     let refreshing = false
 
@@ -298,24 +304,29 @@ export default function AppInitializer({ children }: { children: React.ReactNode
         },
       })
     }, 800 + index * 1200))
-    return () => timers.forEach(clearTimeout)
+    return () => {
+      timers.forEach(clearTimeout)
+      featuredProjects.forEach(project => toast.dismiss(project.id))
+    }
   }, [splashDone])
+
+  const contentReady = splashDone || !isHomePage
 
   return (
     <LenisScroll>
       <BrowserSupport />
       <ProgressScrollBar />
-      {!splashDone && (
+      {!contentReady && (
         <SplashScreen onLoaded={() => {
           setSplashDone(true)
           try { sessionStorage.setItem('splashDone', '1') } catch {}
         }} />
       )}
-      {splashDone && children}
-      {splashDone && renderEnhancements && <BigCursor />}
+      {contentReady && children}
+      {contentReady && (renderEnhancements || !isHomePage) && <BigCursor />}
       {splashDone && renderEnhancements && isHomePage && <DoodleOverlay />}
       {splashDone && renderEnhancements && !isUnsupportedBrowserPage && <InstallPrompt deferredPrompt={deferredPrompt} setDeferredPrompt={setDeferredPrompt} />}
-      {splashDone && !isUnsupportedBrowserPage && <CookieConsent />}
+      {contentReady && !isUnsupportedBrowserPage && <CookieConsent />}
     </LenisScroll>
   )
 }

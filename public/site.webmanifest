@@ -1,7 +1,7 @@
 {
   "name": "Nitish - Developer & Photographer",
   "short_name": "Nitish",
-  "description": "Portfolio website of Nitish — Full-Stack Developer & Photographer.",
+  "description": "Portfolio website of Nitish \u2014 Full-Stack Developer & Photographer.",
   "lang": "en-US",
   "start_url": "/?utm_source=homescreen",
   "scope": "/",
@@ -9,7 +9,10 @@
   "orientation": "any",
   "background_color": "#ffffff",
   "theme_color": "#ffffff",
-  "categories": ["personal", "portfolio"],
+  "categories": [
+    "personal",
+    "portfolio"
+  ],
   "icons": [
     {
       "src": "/icon-light-32x32.png",
@@ -44,6 +47,12 @@
       "short_name": "Portfolio",
       "description": "View projects",
       "url": "/#projects"
+    },
+    {
+      "name": "Simple portfolio",
+      "short_name": "Simple",
+      "description": "Read the portfolio and ask the offline assistant",
+      "url": "/simple"
     }
   ]
 }

@@ -2,7 +2,8 @@
 
 import React, { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import Header from '@/components/Header' 
+import Header from '@/components/Header'
+import Link from 'next/link'
 
 export default function ErrorRecovery() {
   const [busy, setBusy] = useState(false)
@@ -94,9 +95,10 @@ export default function ErrorRecovery() {
             The site encountered a client-side error while loading. This can happen when your browser serves an older/stale cached file or cookie that conflicts with the newly deployed code.
           </p>
 
+          <Link href="/simple" className="inline-block mb-5 underline">Continue to the simple portfolio →</Link>
           <div className="space-y-3 mb-4">
             <p className="text-sm text-[var(--color-muted-foreground)]">Quick fixes (try them in order):</p>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               <button
                 onClick={clearCacheAndStorage}
                 disabled={busy}

@@ -8818,3 +8818,15 @@ select:focus-visible {
     transition: none !important;
   }
 }
+
+/* Keep the simpler reading view discoverable without requiring a hover. */
+.simple-view-cue {
+  position: absolute; right: calc(100% + 12px); top: 50%; transform: translateY(-50%);
+  display: flex; align-items: center; gap: 8px; white-space: nowrap;
+  padding: 7px 10px; border: 1px solid var(--border); border-radius: 6px;
+  background: var(--background); color: var(--foreground);
+  font: 11px/1.5 var(--font-sans), sans-serif; box-shadow: 0 2px 12px #0001;
+}
+.simple-view-arrow { display: inline-block; animation: simple-view-nudge 1.4s ease-in-out 6; }
+@keyframes simple-view-nudge { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(5px); } }
+@media (prefers-reduced-motion: reduce) { .simple-view-arrow { animation: none; } }

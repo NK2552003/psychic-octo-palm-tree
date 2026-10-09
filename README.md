@@ -116,3 +116,14 @@ Freelance Full Stack Developer based in **Dehradun, India** with a focus on buil
 ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=flat-square&logo=mysql&logoColor=white)
 ![PHP](https://img.shields.io/badge/PHP-777BB4?style=flat-square&logo=php&logoColor=white)
 ![Git](https://img.shields.io/badge/Git-F05032?style=flat-square&logo=git&logoColor=white)
+
+
+## Simple portfolio and offline assistant
+
+- `/simple` is a footer-free reading view using the site's shared light/dark theme.
+- The right-side controls on the interactive portfolio include a labeled, animated link to it. Supporting pages have an Explore menu for navigation and theme switching.
+- macOS Safari is redirected from the interactive home to `/simple`; other routes stay accessible. The legacy `/unsupported-browser` route redirects to `/simple`.
+- AI mode is an instant local knowledge assistant, not a generative model. It answers suggested and typed questions using `lib/portfolio-assistant.ts` and the shared portfolio datasets. Messages remain in memory for the current session; no API, model download, or external inference service is used.
+- In production, the simple view prepares its HTML, JavaScript, CSS, fonts, and photographs for offline use. Wait for **Offline ready** on the first online visit before disconnecting. External sites and contact delivery still need a connection. Development mode does not register a new service worker.
+- Edit `scripts/sw.js.template`; `npm run build` regenerates `public/sw.js` with a new cache version. Do not edit the generated worker directly.
+- Run `node --test tests/*.cjs` for assistant and browser-routing regression checks, and `npm run build` for the production check.

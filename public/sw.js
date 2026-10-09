@@ -1,69 +1,72 @@
-// THIS IS A TEMPLATE — the build step will replace nitish-portfolio-d79313d with a versioned cache name.
-// Do NOT edit the generated `public/sw.js` directly; edit this template instead.
-
-const CACHE_NAME = 'nitish-portfolio-d79313d';
-const urlsToCache = [
-  '/',
-  '/favicon-32x32.png',
-  '/favicon-16x16.png',
-  '/apple-icon.png',
-  '/profile.jpg',
-  '/error-recovery'
-];
-
-self.addEventListener('install', (event) => {
-  // activate the new service worker immediately
+// Generated at build time. Edit this template, not public/sw.js.
+const CACHE_NAME = 'nitish-portfolio-3f59cd5-mv0nxa25';
+const urlsToCache = ['/simple', '/favicon-32x32.png', '/favicon-16x16.png', '/apple-icon.png', '/profile.jpg', '/error-recovery'];
+self.addEventListener('install', event => {
   self.skipWaiting();
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(urlsToCache))
-  );
+  // One temporarily unavailable asset must not prevent installation.
+  event.waitUntil(caches.open(CACHE_NAME).then(cache => Promise.allSettled(urlsToCache.map(url => cache.add(url)))));
 });
-
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((keys) => Promise.all(
-      keys.map((key) => {
-        if (key !== CACHE_NAME) return caches.delete(key)
-        return Promise.resolve()
-      })
-    )).then(() => self.clients.claim())
-  );
+self.addEventListener('activate', event => {
+  event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => key.startsWith('nitish-portfolio-') && key !== CACHE_NAME).map(key => caches.delete(key)))).then(() => self.clients.claim()));
 });
-
-self.addEventListener('fetch', (event) => {
+self.addEventListener('fetch', event => {
   const req = event.request;
-  // For navigation requests, prefer network (get freshest HTML) and fall back to cache
-  if (req.mode === 'navigate' || (req.method === 'GET' && req.headers.get('accept') && req.headers.get('accept').includes('text/html'))) {
-    event.respondWith(
-      fetch(req)
-        .then((res) => {
-          // update the cache with latest HTML
-          const resClone = res.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(req, resClone));
-          return res;
-        })
-        .catch(() => caches.match(req).then((r) => r || caches.match('/error-recovery')))
-    );
+  const url = new URL(req.url);
+  if (req.method !== 'GET' || url.origin !== self.location.origin) return;
+  // Never mix Next.js RSC payloads with document HTML, or cache API requests.
+  if (req.headers.get('RSC') || url.searchParams.has('_rsc') || url.pathname.startsWith('/api/')) return;
+  if (req.mode === 'navigate') {
+    const key = url.pathname === '/simple' || url.pathname === '/simple/' ? '/simple' : req;
+    event.respondWith((async () => {
+      const cache = await caches.open(CACHE_NAME);
+      try {
+        const response = await fetch(req);
+        if (response.ok) await cache.put(key, response.clone());
+        return response;
+      } catch {
+        return (await cache.match(key)) || (await cache.match('/simple')) || Response.error();
+      }
+    })());
     return;
   }
-
-  // For other requests, try cache first then network and populate cache
-  event.respondWith(
-    caches.match(req).then((cacheRes) => {
-      if (cacheRes) return cacheRes;
-      return fetch(req)
-        .then((networkRes) => {
-          const clone = networkRes.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(req, clone));
-          return networkRes;
-        })
-        .catch(() => {})
-    })
-  );
+  // Only immutable app assets, fonts and public images are cache-first.
+  if (!url.pathname.startsWith('/_next/static/') && !url.pathname.startsWith('/_next/image') && !/\.(?:png|jpe?g|svg|webp|ico|woff2?|css)$/.test(url.pathname)) return;
+  event.respondWith((async () => {
+    const cache = await caches.open(CACHE_NAME);
+    const cached = await cache.match(req);
+    if (cached) return cached;
+    try {
+      const response = await fetch(req);
+      if (response.ok) await cache.put(req, response.clone());
+      return response;
+    } catch {
+      // Lazy-loaded Next image variants can use the cached original offline.
+      const original = url.searchParams.get('url');
+      if (url.pathname === '/_next/image' && original?.startsWith('/') && !original.startsWith('//')) {
+        const image = await cache.match(original);
+        if (image) return image;
+      }
+      return Response.error();
+    }
+  })());
 });
-
-self.addEventListener('message', (event) => {
-  if (event.data && event.data.type === 'SKIP_WAITING') {
-    self.skipWaiting();
-  }
+self.addEventListener('message', event => {
+  if (event.data?.type === 'SKIP_WAITING') self.skipWaiting();
+  if (event.data?.type !== 'CACHE_SIMPLE') return;
+  event.waitUntil((async () => {
+    try {
+      const cache = await caches.open(CACHE_NAME);
+      const urls = Array.isArray(event.data.urls) ? event.data.urls : [];
+      if (!urls.length || urls.length > 200) throw new Error('Invalid cache request');
+      await Promise.all(urls.map(async value => {
+        const url = new URL(value, self.location.origin);
+        if (url.origin !== self.location.origin || !(url.pathname === '/simple' || url.pathname.startsWith('/_next/static/') || url.pathname.startsWith('/_next/image') || /^\/(profile\.jpg|[123]\.jpeg)$/.test(url.pathname))) throw new Error('Unsupported cache URL');
+        if (await cache.match(url.href)) return;
+        const response = await fetch(url.href);
+        if (!response.ok) throw new Error('Asset unavailable');
+        await cache.put(url.href, response);
+      }));
+      event.ports[0]?.postMessage({ok:true});
+    } catch { event.ports[0]?.postMessage({ok:false}); }
+  })());
 });

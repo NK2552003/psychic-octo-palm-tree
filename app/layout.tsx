@@ -4,6 +4,7 @@ import { Playfair_Display, Inter, Space_Grotesk } from "next/font/google"
 import "./globals.scss"
 import AppInitializer from "../components/AppInitializer"
 import Footer from "./pages/footer"
+import PortfolioNavigation from "@/components/PortfolioNavigation"
 import { Toaster } from "../components/ui/sonner"
 import { ThemeProvider } from "../components/theme-provider"
 
@@ -166,7 +167,6 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning className={`${inter.variable} ${playfair.variable} ${spaceGrotesk.variable}`}>
       <head>
         <meta name="viewport" content="width=device-width,initial-scale=1" />
-        <link rel="canonical" href="https://nitishkr.fun" />
         <link rel="alternate" hrefLang="en-US" href="https://nitishkr.fun/" />
         <link rel="alternate" hrefLang="en" href="https://nitishkr.fun/" />
         <link rel="manifest" href="/site.webmanifest" />
@@ -184,23 +184,14 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/apple-icon.png" />
         <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff" />
         <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000000" />
-        <meta name="description" content="Full-Stack Developer & Photographer — portfolio site showcasing projects, photography and contact information." />
         <meta name="author" content="Nitish" />
         <meta name="keywords" content="Full-Stack Developer, Photographer, Portfolio, Web Developer, React, Next.js, TypeScript, Photography, UI/UX, Frontend Developer, Backend Developer, JAMstack, Portfolio site, Personal website" />
-        <meta name="robots" content="index, follow, max-image-preview:large" />
-        <meta name="googlebot" content="index, follow, max-image-preview:large" />
         <meta name="referrer" content="strict-origin-when-cross-origin" />
         <meta name="format-detection" content="telephone=no" />
         <meta name="rating" content="general" />
         <meta name="publisher" content="Nitish" />
         <meta name="theme-color" content="#ffffff" />
 
-        <meta property="og:type" content="website" />
-        <meta property="og:title" content="Nitish - Developer & Photographer" />
-        <meta property="og:description" content="Full-Stack Developer, Photographer, and B.Tech CSE Graduate crafting digital experiences through code and lens." />
-        <meta property="og:url" content="https://nitishkr.fun/" />
-        <meta property="og:image" content={new URL('/profile.jpg','https://nitishkr.fun').toString()} />
-        <meta property="og:image:alt" content="Nitish — Developer & Photographer" />
 
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@nk2552003" />
@@ -256,10 +247,10 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <AppInitializer>
+          <AppInitializer footer={<Footer />}>
             {children}
-            <Footer />
           </AppInitializer>
+          <PortfolioNavigation />
           <Toaster />
         </ThemeProvider>
       </body>
