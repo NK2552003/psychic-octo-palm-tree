@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 import { ArrowLeft } from 'lucide-react'
+import TransitionLink from '@/components/TransitionLink'
 import { t, type LangCode } from '@/lib/i18n'
 
 function setCookie(name: string, value: string, days = 365) {
@@ -74,10 +75,10 @@ export default function CookiesPage() {
 
   return (
     <main ref={containerRef} className="min-h-screen flex items-center justify-center p-6 relative">
-      <a href="/" data-i18n-attr="aria-label" data-i18n="cookie.back" aria-label="Back to site" className="fixed top-6 left-4 sm:left-6 z-50 inline-flex items-center gap-2 px-3 py-2 rounded-md border border-border bg-background/80 text-foreground text-sm hover:bg-muted/70 transition">
+      <TransitionLink href="/" data-i18n-attr="aria-label" data-i18n="cookie.back" aria-label="Back to site" className="fixed top-6 left-4 sm:left-6 z-50 inline-flex items-center gap-2 px-3 py-2 rounded-md border border-border bg-background/80 text-foreground text-sm hover:bg-muted/70 transition">
         <ArrowLeft className="w-4 h-4" />
         <span data-i18n="cookie.back">Back to site</span>
-      </a>
+      </TransitionLink>
 
       <div className="max-w-lg w-full mx-auto text-center px-4">
         <h1 data-i18n="cookie.title" className="text-2xl font-bold mb-4">Cookie Policy</h1>

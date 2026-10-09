@@ -1,10 +1,12 @@
 'use client';
 
-import Link from 'next/link';
+import TransitionLink from './TransitionLink';
 import { usePathname } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import { useEffect, useRef, useState } from 'react';
 import styles from './PortfolioNavigation.module.css';
+import PortfolioAssistant from './PortfolioAssistant';
+import { triggerThemeTransition } from '@/lib/shutter-transition';
 const routes = [['/','Interactive portfolio'],['/simple','Simple portfolio'],['/contact','Contact'],['/pricing','Pricing'],['/process','How I work'],['/privacy','Privacy'],['/cookies','Cookies']] as const;
 
 export default function PortfolioNavigation() {
@@ -22,11 +24,16 @@ export default function PortfolioNavigation() {
   },[open]);
   if(pathname==='/') return null;
   return <div ref={root} className={styles.navigation}>
-    {open && <nav className={styles.menu} aria-label="Site navigation">{routes.map(([href,label])=><Link href={href} key={href} aria-current={pathname===href?'page':undefined} onClick={()=>setOpen(false)}>{label}<span aria-hidden="true">↗</span></Link>)}</nav>}
+    {open && <nav className={styles.menu} aria-label="Site navigation">{routes.map(([href,label])=><TransitionLink href={href} key={href} aria-current={pathname===href?'page':undefined} onClick={()=>setOpen(false)}>{label}<span aria-hidden="true">↗</span></TransitionLink>)}</nav>}
     <div className={styles.controls}>
+      <PortfolioAssistant />
       <button aria-label="Toggle theme" title="Toggle theme" onClick={()=>{
-        const dark=!document.documentElement.classList.contains('dark');setTheme(dark?'dark':'light');
-        window.dispatchEvent(new CustomEvent('theme-toggled',{detail:{isDark:dark}}));
+        const dark=!document.documentElement.classList.contains('dark');
+        const nextTheme = dark ? 'dark' : 'light';
+        triggerThemeTransition(() => {
+          setTheme(nextTheme);
+          window.dispatchEvent(new CustomEvent('theme-toggled',{detail:{isDark:dark}}));
+        }, nextTheme);
       }}><span aria-hidden="true">◐</span></button>
       <button ref={trigger} aria-expanded={open} onClick={()=>setOpen(value=>!value)}>Explore <span aria-hidden="true">{open?'−':'+'}</span></button>
     </div>

@@ -123,7 +123,7 @@ export default function BigCursor() {
         *::selection {
           background-color: inherit;
         }
-        button, a, input, textarea, [role="button"], [role="link"], li, .icon-entry {
+        button, a, input, textarea, summary, [role="button"], [role="link"], li, .icon-entry {
           cursor: none !important;
         }
         button:hover, a:hover {
@@ -410,13 +410,15 @@ export default function BigCursor() {
         target instanceof HTMLElement &&
         (target.localName === "button" ||
           target.localName === "a" ||
+          target.localName === "summary" ||
           target.onclick !== null ||
           hasHoverClass ||
           target.localName === "input" ||
           target.localName === "textarea" ||
           target.getAttribute("role") === "button" ||
           target.closest("button") !== null ||
-          target.closest("a") !== null)
+          target.closest("a") !== null ||
+          target.closest("summary") !== null)
 
       hoverScale = isInteractive ? 1.5 : 1
 

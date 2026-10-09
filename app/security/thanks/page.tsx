@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import Link from "next/link"
+import TransitionLink from "@/components/TransitionLink"
 
 export const metadata: Metadata = {
   title: "Security Acknowledgments",
@@ -36,18 +36,18 @@ export default function SecurityThanksPage() {
           Please use the contact channels listed in the security policy.
         </p>
         <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-          <Link
+          <TransitionLink
             href="/.well-known/security.txt"
             className="w-full rounded-md border border-[var(--color-border)] px-4 py-2 text-center text-sm hover:bg-[var(--color-muted)] sm:w-auto"
           >
             View security.txt
-          </Link>
-          <Link
+          </TransitionLink>
+          <TransitionLink
             href="/#contact"
             className="w-full rounded-md border border-[var(--color-border)] px-4 py-2 text-center text-sm hover:bg-[var(--color-muted)] sm:w-auto"
           >
             Contact
-          </Link>
+          </TransitionLink>
         </div>
       </section>
     </main>

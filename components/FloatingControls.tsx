@@ -3,10 +3,10 @@
 import { useEffect, useState, useRef } from "react";
 import type { MouseEvent } from "react";
 import { createPortal } from "react-dom";
-import Link from "next/link";
+import TransitionLink from "./TransitionLink";
 import { motion, AnimatePresence } from "framer-motion";
 import { translateDocument, t } from "@/lib/i18n";
-// Use inline outlined SVGs for language icons to avoid lucide-react HMR issues
+import PortfolioAssistant from "@/components/PortfolioAssistant";
 
 export default function FloatingControls({
   toggleTheme,
@@ -315,7 +315,8 @@ export default function FloatingControls({
      px-2 py-2 shadow-md
       `}
     >
-      <Link
+      <PortfolioAssistant variant="floating-controls" />
+      <TransitionLink
         href="/simple"
         aria-label="View simple portfolio"
         title="Simple portfolio"
@@ -326,7 +327,7 @@ export default function FloatingControls({
           <path d="M8 8h8M8 12h8M8 16h5" />
         </svg>
         <span className="simple-view-cue" aria-hidden="true">Prefer it simple? <span className="simple-view-arrow">→</span></span>
-      </Link>
+      </TransitionLink>
       {/* LANGUAGE SELECTOR (single menu button for all sizes) */}
       <div className="relative" ref={langMenuRef}>
         <button

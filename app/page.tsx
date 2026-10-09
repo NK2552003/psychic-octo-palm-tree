@@ -8,6 +8,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 import FloatingControls from "@/components/FloatingControls";
+import { triggerThemeTransition } from "@/lib/shutter-transition";
 
 import LandingPage from "./pages/landingpage";
 
@@ -195,9 +196,12 @@ useEffect(() => {
   }, [menuOpen]);
 
   const toggleTheme = () => {
-    const next = document.documentElement.classList.contains("dark") ? "light" : "dark";
-    setTheme(next);
-    window.dispatchEvent(new CustomEvent("theme-toggled", { detail: { isDark: next === "dark" } }));
+    const isDark = document.documentElement.classList.contains("dark");
+    const next = isDark ? "light" : "dark";
+    triggerThemeTransition(() => {
+      setTheme(next);
+      window.dispatchEvent(new CustomEvent("theme-toggled", { detail: { isDark: next === "dark" } }));
+    }, next);
   };
 
   /* ======================================================

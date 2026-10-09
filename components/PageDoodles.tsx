@@ -88,9 +88,10 @@ function intersects(a: { x: number; y: number; w: number; h: number }, b: { x: n
 interface PageDoodlesProps {
   iconCount?: number
   dotCount?: number
+  className?: string
 }
 
-function PageDoodlesComponent({ iconCount = 30, dotCount = 20 }: PageDoodlesProps) {
+function PageDoodlesComponent({ iconCount = 30, dotCount = 20, className = "hidden md:block" }: PageDoodlesProps) {
   const [items, setItems] = useState<Item[]>([])
   const [isVisible, setIsVisible] = useState(false)
   const containerRef = useRef<HTMLDivElement | null>(null)
@@ -98,9 +99,13 @@ function PageDoodlesComponent({ iconCount = 30, dotCount = 20 }: PageDoodlesProp
   useEffect(() => {
     if (typeof window === "undefined") return
 
+    let active = true
+
     const generate = () => {
       const vw = document.documentElement.clientWidth || window.innerWidth || 0
+      const parentHeight = containerRef.current?.parentElement?.scrollHeight || 0
       const vh = Math.max(
+        parentHeight,
         document.documentElement.scrollHeight || 0,
         document.body?.scrollHeight || 0,
         window.innerHeight || 0
@@ -153,6 +158,7 @@ function PageDoodlesComponent({ iconCount = 30, dotCount = 20 }: PageDoodlesProp
 
       // Render doodles
       const renderDoodles = () => {
+        if (!active) return
         setItems(newItems)
         setIsVisible(true)
       }
@@ -165,14 +171,29 @@ function PageDoodlesComponent({ iconCount = 30, dotCount = 20 }: PageDoodlesProp
     }
 
     generate()
+
+    let resizeTimer: NodeJS.Timeout
+    const handleResize = () => {
+      clearTimeout(resizeTimer)
+      resizeTimer = setTimeout(() => {
+        if (active) generate()
+      }, 350)
+    }
+
+    window.addEventListener("resize", handleResize)
+    return () => {
+      active = false
+      window.removeEventListener("resize", handleResize)
+      clearTimeout(resizeTimer)
+    }
   }, [iconCount, dotCount])
 
   return (
     <div
       ref={containerRef}
-      className="hidden lg:block absolute inset-0 -z-10 pointer-events-none"
+      className={`absolute inset-0 -z-10 pointer-events-none ${className}`}
       aria-hidden
-      style={{ opacity: isVisible ? 1 : 0 }}
+      style={{ opacity: isVisible ? 1 : 0, transition: "opacity 0.6s ease" }}
     >
       {isVisible && items.map((it) => {
         if (it.type === "icon") {

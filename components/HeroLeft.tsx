@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useParallax, applyParallaxDepth } from "@/lib/useParallax";
 import { isMobile } from "@/lib/deviceDetection";
-import Link from "next/link";
+import TransitionLink from "./TransitionLink";
 
 export default function HeroLeft() {
   const heroContainerRef = useRef<HTMLDivElement>(null);
@@ -81,19 +81,13 @@ export default function HeroLeft() {
       </h1>
 
       <div className="mt-8 flex flex-col items-start gap-4 sm:flex-row sm:items-center" data-parallax="0.5">
-        <Link
+        <TransitionLink
           href="/pricing"
-          scroll
-          onClick={() => {
-            if (typeof window !== "undefined") {
-              window.scrollTo({ top: 0, left: 0, behavior: "auto" });
-            }
-          }}
           className="hero-jelly hero-jelly-fast inline-flex items-center gap-2 rounded-full border border-stone-700/50 px-5 py-2 text-sm font-semibold tracking-wide text-stone-900 transition-colors hover:bg-stone-900 hover:text-stone-100 dark:border-teal-400 dark:text-teal-200 dark:hover:bg-teal-400 dark:hover:text-black"
         >
           <span>Pricing</span>
           <span>→</span>
-        </Link>
+        </TransitionLink>
 
         <a
           href="#projects"

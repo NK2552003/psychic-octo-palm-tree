@@ -1,6 +1,6 @@
 "use client"
 
-import Link from "next/link"
+import TransitionLink from "@/components/TransitionLink"
 import { FormEvent, Suspense, useEffect, useMemo, useRef, useState } from "react"
 import { useSearchParams } from "next/navigation"
 import emailjs from "@emailjs/browser"
@@ -352,13 +352,13 @@ export default function ContactPage() {
         <div className="relative z-10 w-full max-w-[1360px] mx-auto">
           {/* Back link — left aligned */}
           <div className="mb-8 flex justify-start sm:mb-11">
-            <Link
+            <TransitionLink
               href="/pricing"
               className="inline-flex items-center gap-2 text-[0.75rem] tracking-[0.28em] text-[#065f52] dark:text-[#4fd1b8] opacity-80 hover:opacity-100 transition-opacity no-underline"
             >
               <ArrowLeft size={12} strokeWidth={2} />
               <span>BACK TO PRICING</span>
-            </Link>
+            </TransitionLink>
           </div>
 
           <h1
@@ -601,12 +601,12 @@ export default function ContactPage() {
                     </>
                   )}
                 </button>
-                <Link
+                <TransitionLink
                   href="/pricing"
                   className="text-center text-[0.82rem] tracking-[0.05em] text-[#065f52] opacity-70 no-underline transition-opacity hover:opacity-100 dark:text-[#4fd1b8] sm:text-left"
                 >
                   <ArrowLeft size={12} strokeWidth={2} className="inline-block mr-1" /> Change selected option
-                </Link>
+                </TransitionLink>
               </div>
             </form>
 

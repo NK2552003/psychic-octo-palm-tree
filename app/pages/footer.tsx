@@ -9,7 +9,7 @@ import { isMobile } from "@/lib/deviceDetection"
 import { MoveUpRight, ArrowUpRight } from "lucide-react"
 import { TrophyIcon, AwardMedalIcon, AstonishingAwardIcon } from "@/components/icons"
 import { t, type LangCode } from '@/lib/i18n'
-import Link from "next/link"
+import TransitionLink from "@/components/TransitionLink"
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger)
@@ -355,26 +355,26 @@ export default function Footer() {
             </div>
 
             <div className="space-y-1 text-xs text-stone-500 dark:text-white/80">
-              <Link href="/simple" className="block hover:text-stone-700 dark:hover:text-white transition-colors duration-150">Simple portfolio</Link>
-              <Link href="/cookies" className="block hover:text-stone-700 dark:hover:text-white transition-colors duration-150">
+              <TransitionLink href="/simple" className="block hover:text-stone-700 dark:hover:text-white transition-colors duration-150">Simple portfolio</TransitionLink>
+              <TransitionLink href="/cookies" className="block hover:text-stone-700 dark:hover:text-white transition-colors duration-150">
                 Cookie Policy
-              </Link>
-              <Link href="/privacy" className="block hover:text-stone-700 dark:hover:text-white transition-colors duration-150">
+              </TransitionLink>
+              <TransitionLink href="/privacy" className="block hover:text-stone-700 dark:hover:text-white transition-colors duration-150">
                 Privacy Policy
-              </Link>
-              <Link href="/process" className="block hover:text-stone-700 dark:hover:text-white transition-colors duration-150">
+              </TransitionLink>
+              <TransitionLink href="/process" className="block hover:text-stone-700 dark:hover:text-white transition-colors duration-150">
                 How I Work
-              </Link>
-              <Link href="/pricing" className="block hover:text-stone-700 dark:hover:text-white transition-colors duration-150">
+              </TransitionLink>
+              <TransitionLink href="/pricing" className="block hover:text-stone-700 dark:hover:text-white transition-colors duration-150">
                 Pricing
-              </Link>
+              </TransitionLink>
               {!isLandingPage && (
-                <Link
+                <TransitionLink
                   href="/"
                   className="block pt-1 text-sm font-medium text-stone-700 dark:text-stone-200 hover:text-teal-700 dark:hover:text-teal-300 transition-colors duration-150"
                 >
                   ← Back to Home
-                </Link>
+                </TransitionLink>
               )}
             </div>
           </div>

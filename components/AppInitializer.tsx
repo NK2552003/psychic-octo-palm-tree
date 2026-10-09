@@ -42,17 +42,30 @@ type I18nWindow = Window & {
 
 export default function AppInitializer({ children, footer }: { children: React.ReactNode; footer?: React.ReactNode }) {
   const pathname = usePathname()
-  if (pathname === '/simple' || pathname === '/simple/' || pathname === '/unsupported-browser') return <>{children}</>
-  return <EnhancedApp>{children}{footer}</EnhancedApp>
+  if (pathname === '/unsupported-browser') return <>{children}</>
+  const isSimplePage = pathname === '/simple' || pathname === '/simple/'
+  return <EnhancedApp>{children}{!isSimplePage && footer}</EnhancedApp>
 }
 
 function EnhancedApp({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const isHomePage = pathname === '/'
   const isUnsupportedBrowserPage = pathname === '/unsupported-browser'
+  const isSimplePage = pathname === '/simple' || pathname === '/simple/'
   // The server and first client render must both show the splash. Read browser
   // preferences only after hydration, including on returning-visitor navigations.
   const [splashDone, setSplashDone] = useState(false)
+
+  useEffect(() => {
+    window.dispatchEvent(new Event('routeChangeComplete'))
+  }, [pathname])
+
+  useEffect(() => {
+    if (splashDone || !isHomePage) {
+      (window as any).__splashFinished = true
+    }
+  }, [splashDone, isHomePage])
+
   useEffect(() => {
     const frame = requestAnimationFrame(() => {
       try {
@@ -283,7 +296,7 @@ function EnhancedApp({ children }: { children: React.ReactNode }) {
   // Mark each toast only when shown so Strict Mode cleanup cannot lose it.
   const shownProjectToasts = useRef(new Set<string>())
   useEffect(() => {
-    if (!splashDone || isUnsupportedBrowserPage) return
+    if (!splashDone || isUnsupportedBrowserPage || isSimplePage) return
     // Sonner keeps its queue across Fast Refresh. Remove announcements from
     // the previous implementation before displaying the current selection.
     const featuredIds = new Set(featuredProjects.map(project => project.id))
@@ -317,10 +330,12 @@ function EnhancedApp({ children }: { children: React.ReactNode }) {
       <BrowserSupport />
       <ProgressScrollBar />
       {!contentReady && (
-        <SplashScreen onLoaded={() => {
-          setSplashDone(true)
-          try { sessionStorage.setItem('splashDone', '1') } catch {}
-        }} />
+        <SplashScreen
+          onLoaded={() => {
+            setSplashDone(true)
+            try { sessionStorage.setItem('splashDone', '1') } catch {}
+          }}
+        />
       )}
       {contentReady && children}
       {contentReady && (renderEnhancements || !isHomePage) && <BigCursor />}

@@ -41,5 +41,5 @@ export default function SimpleOffline() {
     void prepare();
     return()=>{active=false;};
   },[]);
-  return <p role="status" style={{fontSize:11,color:'var(--quiet)',marginTop:-22}}>{status}</p>;
+  return null;
 }

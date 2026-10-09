@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
-import PortfolioAssistant from "@/components/PortfolioAssistant";
+import TransitionLink from "@/components/TransitionLink";
 import SimpleOffline from "@/components/SimpleOffline";
+import SimpleNav from "@/components/SimpleNav";
+import PageDoodles from "@/components/PageDoodles";
 import { portfolioStack } from "@/lib/portfolio-assistant";
 import { liveWebsitesData, publishedExtensionsData } from "@/lib/portfolio-projects";
 import { qualificationsData } from "@/lib/portfolio-qualifications";
+import { Github, Linkedin, Instagram } from "lucide-react";
 import styles from "./simple.module.css";
 
 export const metadata: Metadata = {
@@ -14,13 +16,6 @@ export const metadata: Metadata = {
   alternates: { canonical: "https://nitishkr.fun/simple" },
 };
 
-
-const socials = [
-  ["GitHub", "https://github.com/nk2552003"],
-  ["LinkedIn", "https://www.linkedin.com/in/nk2552003/"],
-  ["Instagram", "https://www.instagram.com/natur_hacks/"],
-];
-
 function Tags({ items }: { items: string[] }) {
   return <ul className={styles.tags}>{items.map(item => <li key={item}>{item}</li>)}</ul>;
 }
@@ -28,35 +23,58 @@ function Tags({ items }: { items: string[] }) {
 export default function SimplePortfolio() {
   return (
     <div className={styles.page} lang="en">
+      <PageDoodles iconCount={30} dotCount={20} />
       <a className={styles.skip} href="#intro">Skip to content</a>
       <div className={styles.column}>
-        <nav className={styles.nav} aria-label="Portfolio sections">
-          <span>THE SIMPLE VERSION</span>
-          <a href="#stack">Stack</a><a href="#projects">Work</a><a href="#contact">Contact</a>
-        </nav>
+        <SimpleNav />
         <main id="intro">
           <header>
             <div className={styles.identity}>
-              <Image src="/profile.jpg" alt="Nitish Kumar" width={112} height={112} priority className={styles.portrait} />
+              <div className={styles.portraitWrapper}>
+                <Image src="/profile.jpg" alt="Nitish Kumar" width={112} height={112} priority className={styles.portrait} />
+                <div className={styles.portraitOverlay} aria-hidden="true" />
+              </div>
               <div><h1>Nitish Kumar</h1><p className={styles.eyebrow}>Full-stack developer · Photographer</p><span className={styles.note}>B.Tech in Computer Science & Engineering</span></div>
             </div>
             <p className={styles.intro}>I’m a Computer Science graduate and full-stack developer who enjoys building real-world web applications, exploring modern technologies, and expressing creativity through photography. I turn ideas into functional, meaningful digital experiences.</p>
-            <div className={styles.actions}><a className={styles.primary} href="mailto:nk2552003@gmail.com">Get in touch ↗</a><Link className={styles.secondary} href="/">Explore interactive portfolio ↗</Link></div>
-            <div className={styles.links}>{socials.map(([label, url]) => <a key={label} href={url}>{label}</a>)}</div>
+            <div className={styles.actions}>
+              <a className={styles.primary} href="mailto:nk2552003@gmail.com">Get in touch ↗</a>
+              <TransitionLink className={styles.secondary} href="/">Explore interactive portfolio ↗</TransitionLink>
+              <a
+                className={styles.iconButton}
+                href="https://github.com/nk2552003"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="GitHub profile"
+                title="GitHub"
+              >
+                <Github size={17} strokeWidth={1.75} />
+              </a>
+              <a
+                className={styles.iconButton}
+                href="https://www.linkedin.com/in/nk2552003/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LinkedIn profile"
+                title="LinkedIn"
+              >
+                <Linkedin size={17} strokeWidth={1.75} />
+              </a>
+              <a
+                className={styles.iconButton}
+                href="https://www.instagram.com/natur_hacks/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram profile"
+                title="Instagram"
+              >
+                <Instagram size={17} strokeWidth={1.75} />
+              </a>
+            </div>
           </header>
 
-          <PortfolioAssistant />
           <SimpleOffline />
           <section id="stack"><h2>Stack</h2><p className={styles.muted}>The tools I use across interfaces, backend systems, mobile apps, and deployment.</p><Tags items={portfolioStack} /></section>
-
-          <section id="projects">
-            <div className={styles.sectionHeading}><h2>Projects</h2><a href="https://github.com/nk2552003">All on GitHub ↗</a></div>
-            {liveWebsitesData.map(project => <article className={styles.entry} key={project.id}>
-              <div className={styles.entryHeading}><h3><a href={project.url}>{project.name} ↗</a></h3><span className={styles.note}>{project.badge}</span></div>
-              <p>{project.description}</p><Tags items={project.tags} />
-              {project.sourceUrl && <a className={styles.source} href={project.sourceUrl}>Source code ↗</a>}
-            </article>)}
-          </section>
 
           <section id="tools"><h2>Extensions & packages</h2>
             {publishedExtensionsData.map(project => <article className={styles.entry} key={project.id}>
@@ -78,6 +96,15 @@ export default function SimplePortfolio() {
             {qualificationsData.filter(item => item.category === "Certifications").map(item => <article className={styles.entry} key={item.title}>
               <div className={styles.entryHeading}><h3>{item.title}</h3><span className={styles.note}>{item.duration}</span></div>
               <p className={styles.institution}>{item.institution}</p><p>{item.description}</p><Tags items={item.skills} />
+            </article>)}
+          </section>
+
+          <section id="projects">
+            <div className={styles.sectionHeading}><h2>Projects</h2><a href="https://github.com/nk2552003">All on GitHub ↗</a></div>
+            {liveWebsitesData.map(project => <article className={styles.entry} key={project.id}>
+              <div className={styles.entryHeading}><h3><a href={project.url}>{project.name} ↗</a></h3><span className={styles.note}>{project.badge}</span></div>
+              <p>{project.description}</p><Tags items={project.tags} />
+              {project.sourceUrl && <a className={styles.source} href={project.sourceUrl}>Source code ↗</a>}
             </article>)}
           </section>
 

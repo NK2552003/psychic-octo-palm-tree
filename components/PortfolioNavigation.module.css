@@ -1,10 +1,36 @@
 .navigation { position:fixed; right:20px; bottom:20px; z-index:60; color:var(--foreground); font-family:var(--font-sans),sans-serif; font-size:12px; }
 .controls { display:flex; justify-content:flex-end; gap:6px; }
 .controls button, .menu { border:1px solid var(--border); border-radius:7px; background:var(--background); box-shadow:0 4px 20px #0001; }
-.controls button { padding:10px 14px; min-height:42px; cursor:pointer !important; }
+.controls button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 14px;
+  min-height: 42px;
+  cursor: pointer !important;
+  color: var(--foreground);
+  font-weight: 500;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.controls button:hover {
+  background: var(--muted);
+  border-color: var(--foreground);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+:global(.dark) .controls button:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(79, 209, 184, 0.45);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4), 0 0 12px rgba(79, 209, 184, 0.18);
+  color: #ffffff;
+}
+.controls button:active {
+  transform: translateY(0);
+}
 .controls button *, .menu a * { cursor:pointer !important; }
 .menu { margin-bottom:8px; padding:8px; width:220px; }
-.menu a { display:flex; justify-content:space-between; padding:9px 10px; border-radius:4px; cursor:pointer !important; }
+.menu a { display:flex; justify-content:space-between; padding:9px 10px; border-radius:4px; cursor:pointer !important; transition: background-color 0.15s ease; }
 .menu a:hover, .menu a[aria-current] { background:var(--muted); }
 .navigation :focus-visible { outline:2px solid var(--primary); outline-offset:3px; }
 @media(max-width:600px){.navigation{right:12px;bottom:12px;}}

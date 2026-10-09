@@ -1,5 +1,5 @@
 "use client"
-import Link from "next/link"
+import TransitionLink from "@/components/TransitionLink"
 import { useEffect, useState, useRef } from "react"
 import PageDoodles from "@/components/PageDoodles"
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
@@ -681,13 +681,13 @@ export default function PricingPage() {
     <div className="relative z-10 w-full max-w-[1360px] mx-auto">
       {/* Back link — left aligned */}
       <div className="mb-9 flex justify-start sm:mb-11">
-        <Link
+        <TransitionLink
           href="/"
           className="inline-flex items-center gap-2 text-[0.75rem] tracking-[0.28em] text-stone-700 dark:text-[#4fd1b8] opacity-80 hover:opacity-100 transition-opacity no-underline"
         >
           <ArrowLeft className="h-3 w-3" />
           <span>BACK TO HOME</span>
-        </Link>
+        </TransitionLink>
       </div>
 
       <p
@@ -769,7 +769,7 @@ export default function PricingPage() {
                   </li>
                 ))}
               </ul>
-              <Link
+              <TransitionLink
                 href={{ pathname: "/contact", query: { service: svc.slug, plan: plan.key, price: plan.price } }}
                 className={`mt-8 inline-flex w-full items-center justify-center gap-[0.4rem] rounded-full border px-[1.35rem] py-[0.65rem] text-[0.73rem] font-medium tracking-[0.1em] no-underline transition-all duration-200 sm:w-auto ${
                   plan.featured
@@ -778,7 +778,7 @@ export default function PricingPage() {
                 }`}
               >
                 Select {plan.name} <ArrowUpRight className="h-3 w-3" />
-              </Link>
+              </TransitionLink>
             </div>
           ))}
         </div>
@@ -804,12 +804,12 @@ export default function PricingPage() {
                   <p className="text-[0.8rem] font-light text-[#444444] dark:text-[rgba(214,207,199,0.78)]">
                     {s.turnaround} estimated
                   </p>
-                  <Link
+                  <TransitionLink
                     href={{ pathname: "/contact", query: { service: svc.slug, plan: s.key, price: s.price } }}
                     className="mt-[0.6rem] inline-flex items-center gap-[0.3rem] text-[0.78rem] tracking-[0.14em] text-stone-700 dark:text-[#4fd1b8] opacity-80 no-underline transition-opacity hover:opacity-100"
                   >
                     Get a custom quote <ArrowUpRight className="h-3 w-3" />
-                  </Link>
+                  </TransitionLink>
                 </div>
               ))}
             </div>
@@ -934,12 +934,12 @@ export default function PricingPage() {
             Your project doesn&apos;t have to fit a box. Describe what you need in the contact form and receive a fully custom, scoped quote within 24 hours — no pressure.
           </p>
         </div>
-        <Link
+        <TransitionLink
           href="/contact"
           className="relative z-10 inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-full bg-stone-800 px-9 py-[0.9rem] text-[0.82rem] font-bold tracking-[0.12em] text-stone-100 no-underline transition-colors hover:bg-stone-900 dark:bg-[#4fd1b8] dark:text-[#030a08] dark:hover:bg-[#80e8d4] sm:w-auto"
         >
           GET A CUSTOM QUOTE <ArrowUpRight className="h-4 w-4" />
-        </Link>
+        </TransitionLink>
       </div>
     </div>
   </section>

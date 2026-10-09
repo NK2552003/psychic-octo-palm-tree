@@ -1,5 +1,5 @@
 "use client"
-import Link from "next/link"
+import TransitionLink from "@/components/TransitionLink"
 import { useEffect, useRef } from "react"
 import { ArrowLeft, ArrowUpRight } from "lucide-react"
 import PageDoodles from "@/components/PageDoodles"
@@ -374,13 +374,13 @@ export default function ProcessPage() {
 
         <div className="relative z-10 w-full max-w-[1360px] mx-auto">
           <div className="flex justify-start mb-8 sm:mb-11">
-            <Link
+            <TransitionLink
               href="/"
               className="inline-flex items-center gap-2 text-[0.75rem] tracking-[0.28em] text-stone-700 dark:text-[#4fd1b8] opacity-80 hover:opacity-100 transition-opacity no-underline"
             >
               <ArrowLeft className="w-3 h-3" />
               <span>BACK TO HOME</span>
-            </Link>
+            </TransitionLink>
           </div>
 
           <p
@@ -620,18 +620,18 @@ export default function ProcessPage() {
               </p>
             </div>
             <div className="relative z-10 flex flex-col xs:flex-row flex-wrap gap-3 sm:gap-4">
-              <Link
+              <TransitionLink
                 href="/pricing"
                 className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full border border-[rgba(120,113,108,0.35)] dark:border-[rgba(79,209,184,0.18)] px-7 sm:px-8 py-[0.85rem] sm:py-[0.9rem] text-[0.82rem] font-bold tracking-[0.12em] text-stone-800 dark:text-[#4fd1b8] no-underline transition-colors hover:bg-stone-100 dark:hover:bg-[#081e1b]"
               >
                 SEE PRICING <ArrowUpRight className="w-3 h-3" />
-              </Link>
-              <Link
+              </TransitionLink>
+              <TransitionLink
                 href="/contact"
                 className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-stone-800 dark:bg-[#4fd1b8] px-7 sm:px-9 py-[0.85rem] sm:py-[0.9rem] text-[0.82rem] font-bold tracking-[0.12em] text-stone-100 dark:text-[#030a08] no-underline transition-colors hover:bg-stone-900 dark:hover:bg-[#80e8d4]"
               >
                 START A PROJECT <ArrowUpRight className="w-3 h-3" />
-              </Link>
+              </TransitionLink>
             </div>
           </div>
         </div>

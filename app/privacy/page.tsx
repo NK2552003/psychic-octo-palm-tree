@@ -1,5 +1,5 @@
 "use client"
-import Link from "next/link"
+import TransitionLink from "@/components/TransitionLink"
 import { useEffect, useRef, useState } from "react"
 import { ArrowLeft, ArrowUpRight } from "lucide-react"
 import PageDoodles from "@/components/PageDoodles"
@@ -271,13 +271,13 @@ export default function PrivacyPage() {
         />
         <div className="relative z-10 w-full max-w-[1360px] mx-auto">
           <div className="flex justify-start mb-11">
-            <Link
+            <TransitionLink
               href="/"
               className="inline-flex items-center gap-2 text-[0.75rem] tracking-[0.28em] text-stone-700 dark:text-[#4fd1b8] opacity-80 hover:opacity-100 transition-opacity no-underline"
             >
               <ArrowLeft className="w-3 h-3" />
               <span>BACK TO HOME</span>
-            </Link>
+            </TransitionLink>
           </div>
           <p
             ref={heroEyebrowRef}
@@ -383,12 +383,12 @@ export default function PrivacyPage() {
                             {section.hasContactLink && j === section.body.length - 1 ? (
                               <>
                                 Questions, requests, or concerns about this Privacy Policy can be directed to the contact page at{" "}
-                                <Link
+                                <TransitionLink
                                   href="/contact"
                                   className="text-stone-700 dark:text-[#4fd1b8] underline underline-offset-4 hover:opacity-80 transition-opacity"
                                 >
                                   nitish.world/contact or nitishkr.fun/contact
-                                </Link>
+                                </TransitionLink>
                                 . Responses are typically sent within 2 business days.
                               </>
                             ) : (
@@ -423,12 +423,12 @@ export default function PrivacyPage() {
                 If anything in this policy is unclear, or you'd like to request access or deletion of your information, reach out directly. No forms, no bots.
               </p>
             </div>
-            <Link
+            <TransitionLink
               href="/contact"
               className="relative z-10 inline-flex shrink-0 items-center gap-2 rounded-full bg-stone-800 dark:bg-[#4fd1b8] px-9 py-[0.9rem] text-[0.82rem] font-bold tracking-[0.12em] text-stone-100 dark:text-[#030a08] no-underline transition-colors hover:bg-stone-900 dark:hover:bg-[#80e8d4]"
             >
               GET IN TOUCH <ArrowUpRight className="w-3 h-3" />
-            </Link>
+            </TransitionLink>
           </div>
         </div>
       </section>
