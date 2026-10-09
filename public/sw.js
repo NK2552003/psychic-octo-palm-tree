@@ -1,5 +1,5 @@
 // Generated at build time. Edit this template, not public/sw.js.
-const CACHE_NAME = 'nitish-portfolio-3f59cd5-mv0nxa25';
+const CACHE_NAME = 'nitish-portfolio-19c18bc-mv0ojhby';
 const urlsToCache = ['/simple', '/favicon-32x32.png', '/favicon-16x16.png', '/apple-icon.png', '/profile.jpg', '/error-recovery'];
 self.addEventListener('install', event => {
   self.skipWaiting();

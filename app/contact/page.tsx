@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { FormEvent, useEffect, useMemo, useRef, useState } from "react"
+import { FormEvent, Suspense, useEffect, useMemo, useRef, useState } from "react"
 import { useSearchParams } from "next/navigation"
 import emailjs from "@emailjs/browser"
 import { toast } from "sonner"
@@ -33,9 +33,31 @@ function normalizeSlug(value: string) {
     .replace(/(^-|-$)/g, "")
 }
 
-export default function ContactPage() {
+function ContactSearchParamsHandler({
+  setSelectedService,
+  setSelectedPlan,
+  setSelectedPrice,
+}: {
+  setSelectedService: (val: string) => void
+  setSelectedPlan: (val: string) => void
+  setSelectedPrice: (val: string) => void
+}) {
   const searchParams = useSearchParams()
 
+  useEffect(() => {
+    const serviceParam = normalizeSlug(searchParams.get("service") || "")
+    const planParam = normalizeSlug(searchParams.get("plan") || "")
+    const priceParam = (searchParams.get("price") || "").trim()
+
+    if (serviceOptions.some((s) => s.value === serviceParam)) setSelectedService(serviceParam)
+    if (planOptions.some((p) => p.value === planParam)) setSelectedPlan(planParam)
+    if (priceParam) setSelectedPrice(priceParam)
+  }, [searchParams, setSelectedService, setSelectedPlan, setSelectedPrice])
+
+  return null
+}
+
+export default function ContactPage() {
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [company, setCompany] = useState("")
@@ -78,16 +100,6 @@ export default function ContactPage() {
       clearTimeout(timeoutId)
     }
   }, [])
-
-  useEffect(() => {
-    const serviceParam = normalizeSlug(searchParams.get("service") || "")
-    const planParam = normalizeSlug(searchParams.get("plan") || "")
-    const priceParam = (searchParams.get("price") || "").trim()
-
-    if (serviceOptions.some((s) => s.value === serviceParam)) setSelectedService(serviceParam)
-    if (planOptions.some((p) => p.value === planParam)) setSelectedPlan(planParam)
-    if (priceParam) setSelectedPrice(priceParam)
-  }, [searchParams])
 
   // ── GSAP animations ──
   useEffect(() => {
@@ -307,6 +319,13 @@ export default function ContactPage() {
 
   return (
     <div ref={containerRef} className="relative overflow-x-hidden text-[#1a1a1a] dark:text-[#d6cfc7] min-h-screen">
+      <Suspense fallback={null}>
+        <ContactSearchParamsHandler
+          setSelectedService={setSelectedService}
+          setSelectedPlan={setSelectedPlan}
+          setSelectedPrice={setSelectedPrice}
+        />
+      </Suspense>
 
       {/* Grain overlay */}
       <div
