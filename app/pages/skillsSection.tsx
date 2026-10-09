@@ -4,29 +4,7 @@ import { useEffect, useRef, useState } from "react"
 import gsap from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 import { MotionPathPlugin } from "gsap/MotionPathPlugin"
-import {
-  LineChart,
-  Line,
-  BarChart,
-  Bar,
-  AreaChart,
-  Area,
-  RadarChart,
-  Radar,
-  PolarGrid,
-  PolarAngleAxis,
-  PolarRadiusAxis,
-  PieChart,
-  Pie,
-  Cell,
-  Sector,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  Legend,
-} from "recharts"
+import SkillChart from "@/components/SkillChart"
 
 gsap.registerPlugin(ScrollTrigger, MotionPathPlugin)
 import { t, type LangCode } from '@/lib/i18n' 
@@ -185,8 +163,7 @@ export default function ScrollAnimation() {
   const [passedMarkers, setPassedMarkers] = useState<Set<number>>(new Set())
   const [activeMarker, setActiveMarker] = useState<number | null>(null)
   const [isLargeScreen, setIsLargeScreen] = useState<boolean>(false)
-  const [isSmallScreen, setIsSmallScreen] = useState<boolean>(false)
-  const [hoveredSlice, setHoveredSlice] = useState<number | null>(null) 
+  const [isSmallScreen, setIsSmallScreen] = useState<boolean>(false) 
 
   // reactive language so translations update on preferredLangChange
   const [lang, setLang] = useState<LangCode>(typeof window !== 'undefined' ? ((localStorage.getItem('preferredLang') as LangCode) || 'en') : 'en')
@@ -362,17 +339,20 @@ export default function ScrollAnimation() {
         // Qualification doodles animation (draw + subtle float/wobble) — skip on small screens
         const _isSmall = typeof window !== "undefined" && window.matchMedia && window.matchMedia("(max-width:640px)").matches
         if (!_isSmall) {
-          gsap.from(".qual-doodle-path", {
-            strokeDashoffset: 1000,
-            duration: 1.5,
-            ease: "power2.inOut",
-            stagger: 0.12,
-            scrollTrigger: {
-              trigger: containerRef.current,
-              start: "top 85%",
-              toggleActions: "play none none none",
-            },
-          })
+          const qualPaths = document.querySelectorAll(".qual-doodle-path")
+          if (qualPaths.length) {
+            gsap.from(qualPaths, {
+              strokeDashoffset: 1000,
+              duration: 1.5,
+              ease: "power2.inOut",
+              stagger: 0.12,
+              scrollTrigger: {
+                trigger: containerRef.current,
+                start: "top 85%",
+                toggleActions: "play none none none",
+              },
+            })
+          }
         }
 
         tl.to(
@@ -526,8 +506,10 @@ export default function ScrollAnimation() {
   useEffect(() => {
     if (!doodles || doodles.length === 0) return
     if (typeof window !== "undefined" && window.matchMedia && window.matchMedia("(max-width:640px)").matches) return
+    const accents = document.querySelectorAll(".qual-doodle-accent")
+    if (!accents.length) return
     const tl = gsap.timeline()
-    tl.to(".qual-doodle-accent", {
+    tl.to(accents, {
       scale: "random(0.82, 1.18)",
       duration: "random(1.2, 2.3)",
       ease: "sine.inOut",
@@ -549,168 +531,8 @@ export default function ScrollAnimation() {
     observeJellyText()
   }, [passedMarkers])
 
-  const CustomDot = (props: any) => {
-    const { cx, cy } = props
-    if (cx === undefined || cy === undefined) return null
-    const rx = isLargeScreen ? 4 : 3
-    const ry = isLargeScreen ? 3 : 2
-    return (
-      <g>
-        <ellipse cx={cx} cy={cy} rx={rx} ry={ry} fill="var(--color-chart-1)" />
-        <ellipse cx={cx} cy={cy} rx={rx + 1} ry={ry + 1} fill="none" stroke="var(--border)" opacity={0.12} />
-      </g>
-    )
-  }
-
-  const renderActiveShape = (props: any) => {
-    const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill } = props
-    return (
-      <g>
-        <Sector
-          cx={cx}
-          cy={cy}
-          innerRadius={innerRadius}
-          outerRadius={outerRadius + (isLargeScreen ? 10 : 6)}
-          startAngle={startAngle}
-          endAngle={endAngle}
-          fill={fill}
-        />
-      </g>
-    )
-  }
-
   const renderChart = (marker: MarkerData) => {
-    // unified tooltip style so it follows theme variables
-    const tooltipProps: any = {
-      contentStyle: {
-        background: 'var(--color-popover)',
-        border: '1px solid var(--color-border)',
-        color: 'var(--color-popover-foreground)',
-      },
-      itemStyle: { color: 'var(--color-foreground)' },
-    }
-
-    switch (marker.chartType) {
-      case "line":
-        return (
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={marker.chartData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" opacity={0.12} />
-              <XAxis dataKey="name" tick={{ fill: 'var(--color-muted-foreground)', fontSize: 12 }} axisLine={{ stroke: 'var(--color-border)' }} />
-              <YAxis tick={{ fill: 'var(--color-muted-foreground)', fontSize: 12 }} axisLine={{ stroke: 'var(--color-border)' }} />
-              <Tooltip {...tooltipProps} />
-              <Line
-                type="monotone"
-                dataKey="value"
-                stroke="var(--color-chart-1)"
-                strokeWidth={isLargeScreen ? 3 : 2}
-                dot={<CustomDot />}
-                strokeLinecap="round"
-                strokeDasharray={isLargeScreen ? undefined : '3 1'}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        )
-      case "bar":
-        return (
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={marker.chartData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" opacity={0.08} />
-              <XAxis dataKey="name" tick={{ fill: 'var(--color-muted-foreground)', fontSize: 12 }} axisLine={{ stroke: 'var(--color-border)' }} />
-              <YAxis tick={{ fill: 'var(--color-muted-foreground)', fontSize: 12 }} axisLine={{ stroke: 'var(--color-border)' }} />
-              <Tooltip {...tooltipProps} />
-              <Bar
-                dataKey="value"
-                fill="var(--color-chart-2)"
-                radius={isLargeScreen ? [999, 999, 999, 999] : [10, 10, 6, 6]}
-                barSize={isLargeScreen ? 22 : 16}
-                isAnimationActive={false}
-              />
-            </BarChart>
-          </ResponsiveContainer>
-        )
-      case "area":
-        return (
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={marker.chartData}>
-              <defs>
-                <linearGradient id={`areaGrad-${marker.id}`} x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="var(--color-chart-3)" stopOpacity={isLargeScreen ? 0.16 : 0.12} />
-                  <stop offset="95%" stopColor="var(--color-chart-3)" stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" opacity={0.08} />
-              <XAxis dataKey="name" tick={{ fill: 'var(--color-muted-foreground)', fontSize: 12 }} axisLine={{ stroke: 'var(--color-border)' }} />
-              <YAxis tick={{ fill: 'var(--color-muted-foreground)', fontSize: 12 }} axisLine={{ stroke: 'var(--color-border)' }} />
-              <Tooltip {...tooltipProps} />
-              <Area
-                type="monotone"
-                dataKey="value"
-                stroke="var(--color-chart-3)"
-                strokeWidth={isLargeScreen ? 2.5 : 2}
-                fill={`url(#areaGrad-${marker.id})`}
-                fillOpacity={1}
-              />
-            </AreaChart>
-          </ResponsiveContainer>
-        )
-      case "radar":
-        return (
-          <ResponsiveContainer width="100%" height="100%">
-            <RadarChart data={marker.chartData}>
-              <PolarGrid stroke="var(--color-border)" />
-              <PolarAngleAxis dataKey="subject" tick={{ fill: 'var(--color-muted-foreground)', fontSize: 10 }} />
-              <PolarRadiusAxis tick={{ fill: 'var(--color-muted-foreground)', fontSize: 10 }} />
-              <Radar
-                name="Skills"
-                dataKey="value"
-                stroke="var(--color-chart-4)"
-                strokeWidth={isLargeScreen ? 2.5 : 2}
-                fill="var(--color-chart-4)"
-                fillOpacity={isLargeScreen ? 0.22 : 0.14}
-              />
-              <Tooltip {...tooltipProps} />
-            </RadarChart>
-          </ResponsiveContainer>
-        )
-      case "pie": {
-        const total = marker.chartData.reduce((s, d) => s + (d.value || 0), 0)
-        return (
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie
-                data={marker.chartData}
-                cx="50%"
-                cy="50%"
-                innerRadius={isLargeScreen ? 40 : 28}
-                outerRadius={isLargeScreen ? 78 : 58}
-                paddingAngle={4}
-                dataKey="value"
-                {...({ activeIndex: hoveredSlice ?? -1, activeShape: renderActiveShape } as any)}
-                labelLine={false}
-                onMouseEnter={(_: any, index: number) => setHoveredSlice(index)}
-                onMouseLeave={() => setHoveredSlice(null)}
-              >
-                {marker.chartData.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={COLORS[index % COLORS.length]}
-                    stroke="var(--color-card)"
-                    strokeWidth={hoveredSlice === index ? 2 : 1}
-                    opacity={0.98}
-                    cursor="pointer"
-                  />
-                ))}
-              </Pie> 
-
-              <Tooltip {...tooltipProps} />
-            </PieChart>
-          </ResponsiveContainer>
-        )
-      }
-      default:
-        return null
-    }
+    return <SkillChart id={marker.id} type={marker.chartType} data={marker.chartData} />
   }
 
   return (

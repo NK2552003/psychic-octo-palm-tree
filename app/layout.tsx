@@ -4,8 +4,8 @@ import { Playfair_Display, Inter, Space_Grotesk } from "next/font/google"
 import "./globals.scss"
 import AppInitializer from "../components/AppInitializer"
 import Footer from "./pages/footer"
-import { Toaster } from "sonner"
-import { preconnect } from "next/dist/build/templates/app-page"
+import { Toaster } from "../components/ui/sonner"
+import { ThemeProvider } from "../components/theme-provider"
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -36,7 +36,7 @@ export async function generateMetadata(): Promise<Metadata> {
     template: "%s | Nitish",
   },
   description:
-    "Full-Stack Developer, Photographer, and Undergraduate Student crafting digital experiences through code and lens.",
+    "Full-Stack Developer, Photographer, and B.Tech CSE Graduate crafting digital experiences through code and lens.",
   generator: "v0.app",
   applicationName: "Nitish - Developer & Photographer",
   authors: [{ name: "Nitish", url: "https://nitishkr.fun" }],
@@ -47,7 +47,7 @@ export async function generateMetadata(): Promise<Metadata> {
   openGraph: {
     title: "Nitish - Developer & Photographer",
     description:
-      "Full-Stack Developer, Photographer, and Undergraduate Student crafting digital experiences through code and lens.",
+      "Full-Stack Developer, Photographer, and B.Tech CSE Graduate crafting digital experiences through code and lens.",
     url: "https://nitishkr.fun/",
     siteName: "Nitish",
     images: [
@@ -65,7 +65,7 @@ export async function generateMetadata(): Promise<Metadata> {
     card: "summary_large_image",
     title: "Nitish - Developer & Photographer",
     description:
-      "Full-Stack Developer, Photographer, and Undergraduate Student crafting digital experiences through code and lens.",
+      "Full-Stack Developer, Photographer, and B.Tech CSE Graduate crafting digital experiences through code and lens.",
     images: [new URL("/profile.jpg", "https://nitishkr.fun").toString()],
   },
   icons: {
@@ -129,42 +129,41 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const ldJson = [
-    {
-      "@context": "https://schema.org",
-      "@type": "Person",
+  const personLdJson = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Nitish",
+    "url": "https://nitishkr.fun",
+    "jobTitle": "Full-Stack Developer & Photographer",
+    "description": "Full-Stack Developer, Photographer, and B.Tech CSE Graduate crafting digital experiences through code and lens.",
+    "sameAs": [
+      "https://github.com/nk2552003",
+      "https://www.linkedin.com/in/nk2552003/",
+      "https://www.instagram.com/natur_hacks/",
+      "https://uiverse.io/nk2552003"
+    ],
+    "image": new URL('/profile.jpg', 'https://nitishkr.fun').toString()
+  }
+
+  const websiteLdJson = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "url": "https://nitishkr.fun",
+    "name": "Nitish - Developer & Photographer",
+    "publisher": {
+      "@type": "Organization",
       "name": "Nitish",
-      "url": "https://nitishkr.fun",
-      "jobTitle": "Full-Stack Developer & Photographer",
-      "description": "Full-Stack Developer, Photographer, and Undergraduate Student crafting digital experiences through code and lens.",
-      "sameAs": [
-        "https://github.com/nk2552003",
-        "https://www.linkedin.com/in/nk2552003/",
-        "https://www.instagram.com/natur_hacks/",
-        "https://uiverse.io/nk2552003"
-      ],
-      "image": new URL('/profile.jpg', 'https://nitishkr.fun').toString()
+      "logo": new URL('/apple-icon.png', 'https://nitishkr.fun').toString()
     },
-    {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "url": "https://nitishkr.fun",
-      "name": "Nitish - Developer & Photographer",
-      "publisher": {
-        "@type": "Organization",
-        "name": "Nitish",
-        "logo": new URL('/apple-icon.png', 'https://nitishkr.fun').toString()
-      },
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": "https://nitishkr.fun/?s={search_term}",
-        "query-input": "required name=search_term"
-      }
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://nitishkr.fun/?s={search_term}",
+      "query-input": "required name=search_term"
     }
-  ]
+  }
 
   return (
-    <html lang="en" className={`${inter.variable} ${playfair.variable} ${spaceGrotesk.variable}`}>
+    <html lang="en" suppressHydrationWarning className={`${inter.variable} ${playfair.variable} ${spaceGrotesk.variable}`}>
       <head>
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <link rel="canonical" href="https://nitishkr.fun" />
@@ -198,7 +197,7 @@ export default function RootLayout({
 
         <meta property="og:type" content="website" />
         <meta property="og:title" content="Nitish - Developer & Photographer" />
-        <meta property="og:description" content="Full-Stack Developer, Photographer, and Undergraduate Student crafting digital experiences through code and lens." />
+        <meta property="og:description" content="Full-Stack Developer, Photographer, and B.Tech CSE Graduate crafting digital experiences through code and lens." />
         <meta property="og:url" content="https://nitishkr.fun/" />
         <meta property="og:image" content={new URL('/profile.jpg','https://nitishkr.fun').toString()} />
         <meta property="og:image:alt" content="Nitish — Developer & Photographer" />
@@ -207,7 +206,8 @@ export default function RootLayout({
         <meta name="twitter:site" content="@nk2552003" />
         <meta name="twitter:creator" content="@nk2552003" />
 
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ldJson) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(personLdJson) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteLdJson) }} />
 
         {/* Early failure handlers: redirect to /error-recovery on client-side JS errors or unhandled rejections in production */}
         <script dangerouslySetInnerHTML={{ __html: `(function(){
@@ -226,6 +226,8 @@ export default function RootLayout({
         if (location.pathname === '/error-recovery') return false
         if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') return false
         if (isResourceError(e)) return false
+        var msg = (e && (e.message || (e.error && e.error.message))) || ''
+        if (typeof msg === 'string' && (msg.indexOf('@context') !== -1 || msg.indexOf('ResizeObserver') !== -1 || msg.indexOf('Script error') !== -1)) return false
         return true
       } catch (err) { return false }
     }
@@ -239,6 +241,8 @@ export default function RootLayout({
     window.addEventListener('unhandledrejection', function(e){
       try {
         if (location.pathname === '/error-recovery' || location.hostname === 'localhost' || location.hostname === '127.0.0.1') return
+        var reason = (e && (e.reason && (e.reason.message || e.reason))) || ''
+        if (typeof reason === 'string' && (reason.indexOf('@context') !== -1 || reason.indexOf('ResizeObserver') !== -1)) return
         location.replace('/error-recovery')
       } catch (err) {}
     }, true)
@@ -246,22 +250,18 @@ export default function RootLayout({
 })()` }} />
       </head>
       <body className="font-display antialiased relative">
-        <AppInitializer>
-          {children}
-          <Footer />
-        </AppInitializer>
-        <Toaster 
-          position="top-right" 
-          richColors
-          toastOptions={{
-            style: {
-              background: 'var(--background)',
-              color: 'var(--foreground)',
-              border: '1px solid var(--border)',
-            },
-            className: 'font-display',
-          }}
-        />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <AppInitializer>
+            {children}
+            <Footer />
+          </AppInitializer>
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   )

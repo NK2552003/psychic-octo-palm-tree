@@ -19,13 +19,16 @@ const nextConfig: NextConfig = {
   productionBrowserSourceMaps: true,
   compress: true,
   poweredByHeader: false,
+
+  sassOptions: {
+    silenceDeprecations: ['import'],
+  },
   
   experimental: {
     optimizePackageImports: [
       "gsap",
       "sonner",
       "lucide-react",
-      "recharts",
     ],
   },
   
@@ -41,26 +44,7 @@ const nextConfig: NextConfig = {
           },
         ],
       },
-      // Cache images optimized by Next.js for 1 year
-      {
-        source: "/_next/image/:path*",
-        headers: [
-          {
-            key: "Cache-Control",
-            value: "public, max-age=31536000, immutable",
-          },
-        ],
-      },
-      // Cache static assets from /_next/static for 1 year
-      {
-        source: "/_next/static/:path*",
-        headers: [
-          {
-            key: "Cache-Control",
-            value: "public, max-age=31536000, immutable",
-          },
-        ],
-      },
+
       // Cache fonts for 1 year
       {
         source: "/fonts/:path*",

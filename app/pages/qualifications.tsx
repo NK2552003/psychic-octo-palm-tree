@@ -17,6 +17,8 @@ interface Qualification {
     result?: string;
     academic?: {
       semesters?: { sem: number; percent: string }[];
+      cgpa?: string;
+      division?: string;
     };
   };
   skills:string[];
@@ -41,14 +43,14 @@ const qualificationsData: Qualification[] = [
   },
   {
     category: 'Education',
-    title: 'B.Tech in Computer Science',
-    institution: 'University: Tula\'s Institute, Dehradun aff. VMSBUTU',
-    duration: '2022 - Present',
-    description: 'Specialized in Software Engineering and Data Structures',
+    title: 'B.Tech in Computer Science & Engineering',
+    institution: "Tula's Institute, Dehradun (Affiliated to VMSB UTU)",
+    duration: '2022 - 2026',
+    description: 'Graduated with First Division with Distinction • Grand CGPA: 8.14 (79.48%)',
     details: {
-      challenge: 'Balancing rigorous coursework with internships and projects.',
-      solution: 'Focused on core subjects, practical projects and continuous learning.',
-      result: 'Consistent performance and multiple shipped projects.',
+      challenge: 'Balancing rigorous engineering coursework and advanced CS concepts with real-world project development.',
+      solution: 'Mastered core CS fundamentals, algorithms, system engineering, and full-stack software development.',
+      result: 'Graduated with First Division with Distinction (8.14 CGPA) across 8 semesters with multiple shipped projects.',
       academic: {
         semesters: [
           { sem: 1, percent: '79.58%' },
@@ -57,12 +59,14 @@ const qualificationsData: Qualification[] = [
           { sem: 4, percent: '74.56%' },
           { sem: 5, percent: '77.16%' },
           { sem: 6, percent: '77.56%' },
-          { sem: 7, percent: 'Ongoing' },
-          { sem: 8, percent: 'Pending' },
+          { sem: 7, percent: '84.63%' },
+          { sem: 8, percent: '80.11%' },
         ],
+        cgpa: '8.14',
+        division: 'First Division with Distinction',
       },
     },
-    skills: ["Data Structures", "OOP", "DBMS", "Computer Networks", "Python", "Java", "Software engineering"]
+    skills: ["Data Structures & Algorithms", "OOP", "DBMS", "Computer Networks", "Operating Systems", "Python", "Java", "Software Engineering"]
   },
   {
     category: 'Certifications',
@@ -221,11 +225,18 @@ const QualificationCard: React.FC<{ qualification: Qualification; index: number;
                   {getTrans(`qual.entry.${index}.details.challenge`, qualification.details.challenge)} {getTrans(`qual.entry.${index}.details.solution`, qualification.details.solution)} {getTrans(`qual.entry.${index}.details.result`, qualification.details.result)}
                 </>
               )}
-            </p> 
+            </p>
 
             {qualification.details.academic?.semesters && (
               <div className="mb-4">
-                <h5 data-i18n="qual.semesters" className="font-semibold mb-2 text-sm md:text-base">{t('qual.semesters', lang)}</h5>
+                <div className="flex flex-wrap items-center justify-between mb-2 gap-2">
+                  <h5 data-i18n="qual.semesters" className="font-semibold text-sm md:text-base">{t('qual.semesters', lang)}</h5>
+                  {qualification.details.academic.cgpa && (
+                    <span className="text-xs sm:text-sm font-semibold px-2.5 py-0.5 rounded-full bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-500/20">
+                      Grand CGPA: {qualification.details.academic.cgpa} {qualification.details.academic.division ? `• ${qualification.details.academic.division}` : ''}
+                    </span>
+                  )}
+                </div>
                 <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-8 gap-2 text-xs md:text-sm">
                   {qualification.details.academic.semesters.map((s, idx) => {
                     const displayPercent = s.percent === 'Ongoing' ? t('qual.status.ongoing', lang) : s.percent === 'Pending' ? t('qual.status.pending', lang) : s.percent
@@ -240,7 +251,7 @@ const QualificationCard: React.FC<{ qualification: Qualification; index: number;
                             : 'bg-card/80 border-border/10'
                         }`}>
                         <div className="font-semibold text-sm md:text-base">S{s.sem}</div>
-                        <div className="text-xs text-foreground/70 text-sm md:text-base">{displayPercent}</div>
+                        <div className="text-foreground/70 text-sm md:text-base">{displayPercent}</div>
                       </div>
                     )
                   })}

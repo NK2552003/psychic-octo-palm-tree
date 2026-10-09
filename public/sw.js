@@ -1,7 +1,7 @@
-// THIS IS A TEMPLATE — the build step will replace nitish-portfolio-02408dd with a versioned cache name.
+// THIS IS A TEMPLATE — the build step will replace nitish-portfolio-d79313d with a versioned cache name.
 // Do NOT edit the generated `public/sw.js` directly; edit this template instead.
 
-const CACHE_NAME = 'nitish-portfolio-02408dd';
+const CACHE_NAME = 'nitish-portfolio-d79313d';
 const urlsToCache = [
   '/',
   '/favicon-32x32.png',

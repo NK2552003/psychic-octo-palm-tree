@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
-import emailjs from "emailjs-com"
+import emailjs from "@emailjs/browser"
 import gsap from "gsap"
 import { toast } from "sonner"
 import { t } from "../../lib/i18n"

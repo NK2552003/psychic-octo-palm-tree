@@ -1,74 +1,71 @@
 "use client"
 
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { usePathname } from "next/navigation"
 import SplashScreen from "./SplashScreen"
-import Signature from "./signature"
 import InstallPrompt from "./InstallPrompt";
 import CookieConsent from "./CookieConsent";
 import DoodleOverlay from "./DoodleOverlay";
 import BigCursor from "./BigCursor";
 import ProgressScrollBar from "./ProgressScrollBar";
-import { ThemeProvider } from "./theme-provider"
 import LenisScroll from "./LenisScroll"
 import BrowserSupport from "./BrowserSupport"
 import { toast } from "sonner"
-import { t } from '@/lib/i18n'
+
+const featuredProjects = [
+  {
+    id: 'featured-ultimate-media-downloader',
+    name: 'Ultimate Media Downloader',
+    description: 'An open-source media downloader with support for 115+ platforms.',
+    action: 'Explore',
+    url: 'https://ultimate-media-downloader.fun/',
+  },
+  {
+    id: 'featured-mac-deep-cleaner',
+    name: 'Mac Deep Cleaner',
+    description: 'A macOS cleanup CLI with cache inspection, disk space recovery, and undo support.',
+    action: 'View on PyPI',
+    url: 'https://pypi.org/project/mac-deep-cleaner/',
+  },
+  {
+    id: 'featured-forest-ash-theme',
+    name: 'Forest Ash Theme',
+    description: '21 nature-inspired dark and light themes for your VS Code workspace.',
+    action: 'View themes',
+    url: 'https://marketplace.visualstudio.com/items?itemName=NK2552003.forest-ash-theme-vscode',
+  },
+]
+
+type I18nWindow = Window & {
+  __i18n?: Pick<typeof import('@/lib/i18n'), 'translateDocument'>
+}
 
 export default function AppInitializer({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const isHomePage = pathname === '/'
   const isUnsupportedBrowserPage = pathname === '/unsupported-browser'
-  const [themeDetected, setThemeDetected] = useState(false)
-  const [systemTheme, setSystemTheme] = useState<"light" | "dark">("light")
-  const [splashDone, setSplashDone] = useState<boolean>(() => {
-    try {
-      if (typeof window === 'undefined') return false
-      const params = new URLSearchParams(window.location.search)
-      const force = params.get('forceSplash') === '1'
-
-      // If explicitly forcing the splash, remove any previously-set session flag
-      if (force) {
-        try { sessionStorage.removeItem('splashDone') } catch (e) {}
-        return false
-      }
-
-      // If this navigation was a full page reload, show the splash again (clear the session flag)
+  // The server and first client render must both show the splash. Read browser
+  // preferences only after hydration, including on returning-visitor navigations.
+  const [splashDone, setSplashDone] = useState(false)
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => {
       try {
-        const entries = performance.getEntriesByType('navigation') as PerformanceNavigationTiming[]
-        const navType = entries && entries[0] && (entries[0] as any).type ? (entries[0] as any).type : ''
-        if (navType === 'reload') {
-          try { sessionStorage.removeItem('splashDone') } catch (e) {}
-          return false
+        const force = new URLSearchParams(window.location.search).get('forceSplash') === '1'
+        const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined
+        if (force || navigation?.type === 'reload') {
+          sessionStorage.removeItem('splashDone')
+          return
         }
-      } catch (e) {}
-
-      return sessionStorage.getItem('splashDone') === '1'
-    } catch (e) {
-      return false
-    }
-  })
+        setSplashDone(sessionStorage.getItem('splashDone') === '1')
+      } catch {
+        // Storage may be unavailable; let the splash complete normally.
+      }
+    })
+    return () => cancelAnimationFrame(frame)
+  }, [])
   const [renderEnhancements, setRenderEnhancements] = useState(false)
 
-  useEffect(() => {
-    const mq = window.matchMedia("(prefers-color-scheme: dark)")
-    const update = () => {
-      setSystemTheme(mq.matches ? "dark" : "light")
-      setThemeDetected(true)
-    }
 
-    // run immediately to detect current setting
-    update()
-
-    // listen for changes while mounted
-    if (mq.addEventListener) mq.addEventListener("change", update)
-    else mq.addListener(update)
-
-    return () => {
-      if (mq.removeEventListener) mq.removeEventListener("change", update)
-      else mq.removeListener(update)
-    }
-  }, [])
 
   // register a basic service worker to enable offline caching for PWA
   useEffect(() => {
@@ -95,7 +92,7 @@ export default function AppInitializer({ children }: { children: React.ReactNode
           })
         })
       })
-      .catch((e) => {
+      .catch(() => {
         // ignore failures — optional
         // console.warn('SW registration failed', e)
       })
@@ -124,8 +121,10 @@ export default function AppInitializer({ children }: { children: React.ReactNode
         if (window.location.pathname === '/error-recovery') return
         // avoid redirect during local development
         if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') return
+        const msg = (e && (e.message || (e.error && e.error.message))) || ''
+        if (typeof msg === 'string' && (msg.includes('@context') || msg.includes('ResizeObserver') || msg.includes('Script error'))) return
         window.location.replace('/error-recovery')
-      } catch (err) {}
+      } catch {}
     }
 
     const onRejection = (e: PromiseRejectionEvent) => {
@@ -133,8 +132,10 @@ export default function AppInitializer({ children }: { children: React.ReactNode
         if (typeof window === 'undefined') return
         if (window.location.pathname === '/error-recovery') return
         if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') return
+        const reason = (e && (e.reason?.message || String(e.reason))) || ''
+        if (typeof reason === 'string' && (reason.includes('@context') || reason.includes('ResizeObserver'))) return
         window.location.replace('/error-recovery')
-      } catch (err) {}
+      } catch {}
     }
 
     window.addEventListener('error', onError)
@@ -147,10 +148,9 @@ export default function AppInitializer({ children }: { children: React.ReactNode
   }, [])
 
   // keep deferred install prompt available even if `InstallPrompt` mounts later
-  const [deferredPrompt, setDeferredPrompt] = useState<any | null>(null)
+  const [deferredPrompt, setDeferredPrompt] = useState<Event | null>(null)
   useEffect(() => {
     const handler = (e: Event) => {
-      // @ts-ignore
       e.preventDefault()
       setDeferredPrompt(e)
     }
@@ -165,12 +165,12 @@ export default function AppInitializer({ children }: { children: React.ReactNode
 
     const tryGlobal = (lang: 'en' | 'hi' | 'hinglish') => {
       try {
-        const gl = (typeof window !== 'undefined' && (window as any).__i18n) as any
+        const gl = (typeof window !== 'undefined' && (window as I18nWindow).__i18n)
         if (gl && typeof gl.translateDocument === 'function') {
-          try { gl.translateDocument(lang) } catch (e) {}
+          try { gl.translateDocument(lang) } catch {}
           return true
         }
-      } catch (e) {}
+      } catch {}
       return false
     }
 
@@ -195,18 +195,18 @@ export default function AppInitializer({ children }: { children: React.ReactNode
             clearInterval(id)
             // Listen for explicit readiness event as a safer fallback
             const onReady = () => {
-              try { tryGlobal(lang) } catch (e) {}
-              try { window.removeEventListener('i18n:ready', onReady) } catch (e) {}
+              try { tryGlobal(lang) } catch {}
+              try { window.removeEventListener('i18n:ready', onReady) } catch {}
             }
-            try { window.addEventListener('i18n:ready', onReady) } catch (e) {}
+            try { window.addEventListener('i18n:ready', onReady) } catch {}
             // give up after a brief timeout
             const giveUp = window.setTimeout(() => {
-              try { window.removeEventListener('i18n:ready', onReady) } catch (e) {}
+              try { window.removeEventListener('i18n:ready', onReady) } catch {}
               clearTimeout(giveUp)
             }, 5000)
           }
         }, 50)
-      } catch (e) {}
+      } catch {}
     }
 
     // apply initial
@@ -217,21 +217,20 @@ export default function AppInitializer({ children }: { children: React.ReactNode
       if (e.key === 'preferredLang') {
         try {
           const val = (e.newValue as 'en'|'hi'|'hinglish') || 'en'
-          try { const gl = (window as any).__i18n; if (gl && typeof gl.translateDocument === 'function') gl.translateDocument(val) } catch (e) {}
+          try { const gl = (window as I18nWindow).__i18n; if (gl && typeof gl.translateDocument === 'function') gl.translateDocument(val) } catch {}
           window.dispatchEvent(new CustomEvent('preferredLangChange', { detail: val }))
-        } catch (e) {}
+        } catch {}
       }
     }
 
-    try { window.addEventListener('storage', onStorage as EventListener) } catch (e) {}
+    try { window.addEventListener('storage', onStorage as EventListener) } catch {}
 
     // Final effort: if i18n helper appears shortly after mount, try applying it once more
     const finalAttempt = setTimeout(() => {
-      try { const lang = (localStorage.getItem('preferredLang') as 'en'|'hi'|'hinglish') || 'en'; const gl = (window as any).__i18n; if (gl && typeof gl.translateDocument === 'function') gl.translateDocument(lang) } catch (e) {}
+      try { const lang = (localStorage.getItem('preferredLang') as 'en'|'hi'|'hinglish') || 'en'; const gl = (window as I18nWindow).__i18n; if (gl && typeof gl.translateDocument === 'function') gl.translateDocument(lang) } catch {}
     }, 200)
 
     const handler = (e: Event) => {
-      // @ts-ignore
       const detail = (e as CustomEvent).detail as 'en' | 'hi' | 'hinglish'
       const lang = detail || 'en'
 
@@ -240,10 +239,10 @@ export default function AppInitializer({ children }: { children: React.ReactNode
 
       // Listen for i18n ready once and then apply
       const onReady = () => {
-        try { tryGlobal(lang) } catch (e) {}
-        try { window.removeEventListener('i18n:ready', onReady) } catch (e) {}
+        try { tryGlobal(lang) } catch {}
+        try { window.removeEventListener('i18n:ready', onReady) } catch {}
       }
-      try { window.addEventListener('i18n:ready', onReady) } catch (e) {}
+      try { window.addEventListener('i18n:ready', onReady) } catch {}
 
       // No dynamic import fallback here to avoid HMR module factory issues — we rely on the global helper and i18n:ready event instead.
     }
@@ -253,7 +252,7 @@ export default function AppInitializer({ children }: { children: React.ReactNode
     return () => {
       mounted = false
       window.removeEventListener('preferredLangChange', handler as EventListener)
-      try { window.removeEventListener('storage', onStorage as EventListener) } catch (e) {}
+      try { window.removeEventListener('storage', onStorage as EventListener) } catch {}
       clearTimeout(finalAttempt)
     }
   }, [])
@@ -274,47 +273,49 @@ export default function AppInitializer({ children }: { children: React.ReactNode
     }
   }, [splashDone])
 
-  // show a WDAwards toast once when the splash has finished
+  // Announce the featured projects once per page load, after the splash.
+  // Mark each toast only when shown so Strict Mode cleanup cannot lose it.
+  const shownProjectToasts = useRef(new Set<string>())
   useEffect(() => {
-    try {
-      if (!splashDone) return
-      const key = 'wdawardsToastShown'
-      if (typeof window !== 'undefined' && localStorage.getItem(key) === '1') return
-
-      toast(t('wdawards.toast.title'), {
-        description: t('wdawards.toast.desc'),
+    if (!splashDone || isUnsupportedBrowserPage) return
+    // Sonner keeps its queue across Fast Refresh. Remove announcements from
+    // the previous implementation before displaying the current selection.
+    const featuredIds = new Set(featuredProjects.map(project => project.id))
+    toast.getToasts().forEach(notification => {
+      if (!featuredIds.has(String(notification.id))) toast.dismiss(notification.id)
+    })
+    const timers = featuredProjects.map((project, index) => setTimeout(() => {
+      if (shownProjectToasts.current.has(project.id)) return
+      shownProjectToasts.current.add(project.id)
+      toast(project.name, {
+        id: project.id,
+        description: project.description,
+        duration: 9000,
+        closeButton: true,
         action: {
-          label: t('wdawards.action'),
-          onClick: () => {
-            try { window.open('https://wdawards.com/web/an-interactive-dev-portfolio', '_blank', 'noopener') } catch (e) {}
-          }
-        }
+          label: project.action,
+          onClick: () => window.open(project.url, '_blank', 'noopener,noreferrer'),
+        },
       })
-
-      try { localStorage.setItem(key, '1') } catch (e) {}
-    } catch (e) {}
+    }, 800 + index * 1200))
+    return () => timers.forEach(clearTimeout)
   }, [splashDone])
-
-  // don't mount or initialize anything until we know the system theme
-  if (!themeDetected) return null
 
   return (
     <LenisScroll>
-      <ThemeProvider attribute="class" defaultTheme={systemTheme}>
-        <BrowserSupport />
-        <ProgressScrollBar />
-        {!splashDone && (
-          <SplashScreen onLoaded={() => {
-            setSplashDone(true)
-            try { sessionStorage.setItem('splashDone', '1') } catch (e) {}
-          }} />
-        )}
-        {splashDone && children}
-        {splashDone && renderEnhancements && <BigCursor />}
-        {splashDone && renderEnhancements && isHomePage && <DoodleOverlay />}
-        {splashDone && renderEnhancements && !isUnsupportedBrowserPage && <InstallPrompt deferredPrompt={deferredPrompt} setDeferredPrompt={setDeferredPrompt} />}
-        {splashDone && !isUnsupportedBrowserPage && <CookieConsent />}
-      </ThemeProvider>
+      <BrowserSupport />
+      <ProgressScrollBar />
+      {!splashDone && (
+        <SplashScreen onLoaded={() => {
+          setSplashDone(true)
+          try { sessionStorage.setItem('splashDone', '1') } catch {}
+        }} />
+      )}
+      {splashDone && children}
+      {splashDone && renderEnhancements && <BigCursor />}
+      {splashDone && renderEnhancements && isHomePage && <DoodleOverlay />}
+      {splashDone && renderEnhancements && !isUnsupportedBrowserPage && <InstallPrompt deferredPrompt={deferredPrompt} setDeferredPrompt={setDeferredPrompt} />}
+      {splashDone && !isUnsupportedBrowserPage && <CookieConsent />}
     </LenisScroll>
   )
 }

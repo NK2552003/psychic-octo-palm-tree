@@ -1,12 +1,37 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
-import { usePathname, useRouter } from "next/navigation"
+import { useEffect, useRef, useState, useSyncExternalStore } from "react"
+import { usePathname } from "next/navigation"
 import gsap from "gsap"
+import { ScrollTrigger } from "gsap/ScrollTrigger"
+import { useParallax } from "@/lib/useParallax"
+import { isMobile } from "@/lib/deviceDetection"
 import { MoveUpRight, ArrowUpRight } from "lucide-react"
+import { TrophyIcon, AwardMedalIcon, AstonishingAwardIcon } from "@/components/icons"
 import { t, type LangCode } from '@/lib/i18n'
-import { toast } from "sonner"
-import Signature from "@/components/signature"
+import Link from "next/link"
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger)
+}
+
+function getLanguage(): LangCode {
+  try {
+    const lang = localStorage.getItem("preferredLang")
+    return lang === "hi" || lang === "hinglish" ? lang : "en"
+  } catch {
+    return "en"
+  }
+}
+
+function subscribeLanguage(onChange: () => void) {
+  window.addEventListener("preferredLangChange", onChange)
+  window.addEventListener("storage", onChange)
+  return () => {
+    window.removeEventListener("preferredLangChange", onChange)
+    window.removeEventListener("storage", onChange)
+  }
+}
 
 const sections = [
   { id: "hero" },
@@ -25,19 +50,89 @@ const socials = [
   { name: "Uiverse",   url: "https://uiverse.io/profile/NK2552003" },
 ]
 
+const ATELIER_LETTERS = Array.from("ATELIER DE CRÉATION")
+
 export default function Footer() {
   const pathname = usePathname()
-  const router = useRouter()
   const normalizedPath = (pathname || "/").replace(/\/+$/, "") || "/"
   const isLandingPage = normalizedPath === "/"
   const footerRef = useRef<HTMLDivElement>(null)
   const marqueRef = useRef<HTMLDivElement>(null)
-  const [lang, setLang] = useState<LangCode>(
-    typeof window !== "undefined"
-      ? ((localStorage.getItem("preferredLang") as LangCode) || "en")
-      : "en"
-  )
+  const textContainerRef = useRef<HTMLDivElement>(null)
+  const atelierSectionRef = useRef<HTMLElement>(null)
+  const mainContentRef = useRef<HTMLDivElement>(null)
+  const lang = useSyncExternalStore(subscribeLanguage, getLanguage, (): LangCode => "en")
   const [year] = useState(new Date().getFullYear())
+
+  // Initialize micro-parallax depth on footer elements (disabled on mobile)
+  const parallaxEnabled = typeof window !== "undefined" ? !isMobile() : true
+  useParallax(footerRef, parallaxEnabled)
+
+  /* ── Parallax scroll effect ── */
+  useEffect(() => {
+    const footerEl = footerRef.current
+    if (!footerEl) return
+
+    const ctx = gsap.context(() => {
+      // Letter-by-letter physical bottom-to-top reveal and top-to-bottom hide (no fade)
+      const letters = footerEl.querySelectorAll(".atelier-letter")
+      if (letters && letters.length > 0) {
+        gsap.fromTo(
+          letters,
+          {
+            y: "125%",
+          },
+          {
+            y: "0%",
+            duration: 0.55,
+            stagger: 0.025,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: atelierSectionRef.current || footerEl,
+              start: "top 88%",
+              toggleActions: "play none none reverse",
+            },
+          }
+        )
+      }
+
+      // Parallax for the typography container: glides smoothly into 88% reveal on last hit (end of scroll)
+      if (textContainerRef.current) {
+        gsap.fromTo(
+          textContainerRef.current,
+          { y: 12 },
+          {
+            y: 0,
+            ease: "none",
+            scrollTrigger: {
+              trigger: footerEl,
+              start: "top bottom",
+              end: "bottom bottom",
+              scrub: 0.8,
+            },
+          }
+        )
+      }
+
+      // Parallax for the noise texture layer
+      gsap.fromTo(
+        ".footer-noise-layer",
+        { y: -25 },
+        {
+          y: 25,
+          ease: "none",
+          scrollTrigger: {
+            trigger: footerEl,
+            start: "top bottom",
+            end: "bottom bottom",
+            scrub: true,
+          },
+        }
+      )
+    }, footerRef)
+
+    return () => ctx.revert()
+  }, [])
 
   /* ── GSAP entrance ── */
   useEffect(() => {
@@ -99,18 +194,6 @@ export default function Footer() {
     return () => ctx.revert()
   }, [isLandingPage])
 
-  /* ── Lang sync ── */
-  useEffect(() => {
-    const onPref = (e: any) =>
-      setLang(((e && e.detail) as LangCode) || ((localStorage.getItem("preferredLang") as LangCode) || "en"))
-    window.addEventListener("preferredLangChange", onPref)
-    window.addEventListener("storage", onPref)
-    return () => {
-      window.removeEventListener("preferredLangChange", onPref)
-      window.removeEventListener("storage", onPref)
-    }
-  }, [])
-
   const scrollTo = (id: string) => (e: React.MouseEvent) => {
     e.preventDefault()
     const el = document.getElementById(id)
@@ -125,28 +208,52 @@ export default function Footer() {
     }
   }
 
-  const handleBackHome = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault()
-    if (typeof window !== "undefined") {
-      window.scrollTo({ top: 0, left: 0, behavior: "auto" })
-    }
-    router.push("/")
-  }
-
   return (
     <footer
       ref={footerRef}
-      className="relative overflow-hidden bg-stone-200 dark:bg-[#042f2e] text-stone-800 dark:text-stone-100"
+      className="relative w-full"
     >
-
-      {/* ── Noise texture overlay ── */}
-      <div
-        className="pointer-events-none absolute inset-0 opacity-[0.03] dark:opacity-[0.06] z-0"
+      {/* ── Top section: Half-cut typography emerging into the footer ── */}
+      <section
+        ref={atelierSectionRef}
+        className="hidden lg:flex relative w-full items-start justify-center overflow-hidden bg-transparent select-none pointer-events-none -mb-[1px]"
         style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
-          backgroundSize: "128px 128px",
+          ['--atelier-fs' as any]: 'clamp(4.5rem, 9.5vw, 13rem)',
+          height: 'calc(var(--atelier-fs) * 0.695)',
         }}
-      />
+      >
+        <div
+          ref={textContainerRef}
+          className="relative flex items-center justify-center font-black uppercase tracking-[-0.01em] whitespace-nowrap leading-none w-full max-w-full px-4"
+          style={{
+            fontFamily: "Inter, sans-serif",
+            fontSize: "var(--atelier-fs)",
+            color: "var(--footer-bg-fill, #042f2e)",
+            marginTop: "calc(var(--atelier-fs) * -0.04)",
+          }}
+        >
+          {ATELIER_LETTERS.map((char, index) => (
+            <span
+              key={index}
+              className="atelier-letter inline-block"
+              style={{ willChange: "transform" }}
+            >
+              {char === " " ? "\u00A0" : char}
+            </span>
+          ))}
+        </div>
+      </section>
+
+      {/* ── Colored Footer Body ── */}
+      <div className="relative overflow-hidden bg-stone-200 dark:bg-[#042f2e] text-stone-800 dark:text-stone-100">
+        {/* ── Noise texture overlay ── */}
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.03] dark:opacity-[0.06] z-0 footer-noise-layer"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
+            backgroundSize: "128px 128px",
+          }}
+        />
 
       {/* ── Marquee ── */}
       {isLandingPage && (
@@ -192,50 +299,81 @@ export default function Footer() {
               </a>
             </div>
 
-            <div className="space-y-1">
-              <p className="text-[11px] font-mono uppercase tracking-[0.2em] text-stone-500 dark:text-teal-600 mb-3">
+            <div className="space-y-3">
+              <p className="text-[11px] font-mono uppercase tracking-[0.2em] text-stone-500 dark:text-teal-600 mb-2">
                 Recognition
               </p>
-              <a
-                href="https://wdawards.com/web/an-interactive-dev-portfolio"
-                onClick={(e) => {
-                  e.preventDefault()
-                  try { window.open("https://wdawards.com/web/an-interactive-dev-portfolio", "_blank", "noopener") } catch {}
-                  try {
-                    toast(t("wdawards.toast.title"), {
-                      description: t("wdawards.toast.desc"),
-                      action: { label: t("wdawards.action"), onClick: () => { try { window.open("https://wdawards.com/web/an-interactive-dev-portfolio", "_blank", "noopener") } catch {} } },
-                    })
-                  } catch {}
-                }}
-                className="group inline-flex items-center gap-2 text-base font-medium hover:text-teal-700 dark:hover:text-teal-300 transition-colors duration-200"
-              >
-                {t("footer.wdawards")}
-                <ArrowUpRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-all duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-              </a>
+
+              {/* Astonishing Awards — Project Of The Day */}
+              <div className="space-y-1">
+                <a
+                  href="https://astonishingawards.com/nominee/nitish-portfolio/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group block hover:text-teal-700 dark:hover:text-teal-300 transition-colors duration-200"
+                >
+                  <div className="inline-flex items-center gap-2 text-base font-medium">
+                    <span className="inline-flex items-center gap-1.5">
+                      <AstonishingAwardIcon className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" aria-hidden="true" />
+                      Astonishing Awards
+                    </span>
+                    <span className="inline-flex items-center gap-1.5 text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-500/30">
+                      <TrophyIcon className="w-3 h-3 text-amber-600 dark:text-amber-400 shrink-0" aria-hidden="true" />
+                      Project Of The Day
+                    </span>
+                    <ArrowUpRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-all duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  </div>
+                  <p className="text-xs text-stone-600 dark:text-teal-300/80 font-mono group-hover:text-teal-700 dark:group-hover:text-teal-200 transition-colors duration-200">
+                    October 7, 2026 · Site of the Day selection
+                  </p>
+                </a>
+              </div>
+
+              {/* WD Awards — Nominee */}
+              <div className="space-y-1 pt-0.5">
+                <a
+                  href="https://wdawards.com/web/an-interactive-dev-portfolio"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group block hover:text-teal-700 dark:hover:text-teal-300 transition-colors duration-200"
+                >
+                  <div className="inline-flex items-center gap-2 text-base font-medium">
+                    <span className="inline-flex items-center gap-1.5">
+                      <AwardMedalIcon className="w-4 h-4 text-teal-600 dark:text-teal-400 shrink-0" aria-hidden="true" />
+                      WD Awards
+                    </span>
+                    <span className="inline-flex items-center gap-1.5 text-[10px] font-mono font-medium px-2 py-0.5 rounded-full bg-stone-300/60 dark:bg-teal-900/40 text-stone-600 dark:text-teal-300 border border-stone-400/30 dark:border-teal-700/30">
+                      Nominee
+                    </span>
+                    <ArrowUpRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-all duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  </div>
+                  <p className="text-xs text-stone-600 dark:text-teal-300/80 font-mono group-hover:text-teal-700 dark:group-hover:text-teal-200 transition-colors duration-200">
+                    Portfolio category · January 2026
+                  </p>
+                </a>
+              </div>
             </div>
 
             <div className="space-y-1 text-xs text-stone-500 dark:text-white/80">
-              <a href="/cookies" className="block hover:text-stone-700 dark:hover:text-white transition-colors duration-150">
+              <Link href="/cookies" className="block hover:text-stone-700 dark:hover:text-white transition-colors duration-150">
                 Cookie Policy
-              </a>
-              <a href="/privacy" className="block hover:text-stone-700 dark:hover:text-white transition-colors duration-150">
+              </Link>
+              <Link href="/privacy" className="block hover:text-stone-700 dark:hover:text-white transition-colors duration-150">
                 Privacy Policy
-              </a>
-              <a href="/process" className="block hover:text-stone-700 dark:hover:text-white transition-colors duration-150">
+              </Link>
+              <Link href="/process" className="block hover:text-stone-700 dark:hover:text-white transition-colors duration-150">
                 How I Work
-              </a>
-              <a href="/pricing" className="block hover:text-stone-700 dark:hover:text-white transition-colors duration-150">
+              </Link>
+              <Link href="/pricing" className="block hover:text-stone-700 dark:hover:text-white transition-colors duration-150">
                 Pricing
-              </a>
+              </Link>
               {!isLandingPage && (
-                <a
+                <Link
                   href="/"
-                  onClick={handleBackHome}
                   className="block pt-1 text-sm font-medium text-stone-700 dark:text-stone-200 hover:text-teal-700 dark:hover:text-teal-300 transition-colors duration-150"
                 >
                   ← Back to Home
-                </a>
+                </Link>
               )}
             </div>
           </div>
@@ -308,6 +446,8 @@ export default function Footer() {
             Built with Next.js & GSAP
           </span>
         </div>
+      </div>
+
       </div>
 
     </footer>

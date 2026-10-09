@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef } from "react"
 import gsap from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
-import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import {
@@ -17,6 +16,8 @@ import {
   Tag,
   ChevronDown,
   ChevronUp,
+  Package,
+  Globe,
 } from "lucide-react"
 
 interface GitHubRepo {
@@ -39,41 +40,48 @@ interface DevToArticle {
   tags: string[]
 }
 
+const HIDDEN_REPO_NAMES = new Set([
+  "big-data-survival-guide",
+  "blisscampindia",
+  "brew-why",
+  "forest-ash-theme",
+  "forest-ash-theme-vscode",
+  "focusforge",
+  "iconoodle",
+  "mac-cleaner",
+  "mac-deep-cleaner",
+  "pasteshield",
+  "quietnote",
+  "quiet_dock",
+  "quiet-dock",
+  "select2ai_extension",
+  "select2ai-extension",
+  "student-offer-repository",
+  "ultimate-media-downloader",
+  "umd",
+  "psychic-octo-palm-tree",
+  "nk2552003",
+])
+
+const isRepoAlreadyFeatured = (repoName: string) => {
+  const norm = repoName.toLowerCase().replace(/[\s_]+/g, "-")
+  if (HIDDEN_REPO_NAMES.has(norm)) return true
+  for (const item of HIDDEN_REPO_NAMES) {
+    if (norm === item || norm.replace(/-/g, "") === item.replace(/-/g, "")) return true
+  }
+  return false
+}
+
+
 export default function ProjectsPage() {
   const [expandedSection, setExpandedSection] = useState<number | null>(null)
   const [githubRepos, setGithubRepos] = useState<GitHubRepo[]>([])
   const [devtoArticles, setDevtoArticles] = useState<DevToArticle[]>([])
-  const [loading, setLoading] = useState(false)
-  const hasShownRepoToastsRef = useRef(false)
-  const repoToastTimeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([])
+  const [loading, setLoading] = useState(true)
 
   const containerRef = useRef<HTMLDivElement>(null)
-  const doodlesRef = useRef<HTMLDivElement>(null)
   const sectionsRef = useRef<(HTMLDivElement | null)[]>([])
   const cardsContainerRef = useRef<(HTMLDivElement | null)[]>([])
-
-  useEffect(() => {
-    return () => {
-      repoToastTimeoutsRef.current.forEach((timeoutId) => clearTimeout(timeoutId))
-      repoToastTimeoutsRef.current = []
-    }
-  }, [])
-
-  // Fetch GitHub repos and Dev.to articles on initial mount
-  useEffect(() => {
-    fetchGithubRepos();
-    fetchDevtoArticles();
-  }, [])
-
-  // Legacy: Keep this in case expandedSection changes are needed elsewhere
-  useEffect(() => {
-    if (expandedSection === 0 && githubRepos.length === 0) {
-      fetchGithubRepos();
-    }
-    if (expandedSection === 3 && devtoArticles.length === 0) {
-      fetchDevtoArticles();
-    }
-  }, [expandedSection, githubRepos.length, devtoArticles.length])
 
   // Register GSAP plugins and run initial entrance animations
   useEffect(() => {
@@ -134,6 +142,7 @@ export default function ProjectsPage() {
 
   // Smooth hover animations for section number and subtitle using GSAP
   useEffect(() => {
+    const cleanups: (() => void)[] = []
     if (!containerRef.current) return
     const ctx = gsap.context(() => {
       sectionsRef.current.forEach((section) => {
@@ -189,20 +198,18 @@ export default function ProjectsPage() {
         section.addEventListener("mouseleave", leave)
         section.addEventListener("blur", leave)
 
-        ;(section as any)._gsapHoverCleanup = () => {
+        cleanups.push(() => {
           section.removeEventListener("mouseenter", enter)
           section.removeEventListener("focus", enter)
           section.removeEventListener("mouseleave", leave)
           section.removeEventListener("blur", leave)
           tl.kill()
-        }
+        })
       })
     }, containerRef)
 
     return () => {
-      sectionsRef.current.forEach((section) => {
-        if (section && (section as any)._gsapHoverCleanup) (section as any)._gsapHoverCleanup()
-      })
+      cleanups.forEach(cleanup => cleanup())
       ctx.revert()
     }
   }, [])
@@ -260,85 +267,45 @@ export default function ProjectsPage() {
     })
   }, [expandedSection])
 
-  const fetchGithubRepos = async () => {
-    setLoading(true)
-    try {
-      const res = await fetch("https://api.github.com/users/nk2552003/repos?per_page=100")
-      let data = await res.json()
-      if (Array.isArray(data)) {
-        if (!hasShownRepoToastsRef.current && data.length > 0) {
-          const mostStarred = data.reduce((top: GitHubRepo, repo: GitHubRepo) =>
-            repo.stargazers_count > top.stargazers_count ? repo : top,
-          data[0])
+  useEffect(() => {
+    const controller = new AbortController()
+    const fetchGithubRepos = async () => {
+      try {
+        const res = await fetch("https://api.github.com/users/nk2552003/repos?per_page=100", { signal: controller.signal })
+        if (!res.ok) throw new Error(`Request failed: ${res.status}`)
+        const data = await res.json()
+        if (controller.signal.aborted) return
+        if (Array.isArray(data)) {
+          // Filter out repositories that are already featured in the extensions and live websites sections
+          const filtered = data.filter((repo: GitHubRepo) => !isRepoAlreadyFeatured(repo.name))
 
-          const reposWithDate = data.filter((repo: GitHubRepo) => Boolean(repo.created_at))
-          const mostRecent = (reposWithDate.length > 0 ? reposWithDate : data).reduce((latest: GitHubRepo, repo: GitHubRepo) => {
-            const latestTime = latest.created_at ? new Date(latest.created_at).getTime() : 0
-            const repoTime = repo.created_at ? new Date(repo.created_at).getTime() : 0
-            return repoTime > latestTime ? repo : latest
-          }, reposWithDate.length > 0 ? reposWithDate[0] : data[0])
-
-          const showRepoToast = (label: string, repo: GitHubRepo) => {
-            const heading = repo.name.replace(/-/g, " ")
-            toast.custom(
-              () => (
-                <button
-                  type="button"
-                  onClick={() => {
-                    try {
-                      window.open(repo.html_url, "_blank", "noopener")
-                    } catch (e) {}
-                  }}
-                  className="w-full max-w-[356px] bg-background p-4 text-left transition hover:bg-muted/40"
-                >
-                  <p className="text-xs font-medium uppercase tracking-wide text-foreground/85">{label}</p>
-                  <h4 className="mt-1 line-clamp-1 text-sm font-semibold">{heading}</h4>
-                  <p className="mt-1 line-clamp-2 text-sm text-foreground/80">
-                    {repo.description || "No description available"}
-                  </p>
-                </button>
-              ),
-              { duration: 7000, className: "!rounded-xl !p-0 overflow-hidden" },
-            )
-          }
-
-          const firstToastTimeout = setTimeout(() => {
-            showRepoToast("Most Starred", mostStarred)
-          }, 1200)
-
-          const secondToastTimeout = setTimeout(() => {
-            showRepoToast("Most Recent", mostRecent)
-          }, 2600)
-
-          repoToastTimeoutsRef.current.push(firstToastTimeout, secondToastTimeout)
-
-          hasShownRepoToastsRef.current = true
+          const sorted = filtered.sort((a, b) => b.stargazers_count - a.stargazers_count)
+          setGithubRepos(sorted)
+        } else {
+          setGithubRepos([])
         }
-
-        data = data.sort((a, b) => b.stargazers_count - a.stargazers_count)
-        setGithubRepos(data)
-      } else {
-        setGithubRepos([])
+      } catch (error) {
+        if (!controller.signal.aborted) console.error("Error fetching GitHub repos:", error)
       }
-    } catch (error) {
-      console.error("Error fetching GitHub repos:", error)
-    } finally {
-      setLoading(false)
     }
-  }
 
-  const fetchDevtoArticles = async () => {
-    setLoading(true)
-    try {
-      const res = await fetch("https://dev.to/api/articles?username=nk2552003")
-      const data = await res.json()
-      setDevtoArticles(data)
-    } catch (error) {
-      console.error("Error fetching Dev.to articles:", error)
-    } finally {
-      setLoading(false)
+    const fetchDevtoArticles = async () => {
+      try {
+        const res = await fetch("https://dev.to/api/articles?username=nk2552003", { signal: controller.signal })
+        if (!res.ok) throw new Error(`Request failed: ${res.status}`)
+        const data = await res.json()
+        if (controller.signal.aborted) return
+        setDevtoArticles(Array.isArray(data) ? data : [])
+      } catch (error) {
+        if (!controller.signal.aborted) console.error("Error fetching Dev.to articles:", error)
+      }
     }
-  }
+
+    void Promise.all([fetchGithubRepos(), fetchDevtoArticles()]).finally(() => {
+      if (!controller.signal.aborted) setLoading(false)
+    })
+    return () => controller.abort()
+  }, [])
 
   const toggleSection = (index: number) => {
     // If closing the currently expanded section, animate collapse first
@@ -401,7 +368,174 @@ export default function ProjectsPage() {
     }
   }
 
+  const publishedExtensionsData = [
+    {
+      id: "focusforge",
+      name: "FocusForge",
+      platform: "VS Code Marketplace",
+      platformBadge: "VS Code Extension",
+      badgeColor: "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/30",
+      description: "Local-first VS Code productivity dashboard for focus time, Pomodoro cycles, projects, GitHub issues, commits, planner sessions and reports.",
+      url: "https://marketplace.visualstudio.com/items?itemName=NK2552003.focusforge",
+      tags: ["VS Code", "TypeScript", "Pomodoro", "Offline-first"],
+      highlight: "Productivity",
+      buttonText: "VS Code Marketplace",
+    },
+    {
+      id: "pasteshield",
+      name: "PasteShield",
+      platform: "VS Code Marketplace",
+      platformBadge: "VS Code Extension",
+      badgeColor: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30",
+      description: "Intercepts every paste and catches API keys, hardcoded passwords, and unsafe code patterns before they reach your file, fully offline.",
+      url: "https://marketplace.visualstudio.com/items?itemName=NK2552003.pasteshield",
+      tags: ["Security", "Privacy", "Zero-Leak", "Offline"],
+      highlight: "Security",
+      buttonText: "VS Code Marketplace",
+    },
+    {
+      id: "forest-ash-theme",
+      name: "Forest Ash Theme",
+      platform: "VS Code Marketplace",
+      platformBadge: "VS Code Theme",
+      badgeColor: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30",
+      description: "21 eye-friendly dark and light themes inspired by forest ash textures and anime mood boards for extended coding comfort.",
+      url: "https://marketplace.visualstudio.com/items?itemName=NK2552003.forest-ash-theme-vscode",
+      tags: ["Themes", "21 Variants", "UI/UX", "Dark & Light"],
+      highlight: "21 Themes",
+      buttonText: "VS Code Marketplace",
+    },
+    {
+      id: "quiet_dock",
+      name: "quiet_dock",
+      platform: "pub.dev",
+      platformBadge: "Flutter Package",
+      badgeColor: "bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border-cyan-500/30",
+      description: "Glassmorphic Flutter navigation dock with swipeable pages, quick actions, and a responsive wide-screen rail.",
+      url: "https://pub.dev/packages/quiet_dock",
+      tags: ["Flutter", "Dart", "Glassmorphic", "Navigation"],
+      highlight: "pub.dev",
+      buttonText: "View on pub.dev",
+    },
+    {
+      id: "mac-deep-cleaner",
+      name: "mac-deep-cleaner",
+      platform: "PyPI",
+      platformBadge: "Python CLI",
+      badgeColor: "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/30",
+      description: "Python CLI for macOS cleanup with multiple safety layers, disk space recovery, cache inspection, and undo support.",
+      url: "https://pypi.org/project/mac-deep-cleaner/",
+      tags: ["Python", "CLI", "macOS", "System Cleanup"],
+      highlight: "PyPI",
+      buttonText: "View on PyPI",
+    },
+  ]
+
+  const liveWebsitesData = [
+    {
+      id: "umd",
+      name: "Ultimate Media Downloader",
+      badge: "Live Website & CLI",
+      badgeColor: "bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/30",
+      description: "Open-source CLI tool and documentation site supporting 115+ platforms, with multi-architecture release packages on Codeberg.",
+      url: "https://ultimate-media-downloader.fun/",
+      sourceUrl: "https://codeberg.org/nk2552003/umd",
+      tags: ["CLI", "Documentation", "Next.js", "115+ Platforms"],
+      highlight: "ultimate-media-downloader.fun",
+      buttonText: "Visit Website",
+    },
+    {
+      id: "iconoodle",
+      name: "Iconoodle",
+      badge: "Next.js & TypeScript",
+      badgeColor: "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/30",
+      description: "Library of hand-drawn SVG doodles, illustrations, and customizable icon packs ready to copy-paste into modern web apps.",
+      url: "https://nk2552003.github.io/Iconoodle/",
+      tags: ["Next.js", "SVG", "Doodles", "Open Source"],
+      highlight: "Hand-drawn SVGs",
+      buttonText: "Visit Iconoodle",
+    },
+    {
+      id: "big-data-guide",
+      name: "Big Data Survival Guide",
+      badge: "Curriculum Portal",
+      badgeColor: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30",
+      description: "Big Data Analytics course materials, lab guides, and deep-dive documentation covering theory, Hadoop ecosystem, and Apache Spark.",
+      url: "https://nk2552003.github.io/Big-Data-Survival-Guide/",
+      tags: ["Hadoop", "Spark", "Big Data", "Courseware"],
+      highlight: "Hadoop & Spark",
+      buttonText: "Explore Guide",
+    },
+    {
+      id: "blisscampindia",
+      name: "BlissCampIndia",
+      badge: "Travel Platform",
+      badgeColor: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30",
+      description: "Travel and camping discovery platform curated for pristine nature campsites and trekking routes across India and Nepal.",
+      url: "https://nk2552003.github.io/BlissCampIndia/",
+      tags: ["Web App", "Responsive", "Travel", "Camping"],
+      highlight: "India & Nepal",
+      buttonText: "Visit BlissCamp",
+    },
+    {
+      id: "select2ai",
+      name: "Select2AI Extension",
+      badge: "Browser Extension",
+      badgeColor: "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/30",
+      description: "Browser extension for instant AI-powered text analysis, definitions, summarization, and contextual explanations on selected text.",
+      url: "https://github.com/NK2552003/Select2AI_Extension",
+      tags: ["Chrome Extension", "AI", "JavaScript", "Manifest V3"],
+      highlight: "AI Text Analysis",
+      buttonText: "View Extension",
+    },
+    {
+      id: "student-offers",
+      name: "Student Offer Repository",
+      badge: "Curated Directory",
+      badgeColor: "bg-teal-500/10 text-teal-600 dark:text-teal-400 border-teal-500/30",
+      description: "Source-linked catalog of free developer tools, student software plans, cloud credits, and trials with eligibility criteria.",
+      url: "https://github.com/NK2552003/Student-Offer-Repository",
+      tags: ["Curated", "Developer Tools", "Student Pack", "Discounts"],
+      highlight: "Student Perks",
+      buttonText: "View Repository",
+    },
+    {
+      id: "quietnote",
+      name: "QuietNote",
+      badge: "Flutter App",
+      badgeColor: "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/30",
+      description: "Offline-first Flutter application crafted as a calm, distraction-free sanctuary for private notes, personal plans, and focused work.",
+      url: "https://github.com/NK2552003/QuietNote",
+      tags: ["Flutter", "Dart", "Offline-first", "Notes"],
+      highlight: "Calm Productivity",
+      buttonText: "View on GitHub",
+    },
+    {
+      id: "brew-why",
+      name: "brew-why",
+      badge: "Python CLI & TUI",
+      badgeColor: "bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/30",
+      description: "Python CLI and interactive Textual terminal UI to explore Homebrew dependency graphs, find dependency roots, and clean orphaned packages.",
+      url: "https://github.com/NK2552003/brew-why",
+      tags: ["Python", "Textual TUI", "Homebrew", "Terminal"],
+      highlight: "Interactive TUI",
+      buttonText: "View on GitHub",
+    },
+  ]
+
   const sections = [
+    {
+      title: "The Toolmaker's Forge",
+      subtitle: "Published Extensions & Packages",
+      description: "Developer tools, VS Code extensions, and packages published across official marketplaces and registries.",
+      url: "https://marketplace.visualstudio.com/publishers/NK2552003",
+    },
+    {
+      title: "The Digital Frontiers",
+      subtitle: "Live Websites & Web Applications",
+      description: "Full-stack web applications, documentation portals, and interactive digital products deployed end-to-end.",
+      url: "https://ultimate-media-downloader.fun/",
+    },
     {
       title: "The Code Chronicles",
       subtitle: "GitHub Repositories",
@@ -428,18 +562,12 @@ export default function ProjectsPage() {
     },
   ]
 
-  // prepare simple stats for charts
-  const languageCounts = githubRepos.reduce((acc: Record<string, number>, r) => {
-    const lang = r.language || "Unknown"
-    acc[lang] = (acc[lang] || 0) + 1
-    return acc
-  }, {})
-
-  const langData = Object.entries(languageCounts).map(([language, count]) => ({ language, count }))
-  const starsData = githubRepos.map((r) => ({ name: r.name, stars: r.stargazers_count }))
-
   const getSectionIcon = (url: string, className = "h-4 w-4 md:h-5 md:w-5 xl:h-6 xl:w-6") => {
     if (!url) return <ExternalLink className={className} />
+    if (url.includes("marketplace.visualstudio.com") || url.includes("publishers"))
+      return <Package className={className} />
+    if (url.includes("ultimate-media-downloader") || url.includes("fun") || url.includes("github.io"))
+      return <Globe className={className} />
     if (url.includes("github.com")) return <Github className={className} />
     if (url.includes("codepen.io"))
       return (
@@ -543,7 +671,7 @@ export default function ProjectsPage() {
                         e.stopPropagation()
                         scroll("left", index)
                       }}
-                      className="rounded-full"
+                      className="rounded-full border border-stone-300 dark:border-teal-700/60 bg-stone-100/80 dark:bg-teal-900/40 text-stone-700 dark:text-teal-200 hover:bg-teal-700 hover:border-teal-700 hover:text-white dark:hover:bg-teal-500 dark:hover:border-teal-500 dark:hover:text-stone-950 transition-all duration-200 shadow-sm cursor-pointer"
                       aria-label="Scroll left"
                     >
                       <ChevronLeft className="h-4 w-4" />
@@ -555,7 +683,7 @@ export default function ProjectsPage() {
                         e.stopPropagation()
                         scroll("right", index)
                       }}
-                      className="rounded-full"
+                      className="rounded-full border border-stone-300 dark:border-teal-700/60 bg-stone-100/80 dark:bg-teal-900/40 text-stone-700 dark:text-teal-200 hover:bg-teal-700 hover:border-teal-700 hover:text-white dark:hover:bg-teal-500 dark:hover:border-teal-500 dark:hover:text-stone-950 transition-all duration-200 shadow-sm cursor-pointer"
                       aria-label="Scroll right"
                     >
                       <ChevronRight className="h-4 w-4" />
@@ -571,61 +699,160 @@ export default function ProjectsPage() {
                     <div className="cards-wrapper overflow-x-auto pb-4 scroll-smooth">
                       <div className="flex gap-4">
                         {index === 0 &&
-                          githubRepos.map((repo) => (
+                          publishedExtensionsData.map((pkg) => (
                             <Card
-                              key={repo.id}
-                              className="project-card flex-shrink-0 w-64 sm:w-72 md:w-80 p-4 sm:p-6 hover:shadow-md transition-shadow flex flex-col border border-stone-600/80 dark:border-teal-700/80"
+                              key={pkg.id}
+                              className="project-card flex-shrink-0 w-64 sm:w-72 md:w-80 p-4 sm:p-6 hover:shadow-md transition-shadow flex flex-col justify-between border border-stone-600/80 dark:border-teal-700/80"
                             >
                               <div>
-                                <h3 className="font-semibold text-lg mb-2 truncate">{repo.name}</h3>
-                                <p className="text-sm text mb-3 line-clamp-2">
-                                  {repo.description || "No description available"}
-                                </p>
-
-                                {Array.isArray(repo.topics) && repo.topics.length > 0 && (
-                                  <div className="flex flex-wrap gap-2 mb-3">
-                                    {repo.topics.slice(0, 4).map((t) => (
-                                      <span key={t} className="text-xs px-2 py-1 rounded bg-primary/10 text-primary inline-flex items-center gap-1">
-                                        <Tag className="h-3 w-3" /> {t}
-                                      </span>
-                                    ))}
-                                  </div>
-                                )}
-                              </div>
-
-                              <div className="mt-auto">
                                 <div className="flex items-center justify-between mb-2">
-                                  <span className="text-sm inline-flex items-center gap-2">
-                                    <Tag className="h-4 w-4" /> {repo.language || "N/A"}
+                                  <span className={`text-[11px] font-mono font-medium px-2 py-0.5 rounded-full border ${pkg.badgeColor}`}>
+                                    {pkg.platformBadge}
                                   </span>
-                                  <span className="text-sm inline-flex items-center gap-2">
-                                    <Star className="h-4 w-4" /> {repo.stargazers_count}
+                                  <span className="text-xs font-mono text-stone-500 dark:text-teal-400/80">
+                                    {pkg.highlight}
                                   </span>
                                 </div>
-
-                                <div className="text-xs text-muted-foreground flex items-center gap-2 mb-3">
-                                  <Calendar className="h-4 w-4" /> {repo.created_at ? new Date(repo.created_at).toLocaleDateString() : ""}
+                                <h3 className="font-semibold text-lg mb-2 truncate text-stone-900 dark:text-stone-100">{pkg.name}</h3>
+                                <p className="text-sm text-stone-600 dark:text-teal-100/70 mb-3 line-clamp-3 leading-relaxed">
+                                  {pkg.description}
+                                </p>
+                                <div className="flex flex-wrap gap-1.5 mb-3">
+                                  {pkg.tags.map((t) => (
+                                    <span key={t} className="text-xs px-2.5 py-0.5 rounded-full bg-stone-200/80 dark:bg-teal-900/40 text-stone-700 dark:text-teal-300 border border-stone-300/60 dark:border-teal-700/40 inline-flex items-center gap-1 font-mono">
+                                      <Tag className="h-3 w-3 opacity-70" /> {t}
+                                    </span>
+                                  ))}
                                 </div>
-
+                              </div>
+                              <div className="mt-auto pt-2">
                                 <Button
                                   variant="outline"
-                                  className="w-full bg-transparent hover:scale-105 hover:shadow-lg hover:bg-primary hover:text-primary-foreground transition-all duration-300 cursor-pointer"
+                                  className="w-full h-10 font-medium text-xs sm:text-sm border border-stone-600/70 dark:border-teal-700/70 text-stone-800 dark:text-teal-100 bg-transparent hover:bg-teal-700 hover:border-teal-700 hover:text-white dark:hover:bg-teal-500 dark:hover:border-teal-500 dark:hover:text-stone-950 transition-all duration-200 shadow-sm cursor-pointer inline-flex items-center justify-center gap-2"
                                   onClick={(e) => {
                                     e.stopPropagation()
-                                    window.open(repo.html_url, "_blank")
+                                    window.open(pkg.url, "_blank")
                                   }}
                                 >
-                                  View on GitHub
+                                  <ExternalLink className="h-3.5 w-3.5 shrink-0" />
+                                  {pkg.buttonText}
                                 </Button>
                               </div>
                             </Card>
                           ))}
 
                         {index === 1 &&
+                          liveWebsitesData.map((site) => (
+                            <Card
+                              key={site.id}
+                              className="project-card flex-shrink-0 w-64 sm:w-72 md:w-80 p-4 sm:p-6 hover:shadow-md transition-shadow flex flex-col justify-between border border-stone-600/80 dark:border-teal-700/80"
+                            >
+                              <div>
+                                <div className="flex items-center justify-between mb-2">
+                                  <span className={`text-[11px] font-mono font-medium px-2 py-0.5 rounded-full border ${site.badgeColor}`}>
+                                    {site.badge}
+                                  </span>
+                                  <span className="text-xs font-mono text-stone-500 dark:text-teal-400/80 truncate max-w-[120px]">
+                                    {site.highlight}
+                                  </span>
+                                </div>
+                                <h3 className="font-semibold text-lg mb-2 truncate text-stone-900 dark:text-stone-100">{site.name}</h3>
+                                <p className="text-sm text-stone-600 dark:text-teal-100/70 mb-3 line-clamp-3 leading-relaxed">
+                                  {site.description}
+                                </p>
+                                <div className="flex flex-wrap gap-1.5 mb-3">
+                                  {site.tags.map((t) => (
+                                    <span key={t} className="text-xs px-2.5 py-0.5 rounded-full bg-stone-200/80 dark:bg-teal-900/40 text-stone-700 dark:text-teal-300 border border-stone-300/60 dark:border-teal-700/40 inline-flex items-center gap-1 font-mono">
+                                      <Tag className="h-3 w-3 opacity-70" /> {t}
+                                    </span>
+                                  ))}
+                                </div>
+                              </div>
+                              <div className="mt-auto pt-2 space-y-2">
+                                <Button
+                                  variant="outline"
+                                  className="w-full h-10 font-medium text-xs sm:text-sm border border-stone-600/70 dark:border-teal-700/70 text-stone-800 dark:text-teal-100 bg-transparent hover:bg-teal-700 hover:border-teal-700 hover:text-white dark:hover:bg-teal-500 dark:hover:border-teal-500 dark:hover:text-stone-950 transition-all duration-200 shadow-sm cursor-pointer inline-flex items-center justify-center gap-2"
+                                  onClick={(e) => {
+                                    e.stopPropagation()
+                                    window.open(site.url, "_blank")
+                                  }}
+                                >
+                                  <ExternalLink className="h-3.5 w-3.5 shrink-0" />
+                                  {site.buttonText}
+                                </Button>
+                                {site.sourceUrl && (
+                                  <a
+                                    href={site.sourceUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    onClick={(e) => e.stopPropagation()}
+                                    className="inline-flex items-center justify-center gap-1.5 w-full text-xs font-mono text-stone-600 dark:text-teal-300/80 hover:text-teal-800 dark:hover:text-teal-200 transition-colors py-1 cursor-pointer"
+                                  >
+                                    <Github className="w-3.5 h-3.5" />
+                                    View Source Code
+                                    <ExternalLink className="w-3 h-3" />
+                                  </a>
+                                )}
+                              </div>
+                            </Card>
+                          ))}
+
+                        {index === 2 &&
+                          githubRepos.map((repo) => (
+                            <Card
+                              key={repo.id}
+                              className="project-card flex-shrink-0 w-64 sm:w-72 md:w-80 p-4 sm:p-6 hover:shadow-md transition-shadow flex flex-col justify-between border border-stone-600/80 dark:border-teal-700/80"
+                            >
+                              <div>
+                                <h3 className="font-semibold text-lg mb-2 truncate text-stone-900 dark:text-stone-100">{repo.name}</h3>
+                                <p className="text-sm text-stone-600 dark:text-teal-100/70 mb-3 line-clamp-2 leading-relaxed">
+                                  {repo.description || "No description available"}
+                                </p>
+
+                                {Array.isArray(repo.topics) && repo.topics.length > 0 && (
+                                  <div className="flex flex-wrap gap-1.5 mb-3">
+                                    {repo.topics.slice(0, 4).map((t) => (
+                                      <span key={t} className="text-xs px-2.5 py-0.5 rounded-full bg-stone-200/80 dark:bg-teal-900/40 text-stone-700 dark:text-teal-300 border border-stone-300/60 dark:border-teal-700/40 inline-flex items-center gap-1 font-mono">
+                                        <Tag className="h-3 w-3 opacity-70" /> {t}
+                                      </span>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+
+                              <div className="mt-auto pt-2">
+                                <div className="flex items-center justify-between mb-2">
+                                  <span className="text-sm inline-flex items-center gap-2 text-stone-700 dark:text-teal-200 font-mono">
+                                    <Tag className="h-4 w-4 opacity-70" /> {repo.language || "N/A"}
+                                  </span>
+                                  <span className="text-sm inline-flex items-center gap-2 text-stone-700 dark:text-teal-200 font-mono">
+                                    <Star className="h-4 w-4 opacity-70" /> {repo.stargazers_count}
+                                  </span>
+                                </div>
+
+                                <div className="text-xs text-stone-500 dark:text-teal-400/80 flex items-center gap-2 mb-3 font-mono">
+                                  <Calendar className="h-4 w-4 opacity-70" /> {repo.created_at ? new Date(repo.created_at).toLocaleDateString() : ""}
+                                </div>
+
+                                <Button
+                                  variant="outline"
+                                  className="w-full h-10 font-medium text-xs sm:text-sm border border-stone-600/70 dark:border-teal-700/70 text-stone-800 dark:text-teal-100 bg-transparent hover:bg-teal-700 hover:border-teal-700 hover:text-white dark:hover:bg-teal-500 dark:hover:border-teal-500 dark:hover:text-stone-950 transition-all duration-200 shadow-sm cursor-pointer inline-flex items-center justify-center gap-2"
+                                  onClick={(e) => {
+                                    e.stopPropagation()
+                                    window.open(repo.html_url, "_blank")
+                                  }}
+                                >
+                                  <Github className="h-3.5 w-3.5 shrink-0" />
+                                  View on GitHub
+                                </Button>
+                              </div>
+                            </Card>
+                          ))}
+
+                        {index === 3 &&
                           (() => {
                             // CodePen projects data
                             const codepenProjectsData = [
-
                               { id: "azZovJK", title: "Project 1" },
                               { id: "KwVjVKv", title: "Project 2" },
                               { id: "qEbqJJJ", title: "Project 3" },
@@ -647,8 +874,8 @@ export default function ProjectsPage() {
                               { id: "LEPQZeR", title: "Project 19" },
                               { id: "ExqvZey", title: "Project 20" },
                             ];
-                            return codepenProjectsData.map((project, i) => (
-                              <Card key={project.id} className="project-card flex-shrink-0 w-64 sm:w-72 md:w-80 p-4 sm:p-6 border border-stone-600/80 dark:border-teal-700/80 flex flex-col">
+                            return codepenProjectsData.map((project) => (
+                              <Card key={project.id} className="project-card flex-shrink-0 w-64 sm:w-72 md:w-80 p-4 sm:p-6 hover:shadow-md transition-shadow border border-stone-600/80 dark:border-teal-700/80 flex flex-col justify-between">
                                 <div>
                                   <div className="w-full h-40 overflow-hidden rounded-md mb-4 bg-[#181818] border border-[#3332328f] relative">
                                     <div
@@ -664,13 +891,18 @@ export default function ProjectsPage() {
                                       />
                                     </div>
                                   </div>
-                                  <h3 className="font-semibold text-lg mb-2">{project.title}</h3>
-                                  <p className="text-sm text-muted-foreground mb-4">
+                                  <h3 className="font-semibold text-lg mb-2 text-stone-900 dark:text-stone-100 truncate">{project.title}</h3>
+                                  <p className="text-sm text-stone-600 dark:text-teal-100/70 mb-4 leading-relaxed">
                                     Interactive CSS and JavaScript experiment
                                   </p>
                                 </div>
-                                <div className="mt-auto">
-                                  <Button variant="outline" className="w-full bg-transparent hover:scale-105 hover:shadow-lg hover:bg-primary hover:text-primary-foreground transition-all duration-300 cursor-pointer" onClick={() => window.open(`https://codepen.io/username/pen/${project.id}`, "_blank") }>
+                                <div className="mt-auto pt-2">
+                                  <Button
+                                    variant="outline"
+                                    className="w-full h-10 font-medium text-xs sm:text-sm border border-stone-600/70 dark:border-teal-700/70 text-stone-800 dark:text-teal-100 bg-transparent hover:bg-teal-700 hover:border-teal-700 hover:text-white dark:hover:bg-teal-500 dark:hover:border-teal-500 dark:hover:text-stone-950 transition-all duration-200 shadow-sm cursor-pointer inline-flex items-center justify-center gap-2"
+                                    onClick={() => window.open(`https://codepen.io/username/pen/${project.id}`, "_blank")}
+                                  >
+                                    <ExternalLink className="h-3.5 w-3.5 shrink-0" />
                                     View on CodePen
                                   </Button>
                                 </div>
@@ -679,7 +911,7 @@ export default function ProjectsPage() {
                           })()
                         }
 
-                        {index === 2 &&
+                        {index === 4 &&
                           [
                             {
                               id: "silly-moth-73",
@@ -699,7 +931,7 @@ export default function ProjectsPage() {
                               id: "chatty-eel-90",
                               title: "Chatty Eel",
                               url: "https://uiverse.io/NK2552003/chatty-eel-90",
-                              embed: "https://uiverse.io/NK2552003/chatty-eel-90",
+                              embed: "https://uiverse.io/embed/chatty-eel-90",
                               description: "Awesome Card"
                             },
                              {
@@ -710,28 +942,33 @@ export default function ProjectsPage() {
                               description: "Awesome Game Card"
                             }
                           ].map((card) => (
-                            <Card key={card.id} className="project-card flex-shrink-0 w-64 sm:w-72 md:w-80 p-4 sm:p-6 border border-stone-600/80 dark:border-teal-700/80 flex flex-col">
+                            <Card key={card.id} className="project-card flex-shrink-0 w-64 sm:w-72 md:w-80 p-4 sm:p-6 hover:shadow-md transition-shadow border border-stone-600/80 dark:border-teal-700/80 flex flex-col justify-between">
                               <div>
-                                <h3 className="font-semibold text-lg mb-2">{card.title}</h3>
-                                <p className="text-sm text-muted-foreground mb-4">{card.description}</p>
+                                <h3 className="font-semibold text-lg mb-2 text-stone-900 dark:text-stone-100 truncate">{card.title}</h3>
+                                <p className="text-sm text-stone-600 dark:text-teal-100/70 mb-4 leading-relaxed">{card.description}</p>
                               </div>
-                              <div className="mt-auto">
-                                <Button variant="outline" className="w-full bg-transparent hover:scale-105 hover:shadow-lg hover:bg-primary hover:text-primary-foreground transition-all duration-300 cursor-pointer" onClick={() => window.open(card.url, "_blank") }>
+                              <div className="mt-auto pt-2">
+                                <Button
+                                  variant="outline"
+                                  className="w-full h-10 font-medium text-xs sm:text-sm border border-stone-600/70 dark:border-teal-700/70 text-stone-800 dark:text-teal-100 bg-transparent hover:bg-teal-700 hover:border-teal-700 hover:text-white dark:hover:bg-teal-500 dark:hover:border-teal-500 dark:hover:text-stone-950 transition-all duration-200 shadow-sm cursor-pointer inline-flex items-center justify-center gap-2"
+                                  onClick={() => window.open(card.url, "_blank")}
+                                >
+                                  <ExternalLink className="h-3.5 w-3.5 shrink-0" />
                                   View on Uiverse
                                 </Button>
                               </div>
                             </Card>
                           ))
                         }
-                        {index === 3 &&
+                        {index === 5 &&
                           devtoArticles.map((article) => (
                             <Card
                               key={article.id}
-                              className="project-card flex-shrink-0 w-64 sm:w-72 md:w-80 p-4 sm:p-6 hover:shadow-md transition-shadow border border-stone-600/80 dark:border-teal-700/80 flex flex-col"
+                              className="project-card flex-shrink-0 w-64 sm:w-72 md:w-80 p-4 sm:p-6 hover:shadow-md transition-shadow border border-stone-600/80 dark:border-teal-700/80 flex flex-col justify-between"
                             >
                               <div>
-                                <h3 className="font-semibold text-lg mb-2 line-clamp-2">{article.title}</h3>
-                                <p className="text-sm text-muted-foreground mb-4 line-clamp-3">{article.description}</p>
+                                <h3 className="font-semibold text-lg mb-2 line-clamp-2 text-stone-900 dark:text-stone-100">{article.title}</h3>
+                                <p className="text-sm text-stone-600 dark:text-teal-100/70 mb-4 line-clamp-3 leading-relaxed">{article.description}</p>
                                 {(() => {
                                   const tags = Array.isArray(article.tags)
                                     ? article.tags
@@ -742,9 +979,9 @@ export default function ProjectsPage() {
                                   if (tags.length === 0) return null
 
                                   return (
-                                    <div className="flex flex-wrap gap-2 mb-4">
-                                      {tags.slice(0, 3).map((tag:any) => (
-                                        <span key={tag} className="text-xs bg-primary/10 text-primary px-2 py-1 rounded">
+                                    <div className="flex flex-wrap gap-1.5 mb-4">
+                                      {tags.slice(0, 3).map((tag: string) => (
+                                        <span key={tag} className="text-xs px-2.5 py-0.5 rounded-full bg-stone-200/80 dark:bg-teal-900/40 text-stone-700 dark:text-teal-300 border border-stone-300/60 dark:border-teal-700/40 font-mono">
                                           #{tag}
                                         </span>
                                       ))}
@@ -752,15 +989,16 @@ export default function ProjectsPage() {
                                   )
                                 })()}
                               </div>
-                              <div className="mt-auto">
+                              <div className="mt-auto pt-2">
                                 <Button
                                   variant="outline"
-                                  className="w-full bg-transparent hover:scale-105 hover:shadow-lg hover:bg-primary hover:text-primary-foreground transition-all duration-300 cursor-pointer"
+                                  className="w-full h-10 font-medium text-xs sm:text-sm border border-stone-600/70 dark:border-teal-700/70 text-stone-800 dark:text-teal-100 bg-transparent hover:bg-teal-700 hover:border-teal-700 hover:text-white dark:hover:bg-teal-500 dark:hover:border-teal-500 dark:hover:text-stone-950 transition-all duration-200 shadow-sm cursor-pointer inline-flex items-center justify-center gap-2"
                                   onClick={(e) => {
                                     e.stopPropagation()
                                     window.open(article.url, "_blank")
                                   }}
                                 >
+                                  <ExternalLink className="h-3.5 w-3.5 shrink-0" />
                                   Read Article
                                 </Button>
                               </div>

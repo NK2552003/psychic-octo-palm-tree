@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react"
 import { useSearchParams } from "next/navigation"
-import emailjs from "emailjs-com"
+import emailjs from "@emailjs/browser"
 import { toast } from "sonner"
 import { ArrowLeft, ArrowUpRight } from "lucide-react"
 import PageDoodles from "@/components/PageDoodles"

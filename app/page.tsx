@@ -153,8 +153,11 @@ useEffect(() => {
      HEADER ICON JELLY
   ====================================================== */
   useEffect(() => {
+    const targets = document.querySelectorAll(".jelly-icon")
+    if (!targets.length) return
+
     gsap.fromTo(
-      ".jelly-icon",
+      targets,
       { opacity: 0, scale: 0.6, y: 10 },
       {
         opacity: 1,
@@ -167,7 +170,7 @@ useEffect(() => {
       }
     );
 
-    gsap.to(".jelly-icon", {
+    gsap.to(targets, {
       scale: 1.08,
       duration: 1.8,
       ease: "sine.inOut",

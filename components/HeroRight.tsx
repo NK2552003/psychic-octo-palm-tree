@@ -150,8 +150,8 @@ export default function HeroRight() {
       <div className="relative max-w-md" data-parallax="0.45">
        <Signature/>
        <p data-i18n="hero.description" className="absolute top-16 hero-jelly hero-jelly-fast mt-2 text-sm leading-relaxed text-stone-900 dark:text-teal-300" data-parallax="0.48">
-              I’m an undergraduate engineering student who enjoys building
-              real-world web applications, learning modern technologies, and
+              I’m a Computer Science graduate (B.Tech) and full-stack developer who enjoys building
+              real-world web applications, exploring modern technologies, and
               expressing creativity through photography. I love turning ideas
               into functional, meaningful digital experiences.
             </p>

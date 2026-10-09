@@ -6,6 +6,10 @@ import { t, type LangCode } from '@/lib/i18n'
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { shouldReduceAnimations } from "../../lib/deviceDetection";
+import Swiper from "swiper";
+import { EffectCoverflow, Keyboard, Mousewheel } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/effect-coverflow";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -18,6 +22,8 @@ export default function WildlifePage() {
   const pageRef = useRef<HTMLDivElement | null>(null);
   const detailRef = useRef<HTMLDivElement | null>(null);
   const galleryRef = useRef<HTMLDivElement | null>(null);
+  const swiperRef = useRef<Swiper | null>(null);
+  const swiperContainerRef = useRef<HTMLDivElement | null>(null);
   const centerImageRef = useRef<HTMLImageElement | null>(null);
   const detailImageRef = useRef<HTMLImageElement | null>(null);
   const detailBottomImageRef = useRef<HTMLImageElement | null>(null);
@@ -198,52 +204,59 @@ export default function WildlifePage() {
   };
 
   const handlePrev = () => {
-    if (currentGalleryIndex > 0) {
-      animate(
-        centerImageRef.current,
-        { opacity: 1, x: 0 },
-        { opacity: 0, x: 50 },
-        0.3,
-        () => {
-          setCurrentGalleryIndex((prev) => prev - 1);
-          if (centerImageRef.current) {
-            centerImageRef.current.style.opacity = '0';
-            centerImageRef.current.style.transform = 'translateX(-50px)';
-            animate(
-              centerImageRef.current,
-              { opacity: 0, x: -50 },
-              { opacity: 1, x: 0 },
-              0.3
-            );
-          }
-        }
-      );
-    }
+    swiperRef.current?.slidePrev();
   };
 
   const handleNext = () => {
-    if (currentGalleryIndex < images.length - 1) {
-      animate(
-        centerImageRef.current,
-        { opacity: 1, x: 0 },
-        { opacity: 0, x: -50 },
-        0.3,
-        () => {
-          setCurrentGalleryIndex((prev) => prev + 1);
-          if (centerImageRef.current) {
-            centerImageRef.current.style.opacity = '0';
-            centerImageRef.current.style.transform = 'translateX(50px)';
-            animate(
-              centerImageRef.current,
-              { opacity: 0, x: 50 },
-              { opacity: 1, x: 0 },
-              0.3
-            );
-          }
-        }
-      );
-    }
+    swiperRef.current?.slideNext();
   };
+
+  useEffect(() => {
+    if (!swiperContainerRef.current) return;
+
+    const swiper = new Swiper(swiperContainerRef.current, {
+      modules: [EffectCoverflow, Keyboard, Mousewheel],
+      effect: "coverflow",
+      grabCursor: true,
+      centeredSlides: true,
+      slidesPerView: "auto",
+      slideToClickedSlide: true,
+      loop: true,
+      loopAdditionalSlides: 5,
+      coverflowEffect: {
+        rotate: 0,
+        stretch: "50%",
+        depth: 140,
+        modifier: 1,
+        slideShadows: false,
+      },
+      keyboard: {
+        enabled: true,
+      },
+      mousewheel: {
+        thresholdDelta: 70,
+      },
+      on: {
+        slideChange: (s) => {
+          setCurrentGalleryIndex(s.realIndex);
+        },
+      },
+    });
+
+    swiperRef.current = swiper;
+
+    return () => {
+      swiper.destroy(true, true);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (currentPage === "gallery" && swiperRef.current) {
+      setTimeout(() => {
+        swiperRef.current?.update();
+      }, 50);
+    }
+  }, [currentPage]);
 
   const handleDetailNext = () => {
     if (selectedImage < images.length - 1) {
@@ -453,6 +466,214 @@ export default function WildlifePage() {
           display: block;
           overflow: hidden;
         }
+
+        .photo-swiper {
+          width: 100%;
+          padding-top: 1.5rem;
+          padding-bottom: 1.5rem;
+          overflow: visible !important;
+        }
+
+        .photo-swiper .swiper-slide {
+          width: clamp(17.5rem, 32vw, 29rem);
+          height: clamp(11rem, 20vw, 18.125rem);
+          max-width: 86vw;
+          border-radius: 0 !important;
+          overflow: hidden;
+          box-shadow: 0 12px 28px -8px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.08);
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-end;
+          align-items: flex-start;
+          transition: filter 0.4s ease, opacity 0.4s ease, box-shadow 0.4s ease;
+          filter: brightness(0.72);
+        }
+
+        .photo-swiper .swiper-slide-active {
+          filter: brightness(1);
+          box-shadow:
+            0 12px 24px -6px rgba(0, 0, 0, 0.6),
+            0 24px 44px -10px rgba(0, 0, 0, 0.75),
+            0 0 0 1.5px rgba(255, 255, 255, 0.35);
+        }
+
+        .light .photo-swiper .swiper-slide {
+          box-shadow: 0 12px 28px -8px rgba(0, 0, 0, 0.18), 0 0 0 1px rgba(0, 0, 0, 0.1);
+        }
+
+        .light .photo-swiper .swiper-slide-active {
+          box-shadow:
+            0 12px 24px -6px rgba(0, 0, 0, 0.15),
+            0 24px 44px -10px rgba(0, 0, 0, 0.22),
+            0 0 0 1.5px rgba(0, 0, 0, 0.35);
+        }
+
+        /* Inactive slides: grayscale and dimmed */
+        .photo-swiper .swiper-slide .photo-card-img {
+          filter: grayscale(100%) contrast(1.05);
+          transition: filter 0.5s ease, transform 0.7s ease-out;
+        }
+
+        .photo-swiper .swiper-slide .photo-card-overlay {
+          opacity: 1;
+        }
+
+        /* Side card hover preview */
+        .photo-swiper .swiper-slide:hover:not(.swiper-slide-active) .photo-card-img {
+          filter: grayscale(50%) contrast(1.05);
+        }
+
+        .photo-swiper .swiper-slide:hover:not(.swiper-slide-active) .photo-card-overlay {
+          opacity: 0.5;
+        }
+
+        /* Active slide: ONLY active color stays colorful! */
+        .photo-swiper .swiper-slide-active .photo-card-img {
+          filter: grayscale(0%) contrast(1) !important;
+        }
+
+        .photo-swiper .swiper-slide-active .photo-card-overlay {
+          opacity: 0 !important;
+        }
+
+        /* Bottom blur to top transparent overlay (revealed only on active slide hover) */
+        .card-hover-blur-overlay {
+          opacity: 0;
+          transition: opacity 0.4s ease;
+          background: linear-gradient(to top, rgba(0, 0, 0, 0.88) 0%, rgba(0, 0, 0, 0.45) 50%, rgba(0, 0, 0, 0) 100%);
+          backdrop-filter: blur(14px);
+          -webkit-backdrop-filter: blur(14px);
+          mask-image: linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.8) 45%, rgba(0, 0, 0, 0) 90%);
+          -webkit-mask-image: linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.8) 45%, rgba(0, 0, 0, 0) 90%);
+        }
+
+        .photo-swiper .swiper-slide-active:hover .card-hover-blur-overlay,
+        .photo-swiper .swiper-slide-active:focus-within .card-hover-blur-overlay {
+          opacity: 1;
+        }
+
+        /* Slide card content (revealed ONLY on active slide hover) */
+        .slide-card-content {
+          opacity: 0;
+          transform: translateY(16px);
+          transition: opacity 0.35s cubic-bezier(0.25, 1, 0.5, 1), transform 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+          pointer-events: none;
+          width: 100%;
+        }
+
+        .photo-swiper .swiper-slide-active:hover .slide-card-content,
+        .photo-swiper .swiper-slide-active:focus-within .slide-card-content {
+          opacity: 1;
+          transform: translateY(0);
+          pointer-events: auto;
+        }
+
+        /* Support touch devices without hover */
+        @media (hover: none) {
+          .photo-swiper .swiper-slide-active .card-hover-blur-overlay {
+            opacity: 1;
+          }
+          .photo-swiper .swiper-slide-active .slide-card-content {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+          }
+        }
+
+        .photo-swiper .swiper-3d .swiper-slide-shadow,
+        .photo-swiper .swiper-3d .swiper-slide-shadow-left,
+        .photo-swiper .swiper-3d .swiper-slide-shadow-right,
+        .photo-swiper .swiper-3d .swiper-slide-shadow-coverflow-left,
+        .photo-swiper .swiper-3d .swiper-slide-shadow-coverflow-right {
+          display: none !important;
+          opacity: 0 !important;
+          background-image: none !important;
+        }
+
+        /* Carousel edge blur and fade vignettes (matching website background in dark & light mode) */
+        .carousel-edge-fade {
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          width: clamp(2.5rem, 8vw, 8.5rem);
+          pointer-events: none;
+          z-index: 20;
+        }
+
+        .carousel-edge-fade-left {
+          left: 0;
+          background: linear-gradient(
+            to right,
+            var(--background) 0%,
+            color-mix(in srgb, var(--background) 80%, transparent) 45%,
+            transparent 100%
+          );
+          backdrop-filter: blur(8px);
+          -webkit-backdrop-filter: blur(8px);
+          mask-image: linear-gradient(to right, black 0%, rgba(0, 0, 0, 0.6) 45%, transparent 100%);
+          -webkit-mask-image: linear-gradient(to right, black 0%, rgba(0, 0, 0, 0.6) 45%, transparent 100%);
+        }
+
+        .carousel-edge-fade-right {
+          right: 0;
+          background: linear-gradient(
+            to left,
+            var(--background) 0%,
+            color-mix(in srgb, var(--background) 80%, transparent) 45%,
+            transparent 100%
+          );
+          backdrop-filter: blur(8px);
+          -webkit-backdrop-filter: blur(8px);
+          mask-image: linear-gradient(to left, black 0%, rgba(0, 0, 0, 0.6) 45%, transparent 100%);
+          -webkit-mask-image: linear-gradient(to left, black 0%, rgba(0, 0, 0, 0.6) 45%, transparent 100%);
+        }
+
+        /* Themed card arrow button (Light: crisp white / Dark: electric teal) */
+        .photo-card-arrow-btn {
+          background-color: #ffffff;
+          color: #1c1917;
+          border-color: #ffffff;
+          transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .photo-card-arrow-btn:hover {
+          background-color: #1c1917;
+          color: #ffffff;
+          border-color: #1c1917;
+        }
+
+        :global(.dark) .photo-card-arrow-btn,
+        .dark .photo-card-arrow-btn {
+          background-color: #2dd4bf;
+          color: #042f2e;
+          border-color: #2dd4bf;
+        }
+
+        :global(.dark) .photo-card-arrow-btn:hover,
+        .dark .photo-card-arrow-btn:hover {
+          background-color: #5eead4;
+          color: #021a19;
+          border-color: #5eead4;
+        }
+
+        /* Detail modal animated theme grid background */
+        .detail-grid-bg {
+          width: 100%;
+          height: 100%;
+          background-size: 32px 32px;
+          background-image:
+            linear-gradient(to right, rgba(0, 0, 0, 0.09) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(0, 0, 0, 0.09) 1px, transparent 1px);
+          opacity: 0.45;
+          animation: gridPulse 6s ease-in-out infinite;
+        }
+
+        :global(.dark) .detail-grid-bg,
+        .dark .detail-grid-bg {
+          background-image:
+            linear-gradient(to right, rgba(45, 212, 191, 0.18) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(45, 212, 191, 0.18) 1px, transparent 1px);
+        }
       `}</style>
 
       <div className="relative z-10">
@@ -563,66 +784,109 @@ export default function WildlifePage() {
 
               </div>
             </div>
-            {/* Middle Section - Main Image with Prev/Next */}
-            <div className="flex items-center justify-center gap-4 md:gap-8 lg:gap-16 py-8 md:py-12">
-              <button
-                onClick={handlePrev}
-                disabled={currentGalleryIndex === 0}
-                className="text-lg md:text-xl lg:text-2xl font-bold hover:scale-110 transition-transform disabled:opacity-30 disabled:cursor-not-allowed"
-              >
-                [ PREV ]
-              </button>
+            {/* ── Centered 3D Coverflow Carousel ── */}
+            <div className="relative w-full max-w-[96rem] mx-auto py-6 md:py-10 flex flex-col items-center">
+              {/* Carousel Viewport with Left & Right Soft Blur Vignettes */}
+              <div className="relative w-full overflow-x-clip overflow-y-visible">
+                {/* Soft Edge Blur Vignettes (adapts to light & dark mode background) */}
+                <div className="carousel-edge-fade carousel-edge-fade-left" aria-hidden="true" />
+                <div className="carousel-edge-fade carousel-edge-fade-right" aria-hidden="true" />
 
-              <div className="animated-border-container" style={{ width: containerWidth ? `${containerWidth}px` : 'auto' }}>
-                <div
-                  className="relative cursor-pointer group image-wrapper"
-                  onClick={handleCenterImageClick}
-                >
-                  <img
-                    ref={centerImageRef}
-                    src={
-                      images[currentGalleryIndex].image || "/placeholder.svg"
-                    }
-                    alt={t(`photography.title.${currentGalleryIndex}`, lang)}
-                    className="h-[200px] sm:h-[240px] md:h-[280px] lg:h-[320px] xl:h-[360px] w-auto object-cover grayscale shadow-2xl transition-all duration-500 group-hover:scale-105 group-hover:grayscale-0"
-                  />
-                  <div className="pointer-events-none absolute inset-0 hidden dark:block mix-blend-color bg-teal-600/30" />
-                  <div className="absolute w-full h-full inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-500 flex items-center justify-center">
-                    <span className="text-white/70 text-xl md:text-2xl font-bold opacity-0 group-hover:opacity-100 transition-opacity duration-500 pl-4">
-                      VIEW
-                    </span>
-                  </div>
+                {/* Swiper Container */}
+                <div ref={swiperContainerRef} className="swiper photo-swiper w-full select-none">
+                <div className="swiper-wrapper">
+                  {images.map((img, index) => (
+                    <div
+                      key={img.id}
+                      className="swiper-slide cursor-pointer group relative overflow-hidden rounded-none"
+                      onClick={() => {
+                        if (currentGalleryIndex === index) {
+                          handleImageClick(index);
+                        }
+                      }}
+                    >
+                      {/* Card Background Image */}
+                      <img
+                        src={img.image}
+                        alt={t(`photography.title.${index}`, lang) || img.name}
+                        className="photo-card-img absolute inset-0 w-full h-full object-cover select-none pointer-events-none"
+                        loading="eager"
+                      />
+
+                      {/* Inactive card overlays (matching Landing Page Hero filter in dark and light mode) */}
+                      <div className="photo-card-overlay pointer-events-none absolute inset-0 transition-opacity duration-500 z-[1]">
+                        {/* Light mode: clean monochrome stone overlay */}
+                        <div className="absolute inset-0 bg-stone-900/25 dark:hidden mix-blend-multiply" />
+                        {/* Dark mode: exact Hero OKLCH teal mix-blend overlay */}
+                        <div className="absolute inset-0 hidden dark:block mix-blend-color bg-teal-600/35" />
+                        <div className="absolute inset-0 hidden dark:block bg-[#042f2e]/25 mix-blend-multiply" />
+                      </div>
+
+                      {/* Bottom blur to top transparent overlay (revealed only on active slide hover) */}
+                      <div className="card-hover-blur-overlay pointer-events-none absolute inset-0 z-[2]" />
+
+                      {/* Card Content (revealed only on active slide hover) */}
+                      <div className="slide-card-content relative z-10 w-full p-4 sm:p-5 md:p-6 flex items-end justify-between gap-3 sm:gap-4 text-left">
+                        {/* Text Information on the Left */}
+                        <div className="flex-1 min-w-0 pr-1 sm:pr-2">
+                          <span className="text-[10px] font-mono tracking-[0.2em] uppercase text-stone-300 dark:text-teal-400/90 mb-1 block">
+                            0{img.id} · WILDLIFE
+                          </span>
+                          <h2 className="text-white font-bold text-base sm:text-lg md:text-xl tracking-wide uppercase mb-1 font-display drop-shadow truncate">
+                            {t(`photography.title.${index}`, lang) || img.name}
+                          </h2>
+                          <p className="text-stone-300/90 text-[11px] sm:text-xs leading-relaxed line-clamp-2 font-light drop-shadow">
+                            {t(`photography.quote.${index}`, lang) || img.quote}
+                          </p>
+                        </div>
+
+                        {/* Arrow Button Only on the Right Side (adapts to light & dark theme) */}
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleImageClick(index);
+                          }}
+                          aria-label={`View ${img.name}`}
+                          className="photo-card-arrow-btn flex-shrink-0 w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 flex items-center justify-center rounded-none border hover:scale-105 active:scale-95 transition-all shadow-xl group/btn mb-0.5 cursor-pointer"
+                        >
+                          <svg
+                            className="w-4 h-4 sm:w-5 sm:h-5 transition-transform duration-300 group-hover/btn:translate-x-0.5"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <path d="M5 12h14M12 5l7 7-7 7" />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
-
-              <button
-                onClick={handleNext}
-                disabled={currentGalleryIndex === images.length - 1}
-                className="text-lg md:text-xl lg:text-2xl font-bold hover:scale-110 transition-transform disabled:opacity-30 disabled:cursor-not-allowed"
-              >
-                [ NEXT ]
-              </button>
             </div>
 
-            {/* Top Section - Image Gallery */}
-            <div className="flex-1 flex items-center justify-center pt-4 md:pt-8 w-full overflow-x-auto">
-              <div className="flex gap-2 sm:gap-3 md:gap-4 lg:gap-5 justify-center px-2 sm:px-3 md:px-4 py-2 flex-shrink-0">
-                {images.map((img, index) => (
-                  <div
-                    key={img.id}
-                    onClick={() => handleImageClick(index)}
-                    className="flex-shrink-0 cursor-pointer transition-all duration-300 hover:scale-105"
-                  >
-                    <div className="relative h-[200px] sm:h-[240px] md:h-[280px] lg:h-[320px] xl:h-[360px] w-auto">
-                      <img
-                        src={img.image || "/placeholder.svg"}
-                        alt={t(`photography.title.${index}`, lang)}
-                        className="h-full w-auto object-cover grayscale transition-all duration-500"
-                      />
-                      <div className="pointer-events-none absolute inset-0 hidden dark:block mix-blend-color bg-teal-600/30" />
-                    </div>
-                  </div>
-                ))}
+            {/* Controls (PREV / NEXT and numbering) moved to the bottom of the carousel */}
+            <div className="flex items-center justify-between w-full max-w-md px-6 pt-6 md:pt-10 z-20 relative select-none">
+                <button
+                  onClick={handlePrev}
+                  className="text-sm md:text-base font-mono font-bold hover:scale-110 transition-transform uppercase tracking-wider text-stone-600 dark:text-stone-300 hover:text-black dark:hover:text-white cursor-pointer"
+                  aria-label="Previous Photo"
+                >
+                  [ PREV ]
+                </button>
+                <span className="text-xs sm:text-sm font-mono uppercase tracking-widest text-stone-500 dark:text-stone-400">
+                  {currentGalleryIndex + 1} / {images.length}
+                </span>
+                <button
+                  onClick={handleNext}
+                  className="text-sm md:text-base font-mono font-bold hover:scale-110 transition-transform uppercase tracking-wider text-stone-600 dark:text-stone-300 hover:text-black dark:hover:text-white cursor-pointer"
+                  aria-label="Next Photo"
+                >
+                  [ NEXT ]
+                </button>
               </div>
             </div>
           </div>
@@ -632,19 +896,22 @@ export default function WildlifePage() {
           ? createPortal(
               <div
                 ref={detailRef}
-                className="fixed inset-0 z-50 flex flex-col backdrop-blur-md bg-white/95 dark:bg-black/95"
+                className="fixed inset-0 z-50 flex flex-col backdrop-blur-xl bg-background/95 text-foreground transition-colors duration-300"
                 style={{ opacity: 0, transform: 'translateY(50px)' }}
               >
+                {/* Background Grid Pattern (matches site's animated theme grid in light & dark mode) */}
+                <div className="pointer-events-none absolute inset-0 detail-grid-bg z-0 select-none" aria-hidden="true" />
+
                 <button
                   onClick={handleBackToGallery}
-                  className="absolute top-4 left-4 md:top-8 md:left-8 z-50 text-2xl md:text-3xl hover:scale-110 transition-transform"
+                  className="absolute top-4 left-4 md:top-8 md:left-8 z-50 text-2xl md:text-3xl hover:scale-110 transition-transform text-foreground hover:text-stone-500 dark:hover:text-teal-400 cursor-pointer"
                   aria-label="Close"
                 >
                   ✕
                 </button>
 
                 {/* Detail Page - Single Screen Layout */}
-                <div className="flex-1 flex flex-col p-4 md:p-8 lg:p-12 overflow-auto">
+                <div className="flex-1 flex flex-col p-4 md:p-8 lg:p-12 overflow-auto relative z-10">
                   {/* Top Section - Images and Info */}
                   <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8 min-h-0">
                     {/* Left - Main Image */}
@@ -665,22 +932,22 @@ export default function WildlifePage() {
                       {/* Info Section */}
                       <div className="flex-shrink-0 flex flex-col justify-between p-4 md:p-6 lg:p-8">
                         <div className="text-right">
-                          <p className="text-xs md:text-sm mb-1 md:mb-2">
+                          <p className="text-xs md:text-sm mb-1 md:mb-2 text-stone-500 dark:text-teal-400/90 font-mono">
                             [ 2025 ]
                           </p>
-                          <h2 className="text-5xl md:text-7xl lg:text-8xl font-black leading-none">
+                          <h2 className="text-5xl md:text-7xl lg:text-8xl font-black leading-none font-display text-foreground">
                             {selectedImage + 1}
                           </h2>
                         </div>
 
                         <div className="space-y-4 md:space-y-6">
-                          <p className="text-center text-xl md:text-2xl">[ + ]</p>
+                          <p className="text-center text-xl md:text-2xl text-stone-400 dark:text-teal-500/70 font-mono">[ + ]</p>
 
                           <div>
-                            <p className="text-xs md:text-sm font-bold mb-1 md:mb-2">
+                            <p className="text-xs md:text-sm font-bold mb-1 md:mb-2 font-display tracking-wider uppercase text-foreground">
                               [ {t(`photography.title.${selectedImage}`, lang)} ]
                             </p>
-                            <p className="text-xs md:text-sm lg:text-base leading-relaxed">
+                            <p className="text-xs md:text-sm lg:text-base leading-relaxed text-stone-600 dark:text-stone-300 font-light">
                               {t(`photography.quote.${selectedImage}`, lang)}
                             </p>
                           </div>
@@ -688,7 +955,7 @@ export default function WildlifePage() {
                       </div>
 
                       {/* Bottom Image */}
-                      <div className="flex-1 relative overflow-hidden min-h-[200px]">
+                      <div className="flex-1 relative overflow-hidden min-h-[200px] border border-stone-300/40 dark:border-teal-900/40">
                         <img
                           ref={detailBottomImageRef}
                           src={images[selectedImage].detailBottomImage}
@@ -703,26 +970,26 @@ export default function WildlifePage() {
                   </div>
 
                   {/* Footer Navigation */}
-                  <div className="flex-shrink-0 flex justify-between items-center text-xs md:text-sm mt-4">
+                  <div className="flex-shrink-0 flex justify-between items-center text-xs md:text-sm mt-4 text-stone-600 dark:text-stone-400 font-mono">
                     <button
                       onClick={handleBackToGallery}
-                      className="hover:underline"
+                      className="hover:underline hover:text-foreground cursor-pointer"
                     >
                       0{selectedImage + 1}/{images.length}
                     </button>
-                    <div className="flex gap-2 md:gap-4">
+                    <div className="flex gap-2 md:gap-4 items-center">
                       <button
                         onClick={handleDetailNext}
                         disabled={selectedImage === images.length - 1}
-                        className="hover:underline disabled:opacity-30 disabled:cursor-not-allowed"
+                        className="hover:underline hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
                       >
                         NEXT
                       </button>
-                      <span>/</span>
+                      <span className="opacity-40">/</span>
                       <button
                         onClick={handleDetailPrev}
                         disabled={selectedImage === 0}
-                        className="hover:underline disabled:opacity-30 disabled:cursor-not-allowed"
+                        className="hover:underline hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
                       >
                         PREV
                       </button>
@@ -734,6 +1001,18 @@ export default function WildlifePage() {
             )
           : null}
       </div>
+
+      {/* Ambient background silhouettes from aquatic theme */}
+      <img
+        src="https://cdn.pixabay.com/photo/2021/11/04/19/39/jellyfish-6769173_960_720.png"
+        alt=""
+        className="pointer-events-none absolute -top-16 -left-28 w-72 md:w-96 opacity-[0.03] dark:opacity-[0.07] z-0 select-none"
+      />
+      <img
+        src="https://cdn.pixabay.com/photo/2012/04/13/13/57/scallop-32506_960_720.png"
+        alt=""
+        className="pointer-events-none absolute -bottom-8 -right-10 w-36 md:w-44 opacity-[0.03] dark:opacity-[0.07] z-0 select-none"
+      />
     </div>
   );
 }

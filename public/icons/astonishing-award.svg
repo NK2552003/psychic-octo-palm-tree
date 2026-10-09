@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" fill="none">
+  <defs>
+    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FBBF24" />
+      <stop offset="50%" stop-color="#F59E0B" />
+      <stop offset="100%" stop-color="#D97706" />
+    </linearGradient>
+    <linearGradient id="ribbonGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#D97706" />
+      <stop offset="100%" stop-color="#B45309" />
+    </linearGradient>
+    <filter id="badgeShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-opacity="0.25" />
+    </filter>
+  </defs>
+
+  <!-- Ribbons -->
+  <g filter="url(#badgeShadow)">
+    <path d="M17 30 L11 44 L19 40 L24 43 L21 30 Z" fill="url(#ribbonGradient)" />
+    <path d="M31 30 L37 44 L29 40 L24 43 L27 30 Z" fill="url(#ribbonGradient)" />
+  </g>
+
+  <!-- Rosette Medal Body -->
+  <circle cx="24" cy="22" r="16" fill="url(#goldGradient)" filter="url(#badgeShadow)" />
+  <circle cx="24" cy="22" r="13.5" fill="#09090B" stroke="#FDE68A" stroke-width="1" stroke-dasharray="2 1.5" />
+  <circle cx="24" cy="22" r="11" fill="none" stroke="#F59E0B" stroke-width="0.75" opacity="0.6" />
+
+  <!-- Center Trophy Icon -->
+  <g fill="#FBBF24" stroke="#F59E0B" stroke-width="0.5" stroke-linejoin="round">
+    <!-- Cup Body -->
+    <path d="M19 15 H29 V20 C29 22.8 26.8 25 24 25 C21.2 25 19 22.8 19 20 Z" />
+    <!-- Cup Handles -->
+    <path d="M19 16 H16.5 C15.7 16 15 16.7 15 17.5 C15 18.9 16.1 20 17.5 20 H19" fill="none" stroke="#FBBF24" stroke-width="1.2" stroke-linecap="round" />
+    <path d="M29 16 H31.5 C32.3 16 33 16.7 33 17.5 C33 18.9 31.9 20 30.5 20 H29" fill="none" stroke="#FBBF24" stroke-width="1.2" stroke-linecap="round" />
+    <!-- Stem & Base -->
+    <path d="M22.5 25 H25.5 V27.5 H22.5 Z" />
+    <path d="M19.5 27.5 H28.5 C29 27.5 29 29 28.5 29 H19.5 C19 29 19 27.5 19.5 27.5 Z" />
+    <!-- Star on Trophy -->
+    <polygon points="24,17 24.8,18.8 26.8,19 25.3,20.4 25.7,22.4 24,21.4 22.3,22.4 22.7,20.4 21.2,19 23.2,18.8" fill="#FFFBEB" stroke="none" />
+  </g>
+</svg>

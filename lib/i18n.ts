@@ -88,9 +88,9 @@ export const translations: Record<string, Record<LangCode, string>> = {
   "nav.experience": { en: "Experience", hi: "अनुभव", hinglish: "Experience / अनुभव" },
   "nav.contact": { en: "Contact", hi: "संपर्क", hinglish: "Contact / संपर्क" },
   "hero.description": {
-    en: `I'm an undergraduate engineering student who enjoys building\n              real-world web applications, learning modern technologies, and\n              expressing creativity through photography. I love turning ideas\n              into functional, meaningful digital experiences.`,
-    hi: `मैं एक स्नातक इंजीनियरिंग छात्र हूँ जो वास्तविक दुनिया की वेब एप्लिकेशन बनाने, आधुनिक तकनीकों को सीखने और फ़ोटोग्राफ़ी के माध्यम से रचनात्मकता व्यक्त करने का आनंद लेता है। मैं विचारों को कार्यशील और अर्थपूर्ण डिजिटल अनुभवों में बदलना पसंद करता हूँ।`,
-    hinglish: `I'm एक engineering student जो real-world web applications बनाने में passionate हूँ, modern technologies सीखता हूँ, और photography के ज़रिए अपनी creativity को express करता हूँ। मैं ideas को functional digital experiences में turn करने का शौकीन हूँ।`,
+    en: `I'm a Computer Science graduate (B.Tech) and full-stack developer who enjoys building\n              real-world web applications, exploring modern technologies, and\n              expressing creativity through photography. I love turning ideas\n              into functional, meaningful digital experiences.`,
+    hi: `मैं कंप्यूटर साइंस इंजीनियरिंग में स्नातक (B.Tech Graduate) और फुल-स्टैक डेवलपर हूँ जो वास्तविक दुनिया की वेब एप्लिकेशन बनाने, आधुनिक तकनीकों को सीखने और फ़ोटोग्राफ़ी के माध्यम से रचनात्मकता व्यक्त करने का आनंद लेता है। मैं विचारों को कार्यशील और अर्थपूर्ण डिजिटल अनुभवों में बदलना पसंद करता हूँ।`,
+    hinglish: `I'm एक B.Tech CSE graduate और full-stack developer जो real-world web applications बनाने में passionate हूँ, modern technologies सीखता हूँ, और photography के ज़रिए अपनी creativity को express करता हूँ। मैं ideas को functional digital experiences में turn करने का शौकीन हूँ।`,
   },
   "center.building.1": {
     en: "BUILDING",
@@ -239,6 +239,11 @@ export const extraTranslations: Record<string, Record<LangCode, string>> = {
   },
 
   // Footer
+  "footer.luxury.tag": {
+    en: "✦ Atelier de Création ✦",
+    hi: "✦ कला एवं रचना एटेलियर ✦",
+    hinglish: "✦ Atelier de Création ✦",
+  },
   "footer.copyright": {
     en: "© 2026 Nitish's Portfolio",
     hi: "© 2026 नितीश का पोर्टफोलियो",
@@ -247,10 +252,15 @@ export const extraTranslations: Record<string, Record<LangCode, string>> = {
   "footer.all_rights": { en: "All rights reserved.", hi: "सर्वाधिकार सुरक्षित।", hinglish: "All rights reserved." },
   "footer.cookie_policy": { en: "Cookie Policy", hi: "कूकी नीति", hinglish: "Cookie Policy" },
   "footer.wdawards": { en: "WDAwards nominee →", hi: "WDAwards नामांकित →", hinglish: "WDAwards nominee →" },
+  "footer.astonishingawards": { en: "Astonishing Awards · Project Of The Day →", hi: "Astonishing Awards · प्रोजेक्ट ऑफ द डे →", hinglish: "Astonishing Awards · Project Of The Day →" },
 
   "wdawards.toast.title": { en: "WDAwards nominee", hi: "WDAwards नामांकित", hinglish: "WDAwards nominee" },
   "wdawards.toast.desc": { en: "Recognised nominee — view entry", hi: "नामांकित — प्रविष्टि देखें", hinglish: "Recognised nominee — view entry" },
   "wdawards.action": { en: "View", hi: "देखें", hinglish: "View" },
+
+  "astonishingawards.toast.title": { en: "Astonishing Awards", hi: "Astonishing Awards", hinglish: "Astonishing Awards" },
+  "astonishingawards.toast.desc": { en: "Project Of The Day (Oct 7, 2026) — view entry", hi: "प्रोजेक्ट ऑफ द डे (7 अक्टूबर 2026) — प्रविष्टि देखें", hinglish: "Project Of The Day (Oct 7, 2026) — view entry" },
+  "astonishingawards.action": { en: "View Entry", hi: "प्रविष्टि देखें", hinglish: "View Entry" },
 
   // Projects
   "projects.badge": { en: "Projects", hi: "परियोजनाएँ", hinglish: "Projects" },
@@ -264,34 +274,52 @@ export const extraTranslations: Record<string, Record<LangCode, string>> = {
     hi: "कोड, रचनात्मकता और अंतहीन संभावनाओं की यात्रा।",
     hinglish: "Code, creativity और possibilities की journey में आ जाओ",
   },
-  "projects.section.0.title": { en: "The Code Chronicles", hi: "कोड क्रॉनिकल्स", hinglish: "The Code Chronicles" },
-  "projects.section.0.subtitle": { en: "GitHub Repositories", hi: "GitHub रिपॉज़िटरी", hinglish: "GitHub Repositories" },
+  "projects.section.0.title": { en: "The Toolmaker's Forge", hi: "टूलमेकर की भट्टी", hinglish: "The Toolmaker's Forge" },
+  "projects.section.0.subtitle": { en: "Published Extensions & Packages", hi: "प्रकाशित एक्सटेंशन और पैकेज", hinglish: "Published Extensions & Packages" },
   "projects.section.0.description": {
+    en: "Developer tools, VS Code extensions, and packages published across official marketplaces and registries.",
+    hi: "डेवलपर टूल्स, VS Code एक्सटेंशन्स और आधिकारिक मार्केटप्लेस पर प्रकाशित पैकेज।",
+    hinglish: "Developer tools, VS Code extensions और official registries पर published packages",
+  },
+  "projects.section.1.title": {
+    en: "The Digital Frontiers",
+    hi: "डिजिटल फ्रंटियर्स",
+    hinglish: "The Digital Frontiers",
+  },
+  "projects.section.1.subtitle": { en: "Live Websites & Web Applications", hi: "लाइव वेबसाइट्स और वेब एप्लिकेशन्स", hinglish: "Live Websites & Web Applications" },
+  "projects.section.1.description": {
+    en: "Full-stack web applications, documentation portals, and interactive digital products deployed end-to-end.",
+    hi: "फुल-स्टैक वेब एप्लिकेशन्स, डॉक्स और अंत से अंत तक निर्मित इंटरैक्टिव डिजिटल उत्पाद।",
+    hinglish: "Full-stack web apps, docs portals और end-to-end deployed interactive web experiences",
+  },
+  "projects.section.2.title": { en: "The Code Chronicles", hi: "कोड क्रॉनिकल्स", hinglish: "The Code Chronicles" },
+  "projects.section.2.subtitle": { en: "GitHub Repositories", hi: "GitHub रिपॉज़िटरी", hinglish: "GitHub Repositories" },
+  "projects.section.2.description": {
     en: "Where ideas transform into open-source reality, one commit at a time.",
     hi: "जहाँ विचार एक-एक कमिट में ओपन-सोर्स वास्तविकता बनते हैं।",
     hinglish: "जहाँ मेरे ideas open-source reality बनते हैं, एक commit at a time",
   },
-  "projects.section.1.title": {
+  "projects.section.3.title": {
     en: "The Creative Playground",
     hi: "रचनात्मक प्लेग्राउंड",
     hinglish: "The Creative Playground",
   },
-  "projects.section.1.subtitle": { en: "CodePen Experiments", hi: "CodePen प्रयोग", hinglish: "CodePen Experiments" },
-  "projects.section.1.description": {
+  "projects.section.3.subtitle": { en: "CodePen Experiments", hi: "CodePen प्रयोग", hinglish: "CodePen Experiments" },
+  "projects.section.3.description": {
     en: "Interactive canvases where CSS dances and JavaScript brings magic to life.",
     hi: "इंटरैक्टिव कैनवास जहाँ CSS नृत्य करता है और JavaScript जादू लाता है।",
     hinglish: "Interactive experiments जहाँ CSS नाचती है और JavaScript magic करता है",
   },
-  "projects.section.2.title": { en: "The Component Gallery", hi: "कम्पोनेंट गैलरी", hinglish: "The Component Gallery" },
-  "projects.section.2.subtitle": { en: "Uiverse Creations", hi: "Uiverse कृतियाँ", hinglish: "Uiverse Creations" },
-  "projects.section.2.description": {
+  "projects.section.4.title": { en: "The Component Gallery", hi: "कम्पोनेंट गैलरी", hinglish: "The Component Gallery" },
+  "projects.section.4.subtitle": { en: "Uiverse Creations", hi: "Uiverse कृतियाँ", hinglish: "Uiverse Creations" },
+  "projects.section.4.description": {
     en: "Curated UI components crafted with passion and shared with the world.",
     hi: "जोशीले UI कम्पोनेंट्स जो दुनिया के साथ साझा किए गए हैं।",
     hinglish: "Beautiful UI components जो passion से बने हैं दुनिया के साथ share करने के लिए",
   },
-  "projects.section.3.title": { en: "The Knowledge Archive", hi: "ज्ञान अभिलेखागार", hinglish: "The Knowledge Archive" },
-  "projects.section.3.subtitle": { en: "Dev.to Articles", hi: "Dev.to लेख", hinglish: "Dev.to Articles" },
-  "projects.section.3.description": {
+  "projects.section.5.title": { en: "The Knowledge Archive", hi: "ज्ञान अभिलेखागार", hinglish: "The Knowledge Archive" },
+  "projects.section.5.subtitle": { en: "Dev.to Articles", hi: "Dev.to लेख", hinglish: "Dev.to Articles" },
+  "projects.section.5.description": {
     en: "Stories of code, insights from battles fought, and wisdom gained through debugging.",
     hi: "कोड की कहानियाँ, समस्याओं से मिली समझ और डीबगिंग के अनुभव से प्राप्त ज्ञान।",
     hinglish: "Code की कहानियाँ, bugs से सीखे lessons, और debugging से मिली wisdom",
@@ -333,35 +361,35 @@ export const extraTranslations: Record<string, Record<LangCode, string>> = {
   },
 
   "qual.entry.2.title": {
-    en: "B.Tech in Computer Science",
-    hi: "बी.टेक कंप्यूटर साइंस",
-    hinglish: "B.Tech in Computer Science",
+    en: "B.Tech in Computer Science & Engineering",
+    hi: "बी.टेक कंप्यूटर साइंस एंड इंजीनियरिंग",
+    hinglish: "B.Tech in Computer Science & Engineering",
   },
   "qual.entry.2.institution": {
-    en: "University: Tula's Institute, Dehradun aff. VMSBUTU",
-    hi: "यूनिवर्सिटी: तुला इंस्टिट्यूट, देहरादून (VMSBUTU से संबद्ध)",
-    hinglish: "University: Tula's Institute, Dehradun aff. VMSBUTU",
+    en: "Tula's Institute, Dehradun (Affiliated to VMSB UTU)",
+    hi: "तुला इंस्टिट्यूट, देहरादून (VMSB UTU से संबद्ध)",
+    hinglish: "Tula's Institute, Dehradun (Affiliated to VMSB UTU)",
   },
-  "qual.entry.2.duration": { en: "2022 - Present", hi: "2022 - वर्तमान", hinglish: "2022 - Present" },
+  "qual.entry.2.duration": { en: "2022 - 2026", hi: "2022 - 2026", hinglish: "2022 - 2026" },
   "qual.entry.2.description": {
-    en: "Specialized in Software Engineering and Data Structures",
-    hi: "सॉफ़्टवेयर इंजीनियरिंग और डेटा स्ट्रक्चर में विशेषज्ञता",
-    hinglish: "Specialized in Software Engineering and Data Structures",
+    en: "Graduated with First Division with Distinction • Grand CGPA: 8.14 (79.48%)",
+    hi: "प्रथम श्रेणी में डिस्टिंक्शन के साथ उत्तीर्ण (Grand CGPA: 8.14 / 79.48%)",
+    hinglish: "Graduated with First Division with Distinction (Grand CGPA: 8.14 / 79.48%)",
   },
   "qual.entry.2.details.challenge": {
-    en: "Balancing rigorous coursework with internships and projects.",
-    hi: "कठोर पाठ्यक्रम को इंटर्नशिप और परियोजनाओं के साथ संतुलित करना।",
-    hinglish: "Tough coursework को internships और projects के साथ balance करना था",
+    en: "Balancing rigorous engineering coursework and advanced CS concepts with real-world project development.",
+    hi: "कठोर इंजीनियरिंग पाठ्यक्रम और उन्नत CS अवधारणाओं को वास्तविक प्रोजेक्ट विकास के साथ संतुलित करना।",
+    hinglish: "Rigorous coursework और advanced CS concepts को real-world project development के साथ balance करना था",
   },
   "qual.entry.2.details.solution": {
-    en: "Focused on core subjects, practical projects and continuous learning.",
-    hi: "मुख्य विषयों, व्यावहारिक परियोजनाओं और लगातार सीखने पर ध्यान दिया।",
-    hinglish: "Core subjects पर focus किया, practical projects किए और continuously सीखता रहा",
+    en: "Mastered core CS fundamentals, algorithms, system engineering, and full-stack software development.",
+    hi: "कोर CS फंडामेंटल्स, एल्गोरिदम, सिस्टम इंजीनियरिंग और फुल-स्टैक डेवलपमेंट में महारत हासिल की।",
+    hinglish: "Core CS fundamentals, algorithms, system engineering और full-stack development में महारत हासिल की",
   },
   "qual.entry.2.details.result": {
-    en: "Consistent performance and multiple shipped projects.",
-    hi: "सतत प्रदर्शन और कई सफल परियोजनाएँ।",
-    hinglish: "Consistent performance दी और कई successful projects बनाए",
+    en: "Graduated with First Division with Distinction (8.14 CGPA) across 8 semesters with multiple shipped projects.",
+    hi: "8 सेमेस्टरों में 8.14 CGPA के साथ डिस्टिंक्शन हासिल की और कई सफल प्रोजेक्ट्स बनाए।",
+    hinglish: "8 semesters में 8.14 CGPA के साथ Distinction हासिल की और multiple production projects deploy किए",
   },
 
   "qual.entry.3.title": {
